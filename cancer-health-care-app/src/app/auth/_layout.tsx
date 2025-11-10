@@ -5,7 +5,7 @@ export default function Layout() {
     return (
         <Tabs screenOptions={{
             headerShown: false,
-            tabBarActiveTintColor: 'blue',
+            tabBarActiveTintColor: 'purple',
             tabBarInactiveTintColor: 'grey',
             tabBarStyle: {
                 position: 'absolute',
@@ -14,31 +14,37 @@ export default function Layout() {
                 borderRadius: 20
             }
         }}>
-            <Tabs.Screen name="OncologyArea"
+            <Tabs.Screen name="Oncology"
                 options={{
-                    tabBarLabel: "Área Oncológica",
+                    tabBarLabel: "Oncologia",
                     tabBarIcon: ({ focused, color }) => <Ionicons name={(focused ? "medkit" : "medkit-outline")} size={24} color={color} />
                 }}
             />
-            <Tabs.Screen name="MentalHealthArea"
+            <Tabs.Screen name="MentalHealth"
                 options={{
-                    tabBarLabel: "Área Saúde Mental",
+                    tabBarLabel: "Saúde Mental",
                     tabBarIcon: ({ focused, color }) => <Ionicons name={(focused ? "happy" : "happy-outline")} size={24} color={color} />
                 }}
 
             />
             <Tabs.Screen name="SocialArea"
                 options={{
-                    tabBarLabel: "Area Social",
+                    tabBarLabel: "Área Social",
                     tabBarIcon: ({ focused, color }) => <Ionicons name={(focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline")} size={24} color={color} />
                 }} />
 
             <Tabs.Screen name="PersonalArea"
                 options={{
-                    tabBarLabel: "Área Pessoal",
+                    tabBarLabel: "Meu Perfil",
                     tabBarIcon: ({ focused, color }) => <Ionicons name={(focused ? "person-circle" : "person-circle-outline")} size={24} color={color} />
                 }} />
 
+            <Tabs.Screen
+                name="auth"
+                options={{
+                    href: null,
+                }}
+            />
         </Tabs>
     )
 

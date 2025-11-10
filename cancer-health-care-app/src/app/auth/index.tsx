@@ -11,8 +11,8 @@ export default function LoginScreen() {
   const [ error, setError ] = useState<false|string>(false);
   // ------------------------------------------------
   const handleLogin = () => {
-    if (email == 'teste@teste.com' && senha == '123456') {
-      router.push('/auth/tela1');
+    if (email == 'teste' && senha == '123') {
+      router.push('/Oncology');
       // router.replace('/auth/tela1');
       // router.back();
     } else {
