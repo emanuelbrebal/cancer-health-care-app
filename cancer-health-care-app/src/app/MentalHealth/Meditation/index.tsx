@@ -1,10 +1,10 @@
 import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeMentalHealth() {
+export default function Meditation() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Tela inicial Saúde Mental</Text>
+      <Text style={styles.text}>Meditação guiada - Saúde Mental</Text>
     </View>
   );
 }

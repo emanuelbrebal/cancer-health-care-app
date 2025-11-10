@@ -1,10 +1,10 @@
 import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeMentalHealth() {
+export default function PanicButtonContacts() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Tela inicial Saúde Mental</Text>
+      <Text style={styles.text}>Página de Contatos do Botão do Pânico - Saúde Mental</Text>
     </View>
   );
 }
