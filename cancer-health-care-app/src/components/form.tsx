@@ -7,8 +7,6 @@ export interface FormProps {
     handleLogin: any, 
     error: any
 }
-
-
 export function Form({setEmail, setSenha, handleLogin, error}: FormProps) {
 
     return (

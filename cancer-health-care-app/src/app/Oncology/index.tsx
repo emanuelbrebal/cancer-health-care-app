@@ -1,9 +1,10 @@
+import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Tela3Screen() {
+export default function HomeOncology() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Tela 3</Text>
+      <Text style={styles.text}>Tela inicial Área Social</Text>
     </View>
   );
 }
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#afe619',
+    backgroundColor: '#f0f0f0',
   },
   text: {
     fontSize: 30,
