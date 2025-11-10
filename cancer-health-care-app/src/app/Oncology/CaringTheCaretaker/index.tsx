@@ -1,10 +1,10 @@
 import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomeOncology() {
+export default function CaringTheCaretaker() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Tela inicial Área Oncológica</Text>
+      <Text style={styles.text}>Cuidar de quem Cuida - Oncologia</Text>
     </View>
   );
 }
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#d6fca5ff',
+    backgroundColor: '#fabeffff',
   },
   text: {
     fontSize: 24,
