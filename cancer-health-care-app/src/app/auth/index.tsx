@@ -45,7 +45,7 @@ export default function LoginScreen() {
         <Button title="Entrar" onPress={handleLogin} />
 
         <Link href="/auth/tela2">
-          <Text>VÁ PARA TERLA 2</Text>
+          <Text>VÁ PARA TELA 2</Text>
         </Link>
       </View>
 
