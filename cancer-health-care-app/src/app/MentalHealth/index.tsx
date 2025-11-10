@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function HomeMentalHealth() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Tela inicial Área Social</Text>
+      <Text style={styles.text}>Tela inicial Saúde Mental</Text>
     </View>
   );
 }
@@ -14,10 +14,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fabeffff',
   },
   text: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
   },
 });
