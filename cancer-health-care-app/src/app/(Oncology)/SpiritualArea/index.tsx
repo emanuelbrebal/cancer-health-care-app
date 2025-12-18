@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Motivational() {
+export default function LegalArea() {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Página da Área Motivacional</Text>
+            <Text style={styles.text}>Página da Área de Espiritualidade</Text>
         </View>
     );
 }
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#89e4ffff',
+        backgroundColor: 'transparent',
     },
     text: {
         fontSize: 24,
