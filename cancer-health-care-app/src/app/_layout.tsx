@@ -34,16 +34,27 @@ export default function Layout() {
                     backgroundColor: 'transparent'
                 },
                 headerShown: false,
-                tabBarActiveTintColor: '#9B5DE0',
-                tabBarInactiveTintColor: '#D78FEE',
+                tabBarActiveTintColor: '#8c4ad8ff',
+                tabBarInactiveTintColor: '#b15cceff',
                 tabBarStyle: {
-                    backgroundColor: '#FDCFFA4D',
+                    backgroundColor: '#ffffff56',
                     height: 80,
                     borderColor: '#9B5DE0',
                 },
+
             }}>
 
-                <Tabs.Screen name="(Oncology)"
+                <Tabs.Screen name="(Home)"
+                    options={{
+                        tabBarLabel: "Home",
+                        tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                            focused, color, "home", "home-outline"
+                        ),
+
+                    }}
+                />
+
+                <Tabs.Screen name="Oncology"
                     options={{
                         tabBarLabel: "Oncologia",
                         tabBarIcon: ({ focused, color }) => renderTabBarIcon(
