@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   iconContainer: {
-    width: 82,
-    height: 82,
+    width: 75,
+    height: 75,
     borderRadius: 20,
     backgroundColor: '#F3E5F5',
     alignItems: 'center',
