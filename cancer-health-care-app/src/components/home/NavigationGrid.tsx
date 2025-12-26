@@ -2,11 +2,6 @@ import { Link } from 'expo-router';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function NavigationGrid() {
-  // ver a lógica para pegar o usuário logado e alimentar o componente "helloMessage"
-  const user = {
-    name: 'Emanuel'
-  }
-
   interface CardItem {
     id: string,
     title: string,
@@ -16,9 +11,9 @@ export default function NavigationGrid() {
 
   const cardItems: CardItem[] = [
     { id: '1', title: 'Área Oncológica', image: require('@assets/images/Home/oncologyAreaIcon.png'), route: '/Oncology' },
-    { id: '2', title: 'Comunidade', image: require('@assets/images/Home/communityIcon.png'), route: '/SocialArea' },
-    { id: '3', title: 'Área Pessoal', image: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
-    { id: '4', title: 'Saúde Mental', image: require('@assets/images/Home/mentalHealthIcon.png'), route: '/MentalHealth' },
+    { id: '2', title: 'Saúde Mental', image: require('@assets/images/Home/mentalHealthIcon.png'), route: '/MentalHealth' },
+    { id: '3', title: 'Comunidade', image: require('@assets/images/Home/communityIcon.png'), route: '/SocialArea' },
+    { id: '4', title: 'Área Pessoal', image: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
   ];
 
   const renderCard = ({ item }) => (

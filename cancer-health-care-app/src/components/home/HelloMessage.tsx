@@ -1,40 +1,36 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+interface patient {
+  patient_name: string
+}
+export default function HelloMessage({ patient_name }: patient) {
 
-export default function DailyMessage() {
-
-  const message = {
-    message: 'Você tem dado o melhor que pode. E isso é o suficiente!'
-  }
-  // transformar isso em um componente de mensagem + imagem de mascote genérica (para o )
+  // transformar isso em um componente de mensagem + imagem de mascote genérica 
   return (
     <View style={styles.container}>
 
-
       <View style={styles.helloMessageContainer}>
-        <Text style={styles.text}>Mensagem do dia!</Text>
-        <Text style={styles.subtext}>{message.message}</Text>
-
+        <Text style={styles.text}>Olá, {patient_name? patient_name : 'Paciente'}!</Text>
+        <Text style={styles.text}>Que bom te ter aqui!</Text>
+        <Text style={styles.subtext}>Vamos cuidar de você hoje?</Text>
       </View>
 
       <View style={styles.imageContainer}>
-        <Image source={require('@assets/images/Home/purpleMascotPlaceholder.png')} style={styles.image} resizeMode="contain" />
+        <Image source={require('@assets/images/Home/blueMascotPlaceholder.png')} style={styles.image} resizeMode="contain" />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
-    width: '90%',
+    height: '30%',
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     fontFamily: 'Montserrat',
-    padding: 10,
-    gap: 15,
-    backgroundColor: "#AFFFEC99",
-    borderRadius: 20,
-
+    paddingTop: 30
   },
   helloMessageContainer: {
     paddingLeft: 20,
@@ -46,17 +42,15 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   image: {
-    height: 80,
-    width: 80,
+    height: 130,
+    width: 130,
     transform: [{ scaleX: -1 }],
   },
   text: {
     fontSize: 18,
-    color: "#0088FF",
     fontWeight: 'bold',
   },
   subtext: {
     fontSize: 14,
   }
-
 });
