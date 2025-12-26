@@ -1,4 +1,4 @@
-import { ScreenTitle } from "@/src/components/ScreenTitle";
+import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
 import { Stack } from "expo-router";
 
 export default function OncologyStackLayout() {

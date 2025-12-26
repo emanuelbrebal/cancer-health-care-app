@@ -1,14 +1,13 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import DailyMessage from '@/src/components/home/DailyMessage/DailyMessage';
+import HelloMessage from '@/src/components/home/HelloMessage';
+import NavigationGrid from '@/src/components/home/NavigationGrid';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HelloMessage from './components/HelloMessage';
-import NavigationGrid from './components/NavigationGrid';
-import DailyMessage from './components/DailyMessage';
 
 export default function HomeOncology() {
   return (
     <SafeAreaView style={styles.container}>
-      <HelloMessage/>
+      <HelloMessage patient_name=''/>
       <NavigationGrid />
       <DailyMessage />
     </SafeAreaView>
