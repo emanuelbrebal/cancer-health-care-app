@@ -1,91 +1,101 @@
-import { Stack } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { HeaderLogo } from '@/src/components/home/HeaderLogo';
+import { ScreenTitle } from '@/src/components/ui/ScreenTitle';
+import { Ionicons } from '@expo/vector-icons';
+import { Tabs } from "expo-router";
+import { StyleSheet, View } from 'react-native';
 
-export default function Layout() {
-
-    return (
-        <Stack screenOptions={{
-            headerShown: true,
-            headerTintColor: 'white',
-            headerTransparent: true,
-            headerTitle: "",
-            contentStyle: { 
-                backgroundColor: 'transparent',
-                justifyContent: 'flex-end',
-            },
-            headerTitleStyle: {
-                color: 'white',
-            },
-            
-        }}>
-            <Stack.Screen name="index"
-                options={{
-                    headerLeft: () => (
-                        <View style={styles.headerLeftContainer}>
-                            <View style={styles.logoCircle} /> 
-                            <Text style={styles.appName}>ONCOMENTE</Text>
-                        </View>
-                    ),
-                    headerRight: () => (
-                        <Text style={styles.screenTitle}>Início</Text>
-                    ),
-                }}
-            />
-
-            <Stack.Screen name="LegalArea"
-                options={{
-                    title: "Benefícios Legais",
-                }}
-            />
-            <Stack.Screen name="Leisure"
-                options={{
-                    title: "Opções de Lazer",
-                }}
-            />
-            <Stack.Screen name="Motivational"
-                options={{
-                    title: "Motivação Diária",
-                }}
-            />
-
-            <Stack.Screen name="SelfCare"
-                options={{
-                    title: "Autocuidados",
-                }}
-            />
-
-            <Stack.Screen name="SpiritualArea"
-                options={{
-                    title: "Espiritualidade",
-                }}
-            />
-        </Stack>
-    )
-}
 
 const styles = StyleSheet.create({
-    headerLeftContainer: {
-        flexDirection: 'row',
+    activeBorderContainer: {
+        borderTopWidth: 3,
+        borderTopColor: '#9B5DE0',
+        paddingTop: 5,
         alignItems: 'center',
-        gap: 8, 
+        width: '100%',
+        minHeight: 40
     },
-    logoCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: '#5CC6FF', 
-    },
-    appName: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 14,
-        letterSpacing: 1, 
-        textTransform: 'uppercase',
-    },
-    screenTitle: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 16,
-        paddingRight: 10, 
+    tabsContainer: {
+        flex: 1,
     }
 });
+
+const renderTabBarIcon = (focused: boolean, color: any, activeIcon: any, inactiveIcon: string) => (
+    <View style={focused ? styles.activeBorderContainer : {}}>
+        <Ionicons name={(focused ? activeIcon : inactiveIcon)} size={24} color={color} />
+    </View>
+);
+
+export default function HomeLayout() {
+
+    return (
+        <Tabs screenOptions={{
+            sceneStyle: {
+                backgroundColor: 'transparent'
+            },
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "",
+            tabBarActiveTintColor: '#8c4ad8ff',
+            tabBarInactiveTintColor: '#b15cceff',
+            tabBarStyle: {
+                backgroundColor: '#ffffff56',
+                height: 80,
+                borderColor: '#9B5DE0',
+            },
+
+        }}>
+
+            <Tabs.Screen name="index"
+                options={{
+                    tabBarLabel: "Início",
+                    tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                        focused, color, "home", "home-outline"
+                    ),
+                    headerLeft: () => <HeaderLogo />,
+                    headerRight: () => <ScreenTitle title='Início' />,
+                }}
+            />
+
+            <Tabs.Screen name="Oncology"
+                options={{
+                    tabBarLabel: "Oncologia",
+                    tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                        focused, color, "medkit", "medkit-outline"
+                    ),
+                    headerRight: () => <ScreenTitle title="Oncologia" />,
+                }}
+            />
+
+            <Tabs.Screen name="MentalHealth"
+                options={{
+                    tabBarLabel: "Saúde Mental",
+                    tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                        focused, color, "happy", "happy-outline"
+                    ),
+                    headerRight: () => <ScreenTitle title="Saúde Mental" />,
+                }}
+            />
+
+            <Tabs.Screen name="SocialArea"
+                options={{
+                    tabBarLabel: "Área Social",
+                    tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                        focused, color, "chatbubble-ellipses", "chatbubble-ellipses-outline"
+                    ),
+                    headerRight: () => <ScreenTitle title="Área Social" />,
+                }}
+            />
+
+            <Tabs.Screen name="PersonalArea"
+                options={{
+                    tabBarLabel: "Meu Perfil",
+                    tabBarIcon: ({ focused, color }) => renderTabBarIcon(
+                        focused, color, "person-circle", "person-circle-outline"
+                    ),
+                    headerRight: () => <ScreenTitle title="Meu Perfil" />,
+
+                }}
+            />
+        </Tabs>
+    )
+}
