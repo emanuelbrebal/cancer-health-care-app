@@ -23,10 +23,7 @@ export default function AuthLayout({ textPrimary, textSecondary, children }: Aut
                     {children}
                 </View>
             </View>
-
             <StatusBar style="auto" />
         </View>
     );
 }
-
-
