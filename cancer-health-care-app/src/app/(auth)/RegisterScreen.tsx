@@ -1,4 +1,4 @@
-import AuthLayout from '@/src/components/auth/AuthLayout/AuthLayout';
+import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { RegisterForm } from '@/src/components/auth/RegisterForm';
 import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';

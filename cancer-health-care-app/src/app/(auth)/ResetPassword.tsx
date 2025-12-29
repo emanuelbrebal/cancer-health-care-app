@@ -1,4 +1,4 @@
-import AuthLayout from '@/src/components/auth/AuthLayout/AuthLayout';
+import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { SendResetForm } from '@/src/components/auth/SendResetForm';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { CancelButton } from '@/src/components/ui/Buttons/CancelButton';
