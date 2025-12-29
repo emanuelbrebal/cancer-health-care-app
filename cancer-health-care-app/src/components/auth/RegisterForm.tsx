@@ -5,30 +5,29 @@ import { SelectWithIcon } from "../ui/Inputs/SelectWithIcon";
 import { useState } from "react";
 
 export interface FormProps {
-  setAccountType: (text: string) => void;
   setEmail: (text: string) => void;
   setPassword: (text: string) => void;
   error?: string | false;
 }
-const accountType = [
+const accountTypeData = [
   { label: 'Paciente', value: '0' },
   { label: 'Cuidador', value: '1' },
 ];
 
-export function RegisterForm({ setAccountType, setEmail, setPassword, error }: FormProps) {
+export function RegisterForm({setEmail, setPassword, error }: FormProps) {
 
-  const [genero, setGenero] = useState('');
+  const [accountType, setAccountType] = useState('');
 
   return (
     <View style={globalStyles.formContainer}>
 
       <SelectWithIcon
         iconLeftName="user"
-        data={accountType}
-        value={genero}
+        data={accountTypeData}
+        value={accountType}
         placeholder="Tipo de usuário"
         onChange={item => {
-          setGenero(item.value);
+          setAccountType(item.value);
         }}
       />
 
