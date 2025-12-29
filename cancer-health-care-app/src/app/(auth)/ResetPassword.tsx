@@ -1,4 +1,4 @@
-import AuthLayout from '@/src/components/auth/_layout';
+import AuthLayout from '@/src/components/auth/AuthLayout/AuthLayout';
 import { SendResetForm } from '@/src/components/auth/SendResetForm';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { CancelButton } from '@/src/components/ui/Buttons/CancelButton';
@@ -13,14 +13,6 @@ export default function ResetPassword() {
 
     const [email, setEmail] = useState<string>('');
     const [error, setError] = useState<false | string>(false);
-
-    const handlePasswordReset = () => {
-        if (email == 'teste') {
-            router.push('/(Home)');
-        } else {
-            setError('* Email ou senha incorretos!');
-        }
-    }
 
     const redirectResetPassword = () => {
         router.push('/(auth)/RecoverPassword');
