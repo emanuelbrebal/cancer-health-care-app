@@ -1,12 +1,10 @@
-import { View, Text, Button, StyleSheet } from "react-native";
+import CommonAreasLayout from "@/src/components/layouts/CommonAreasLayout/CommonAreasLayout";
 import { router } from "expo-router";
-import { globalStyles } from "@/src/styles/global";
+import { Button, View } from "react-native";
 
 export default function OncologyMenu() {
   return (
-    <View style={globalStyles.layoutContainer}>
-      <Text style={globalStyles.textPrimary}>Bem-vindo à Área Oncológica</Text>
-
+    <View>
       <Button
         title="Ir para Auth"
         onPress={() => router.push('/(auth)')}
