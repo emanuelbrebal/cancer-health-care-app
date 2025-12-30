@@ -1,22 +1,19 @@
 import { HeaderLogo } from '@/src/components/home/HeaderLogo';
 import { ScreenTitle } from '@/src/components/ui/ScreenTitle';
+import { Colors } from '@/src/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from "expo-router";
 import { StyleSheet, View } from 'react-native';
 
-
 const styles = StyleSheet.create({
     activeBorderContainer: {
         borderTopWidth: 3,
-        borderTopColor: '#9B5DE0',
+        borderTopColor: Colors.purplePrimary,
         paddingTop: 5,
         alignItems: 'center',
         width: '100%',
         minHeight: 40
     },
-    tabsContainer: {
-        flex: 1,
-    }
 });
 
 const renderTabBarIcon = (focused: boolean, color: any, activeIcon: any, inactiveIcon: string) => (
@@ -35,12 +32,12 @@ export default function HomeLayout() {
             headerShown: true,
             headerTransparent: true,
             headerTitle: "",
-            tabBarActiveTintColor: '#8c4ad8ff',
-            tabBarInactiveTintColor: '#b15cceff',
+            tabBarActiveTintColor: Colors.tabBar.ActiveTintColor,
+            tabBarInactiveTintColor: Colors.tabBar.InactiveTintColor,
             tabBarStyle: {
-                backgroundColor: '#ffffff56',
+                backgroundColor: Colors.tabBar.backgroundColor,
                 height: 80,
-                borderColor: '#9B5DE0',
+                borderColor: Colors.tabBar.borderColor,
             },
 
         }}>

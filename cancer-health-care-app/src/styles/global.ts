@@ -26,6 +26,19 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
 
+    centeredContainer: {
+        ...container,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    betweenContainer: {
+        ...container,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    
+
     formContainer: {
         width: '100%',
         justifyContent: 'flex-start',

@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View } from 'react-native';
-import { authLayoutStyles } from '../../styles/AuthLayoutStyle';
+import { authLayoutStyles } from './AuthLayoutStyle';
 import { globalStyles } from '@/src/styles/global';
 
 interface AuthProps {
@@ -23,10 +23,7 @@ export default function AuthLayout({ textPrimary, textSecondary, children }: Aut
                     {children}
                 </View>
             </View>
-
             <StatusBar style="auto" />
         </View>
     );
 }
-
-

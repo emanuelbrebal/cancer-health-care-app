@@ -1,4 +1,4 @@
-import AuthLayout from '@/src/components/auth/_layout';
+import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { ImageContainer } from '@/src/components/ui/ImageContainer';
@@ -14,10 +14,6 @@ export default function WelcomeScreen() {
   const redirectRegister = () => {
     router.push('/RegisterScreen');
   }
-  const ResetPassword = () => {
-    router.push('/ResetPassword');
-  }
-
   return (
     <AuthLayout
       textPrimary="Bem-vindo(a)"
