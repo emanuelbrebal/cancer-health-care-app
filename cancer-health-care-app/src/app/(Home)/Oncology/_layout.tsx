@@ -1,9 +1,21 @@
+import CommonAreasLayout from "@/src/components/layouts/CommonAreasLayout/CommonAreasLayout";
 import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
 import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
-import CommonAreasLayout from "@/src/components/layouts/CommonAreasLayout/CommonAreasLayout";
+import { Colors } from "@/src/constants/Colors";
+import { ScreenConfig } from "@/src/types/ScreenConfig";
+
+const screensConfig: ScreenConfig[] = [
+    { name: "index", title: "Área Oncológica" },
+    { name: "LegalArea/index", title: "Benefícios Legais" },
+    { name: "Leisure/index", title: "Opções de Lazer" },
+    { name: "Motivational/index", title: "Motivação Diária" },
+    { name: "Nutrition/index", title: "Autocuidados" },
+    { name: "SpiritualArea/index", title: "Espiritualidade" },
+];
 
 export default function OncologyStackLayout() {
+    const color = Colors.purpleSecondary;
     return (
         <CommonAreasLayout>
             <Stack screenOptions={{
@@ -16,44 +28,15 @@ export default function OncologyStackLayout() {
                     justifyContent: 'flex-end',
                 },
             }}>
-
-                <Stack.Screen name="index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Área Oncológica" />,
-
-                    }}
-                />
-
-
-                <Stack.Screen name="LegalArea/index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Benefícios Legais" />,
-                    }}
-                />
-
-                <Stack.Screen name="Leisure/index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Opções de Lazer" />,
-                    }}
-                />
-
-                <Stack.Screen name="Motivational/index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Motivação Diária" />,
-                    }}
-                />
-
-                <Stack.Screen name="SelfCare/index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Autocuidados" />,
-                    }}
-                />
-
-                <Stack.Screen name="SpiritualArea/index"
-                    options={{
-                        headerRight: () => <ScreenTitle title="Espiritualidade" />,
-                    }}
-                />
+                {screensConfig.map((screen) => (
+                    <Stack.Screen
+                        key={screen.name}
+                        name={screen.name}
+                        options={{
+                            headerRight: () => <ScreenTitle color={color} title={screen.title} />,
+                        }}
+                    />
+                ))}
             </Stack>
             <StatusBar style="auto" />
         </CommonAreasLayout>
