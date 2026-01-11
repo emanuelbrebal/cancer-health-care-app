@@ -1,23 +1,66 @@
-import CommonAreasLayout from "@/src/components/layouts/CommonAreasLayout/CommonAreasLayout";
-import { router } from "expo-router";
-import { Button, View } from "react-native";
+import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
+import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
+import { CardItem } from '@/src/interfaces/CardItem';
+import { globalStyles } from '@/src/styles/global';
+import { Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+export default function HomeOncology() {
+  const motivationalNavigationItems: CardItem[] = [
+    { id: '1', title: 'Pacientes', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology' },
+    { id: '2', title: 'Cuidadores', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaretaker.png'), route: '/MentalHealth' },
+  ];
+  const oncologyNavigationItems: CardItem[] = [
+    { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/Oncology' },
+    { id: '2', title: 'Descanso', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Sleep.png'), route: '/MentalHealth' },
+    { id: '3', title: 'Exercício físico', icon: require('@assets/images/Icons/OncologyIcons/Navigation/PhysicalExercises.png'), route: '/SocialArea' },
+    { id: '4', title: 'Nutrição', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Leisure.png'), route: '/Oncology/Nutrition' },
+    { id: '5', title: 'Espiritualidade', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Leisure.png'), route: '/Oncology/SpiritualArea' },
+    { id: '6', title: 'Lazer', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology/Leisure' },
 
-export default function OncologyMenu() {
+  ];
+
+  const legalBenefitsNavigationItems: CardItem[] = [
+    { id: '1', title: 'Ver todos os benefícios legais', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology/LegalArea' },
+  ];
+
   return (
-    <View>
-      <Button
-        title="Ir para Auth"
-        onPress={() => router.push('/(auth)')}
-      />
-      <Button
-        title="Ir para Direitos"
-        onPress={() => router.push('/(Home)/Oncology/LegalArea')}
+
+    <SafeAreaView style={globalStyles.scrollContainer}>
+
+      <HorizontalBanner
+        imagePath={require('@assets/images/Placeholders/ImagePlaceholder.png')}
       />
 
-      <Button
-        title="Ir para Lazer"
-        onPress={() => router.push('/(Home)/Oncology/Leisure')}
-      />
-    </View>
+      {/* com as consultas do backend, dá p deixar isso ainda mais limpo */}
+      <View style={globalStyles.titleContainer}>
+        <Text style={globalStyles.title}>
+          Área Motivacional
+        </Text>
+
+        <NavigationGrid
+          data={motivationalNavigationItems}
+        />
+      </View>
+
+      <View style={globalStyles.titleContainer}>
+        <Text style={globalStyles.title}>
+          Autocuidado e tratamento
+        </Text>
+
+        <NavigationGrid
+          data={oncologyNavigationItems}
+        />
+      </View>
+
+      <View style={globalStyles.titleContainer}>
+        <Text style={globalStyles.title}>
+          Benefícios Legais
+        </Text>
+
+        <NavigationGrid
+          data={legalBenefitsNavigationItems}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
