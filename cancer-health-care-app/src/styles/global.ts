@@ -5,40 +5,50 @@ export const baseText: TextStyle = {
     fontFamily: 'Montserrat',
 }
 
-const bigImageStyle = {
+const bigImageContainer = {
     height: 230,
     width: 160,
+};
+
+const rectangleHelper: ViewStyle = {
+    height: 80,
+    width: '90%',
+    borderRadius: 12,
+    alignSelf: 'center',
+    backfaceVisibility: 'hidden',
 };
 
 const container: ViewStyle = {
     flex: 1,
     backgroundColor: 'transparent',
 }
+
 export const globalStyles = StyleSheet.create({
     // Containers
     layoutContainer: {
         ...container,
         justifyContent: 'center',
     },
-
+    startContainer: {
+        ...container,
+        justifyContent: 'flex-start',
+    },
     authLayoutContainer: {
         ...container,
         justifyContent: 'flex-end',
     },
-
     centeredContainer: {
         ...container,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },
-
     betweenContainer: {
         ...container,
-        justifyContent: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
-    
-
     formContainer: {
         width: '100%',
         justifyContent: 'flex-start',
@@ -46,19 +56,22 @@ export const globalStyles = StyleSheet.create({
         marginVertical: 10,
         gap: 20,
     },
-
     titleContainer: {
         textAlign: 'left',
         justifyContent: 'flex-start',
-        paddingTop: 20,
+        paddingTop: 10,
         paddingLeft: 10,
         paddingRight: 10
     },
-
     dynamicContent: {
         flex: 1,
         width: '100%',
-        marginVertical: 20,
+    },
+    scrollContainer: {
+        flexGrow: 1,
+        backgroundColor: 'transparent',
+        justifyContent: 'flex-start',
+        paddingTop: 50,
     },
 
     // Generic container for buttons
@@ -82,6 +95,12 @@ export const globalStyles = StyleSheet.create({
         color: Colors.text.primary,
         fontSize: 17,
     },
+    title: {
+        ...baseText,
+        color: Colors.text.primary,
+        fontWeight: '600',
+        marginBottom: 15
+    },
     textHyperlink: {
         ...baseText,
         color: Colors.purpleSecondary,
@@ -96,16 +115,24 @@ export const globalStyles = StyleSheet.create({
         fontSize: 14,
     },
 
-    // Images
+    // Images Containers
     imageContainer: {
+        flex: 1,
         alignItems: 'center'
     },
+    rectangleImageContainer: {
+        ...rectangleHelper,
+        marginTop: 20,
+        marginBottom: 10,
+        overflow: 'hidden',
+    },
+
+    // Images Styles
     bigImage: {
-        ...bigImageStyle
+        ...bigImageContainer,
     },
     bigImageReverted: {
-        ...bigImageStyle,
+        ...bigImageContainer,
         transform: [{ scaleX: -1 }],
     }
-
 })
