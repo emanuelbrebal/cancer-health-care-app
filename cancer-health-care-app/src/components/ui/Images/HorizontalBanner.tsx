@@ -1,9 +1,7 @@
+import { imageContainerProps } from "@/src/interfaces/ImageContainerProps";
 import { globalStyles } from "@/src/styles/global";
-import { Image, ImageSourcePropType, View } from "react-native";
+import { Image, View } from "react-native";
 
-interface imageContainerProps {
-    imagePath?: ImageSourcePropType,
-}
 export function HorizontalBanner({ imagePath }: imageContainerProps) {
     return (
         <View style={globalStyles.rectangleImageContainer}>
