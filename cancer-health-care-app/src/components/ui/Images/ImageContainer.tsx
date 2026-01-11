@@ -1,9 +1,9 @@
 import { globalStyles } from "@/src/styles/global";
-import { Image, View } from "react-native";
+import { Image, StyleProp, View, ViewStyle } from "react-native";
 
 interface imageContainerProps {
     imagePath: string,
-    reverted: boolean
+    reverted?: boolean
 }
 export function ImageContainer({ imagePath, reverted=false }: imageContainerProps) {
     return (
