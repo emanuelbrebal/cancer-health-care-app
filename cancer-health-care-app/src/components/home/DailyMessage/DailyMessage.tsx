@@ -9,11 +9,9 @@ export default function DailyMessage({ message }: DailyMessageProps) {
   return (
     <View style={DailyMessageStyles.container}>
 
-
       <View style={DailyMessageStyles.helloMessageContainer}>
         <Text style={DailyMessageStyles.text}>Mensagem do dia!</Text>
         <Text style={DailyMessageStyles.subtext}>{message ? message : 'Mensagem do dia!'}</Text>
-
       </View>
 
       <View style={DailyMessageStyles.imageContainer}>

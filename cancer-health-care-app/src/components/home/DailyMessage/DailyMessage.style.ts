@@ -1,21 +1,23 @@
+import { Colors } from "@/src/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const colors = {
-  background: "#AFFFEC99",
   text: "#0088FF",
 
 }
 export const DailyMessageStyles = StyleSheet.create({
   container: {
-    width: '90%',
+    marginHorizontal: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'Montserrat',
     padding: 10,
     gap: 15,
     borderRadius: 20,
-    backgroundColor: colors.background
+    borderWidth: 2,
+    borderColor: Colors.cyanSecondary,
+    backgroundColor: Colors.cyan
   },
   helloMessageContainer: {
     paddingLeft: 20,
