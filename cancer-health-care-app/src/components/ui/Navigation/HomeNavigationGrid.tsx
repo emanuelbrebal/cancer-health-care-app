@@ -1,27 +1,23 @@
+import { Colors } from '@/src/constants/Colors';
+import { CardItem } from '@/src/interfaces/CardItem';
 import { Link } from 'expo-router';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function NavigationGrid() {
-  interface CardItem {
-    id: string,
-    title: string,
-    image: any,
-    route: any
-  }
 
-  const cardItems: CardItem[] = [
-    { id: '1', title: 'Área Oncológica', image: require('@assets/images/Home/oncologyAreaIcon.png'), route: '/Oncology' },
-    { id: '2', title: 'Saúde Mental', image: require('@assets/images/Home/mentalHealthIcon.png'), route: '/MentalHealth' },
-    { id: '3', title: 'Comunidade', image: require('@assets/images/Home/communityIcon.png'), route: '/SocialArea' },
-    { id: '4', title: 'Área Pessoal', image: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
-  ];
+interface NavigationGridProps {
+  data: CardItem[];
+}
 
-  const renderCard = ({ item }) => (
+export default function HomeNavigationGrid({
+  data,
+}: NavigationGridProps) {
+
+  const renderCard = ({ item }: { item: CardItem }) => (
     <Link href={item.route} asChild>
       <TouchableOpacity style={styles.card}>
         <View style={styles.iconContainer}>
           <Image
-            source={item.image}
+            source={item.icon}
             style={styles.icon}
             resizeMode="contain"
           />
@@ -34,13 +30,14 @@ export default function NavigationGrid() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={cardItems}
+        data={data}
         keyExtractor={(item) => item.id}
         renderItem={renderCard}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.columnWrapper}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={false}
       />
     </View>
   );
@@ -48,27 +45,27 @@ export default function NavigationGrid() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0,
+    padding: 10
   },
   listContent: {
-    padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
   },
   columnWrapper: {
     justifyContent: 'space-between',
     marginBottom: 15,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     borderRadius: 24,
     width: '48%',
     height: 130,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 8,
 
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
@@ -89,7 +86,7 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: Colors.text.primary,
     textAlign: 'center',
   },
 });

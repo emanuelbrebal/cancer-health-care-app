@@ -1,26 +1,27 @@
-import { router } from 'expo-router';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
+import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
+import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/mockData';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function Leisure() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Página da Área de recomendação de atividades de lazer</Text>
-
-            <Button title="Voltar" onPress={() => router.back()}/>
-
-        </View>
+        <ScrollView contentContainerStyle={globalStyles.scrollContainer}
+            showsVerticalScrollIndicator={true}>
+            <View style={styles.container}>
+                    <SearchBar />
+                <RecomendationPager headerTitle='Atividades em casa recomendadas' recomendationPagerData={homeActivitiesData} />
+                <RecomendationPager headerTitle='Livros recomendados' recomendationPagerData={booksData} />
+                <RecomendationPager headerTitle='Filmes recomendados' recomendationPagerData={moviesData} />
+                <RecomendationPager headerTitle='Séries recomendadas' recomendationPagerData={seriesData} />
+            </View>
+        </ScrollView >
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: 'transparent',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
     },
 });

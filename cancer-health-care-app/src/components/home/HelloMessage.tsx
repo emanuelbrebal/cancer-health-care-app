@@ -4,7 +4,6 @@ interface patient {
 }
 export default function HelloMessage({ patient_name }: patient) {
 
-  // transformar isso em um componente de mensagem + imagem de mascote genérica 
   return (
     <View style={styles.container}>
 

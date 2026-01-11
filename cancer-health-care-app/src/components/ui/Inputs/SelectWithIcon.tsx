@@ -20,13 +20,13 @@ export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftNam
 
   return (
     <View style={[styles.container, isFocus && styles.focused]}>
-      <Feather name={iconLeftName} size={20} olor={Colors.lilacPrimary} style={{ marginRight: 10 }} />
+      <Feather name={iconLeftName} size={20} color={Colors.lilacPrimary} style={{ marginRight: 10 }} />
       
       <Dropdown
         style={{ flex: 1 }}
         containerStyle={styles.dropdownMenu}
         placeholderStyle={[globalStyles.textSecondary, {color: Colors.purpleSecondary}]}
-        selectedTextStyle={[styles.text, { color: Colors.text.primary }]}
+        selectedTextStyle={[globalStyles.textSecondary, {color: Colors.purpleSecondary}]}
         itemTextStyle={styles.text}
         data={data}
         labelField="label"

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function SelfCare() {
+export default function Nutrition() {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Página da Área de Autocuidados</Text>
+            <Text style={styles.text}>Página de cuidados em Nutrição</Text>
         </View>
     );
 }

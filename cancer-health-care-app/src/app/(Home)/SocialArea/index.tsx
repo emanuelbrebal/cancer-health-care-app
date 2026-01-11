@@ -1,4 +1,3 @@
-import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
 export default function Tela1Screen() {
@@ -14,7 +13,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fcd691ff',
   },
   text: {
     fontSize: 24,

@@ -2,7 +2,7 @@ import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { RecoverPasswordForm } from '@/src/components/auth/ResetPasswordForm';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { CancelButton } from '@/src/components/ui/Buttons/CancelButton';
-import { ImageContainer } from '@/src/components/ui/ImageContainer';
+import { ImageContainer } from '@/src/components/ui/Images/ImageContainer';
 import { globalStyles } from '@/src/styles/global';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
