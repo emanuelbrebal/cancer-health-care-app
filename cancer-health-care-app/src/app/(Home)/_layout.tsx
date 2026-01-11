@@ -29,7 +29,6 @@ export default function HomeLayout() {
             sceneStyle: {
                 backgroundColor: 'transparent'
             },
-            headerShown: true,
             headerTransparent: true,
             headerTitle: "",
             tabBarActiveTintColor: Colors.tabBar.ActiveTintColor,
@@ -59,7 +58,6 @@ export default function HomeLayout() {
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "medkit", "medkit-outline"
                     ),
-                    headerRight: () => <ScreenTitle title="Oncologia" />,
                 }}
             />
 
@@ -69,7 +67,6 @@ export default function HomeLayout() {
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "happy", "happy-outline"
                     ),
-                    headerRight: () => <ScreenTitle title="Saúde Mental" />,
                 }}
             />
 
@@ -79,7 +76,6 @@ export default function HomeLayout() {
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "chatbubble-ellipses", "chatbubble-ellipses-outline"
                     ),
-                    headerRight: () => <ScreenTitle title="Área Social" />,
                 }}
             />
 
@@ -89,8 +85,6 @@ export default function HomeLayout() {
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "person-circle", "person-circle-outline"
                     ),
-                    headerRight: () => <ScreenTitle title="Meu Perfil" />,
-
                 }}
             />
         </Tabs>
