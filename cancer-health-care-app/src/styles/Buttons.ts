@@ -27,7 +27,7 @@ export const ButtonStyles = StyleSheet.create({
     },
     buttonOutline: {
         ...baseButton,
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.white,
         borderWidth: 1,
         borderColor: Colors.purpleSecondary,
     },

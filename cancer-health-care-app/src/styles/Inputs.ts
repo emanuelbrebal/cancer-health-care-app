@@ -10,7 +10,7 @@ export const InputStyles = StyleSheet.create({
         borderRadius: 12,
         paddingHorizontal: 12,
         height: 50,
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.white,
         width: '100%',
     },
     iconLeft: {

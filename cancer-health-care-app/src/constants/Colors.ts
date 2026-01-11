@@ -3,7 +3,10 @@ export const Colors = {
     purpleSecondary: '#4E56C0',
     lilacPrimary: '#D78FEE',
 
-    background: '#FFFFFF',
+    cyan: '#AFFFEC99',
+    cyanSecondary: '#A6D6D6',
+    white: '#FFFFFF',
+    black: '#000',
 
     tabBar: {
         ActiveTintColor: '#8c4ad8ff',
