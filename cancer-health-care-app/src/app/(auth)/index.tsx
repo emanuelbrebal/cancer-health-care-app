@@ -1,7 +1,7 @@
 import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
-import { ImageContainer } from '@/src/components/ui/ImageContainer';
+import { ImageContainer } from '@/src/components/ui/Images/ImageContainer';
 import { globalStyles } from '@/src/styles/global';
 import { router } from 'expo-router';
 import { View } from 'react-native';
