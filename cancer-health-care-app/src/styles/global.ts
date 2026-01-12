@@ -11,11 +11,11 @@ const bigImageContainer = {
 };
 
 const rectangleHelper: ViewStyle = {
-    height: 80,
+    height: 110,
     width: '90%',
     borderRadius: 12,
     alignSelf: 'center',
-    backfaceVisibility: 'hidden',
+    overflow: 'hidden',
 };
 
 const container: ViewStyle = {
@@ -71,7 +71,7 @@ export const globalStyles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'transparent',
         justifyContent: 'flex-start',
-        paddingTop: 50,
+        paddingTop: 40,
     },
 
     // Generic container for buttons
@@ -99,14 +99,13 @@ export const globalStyles = StyleSheet.create({
         ...baseText,
         color: Colors.text.primary,
         fontWeight: '600',
-        marginBottom: 15
+        marginBottom: 15,
     },
     textHyperlink: {
         ...baseText,
         color: Colors.purpleSecondary,
         textDecorationLine: 'underline',
         textAlign: 'center',
-        marginTop: 40,
         fontWeight: 'bold'
     },
     textError: {
@@ -118,13 +117,12 @@ export const globalStyles = StyleSheet.create({
     // Images Containers
     imageContainer: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     rectangleImageContainer: {
         ...rectangleHelper,
-        marginTop: 20,
+        marginTop: 40,
         marginBottom: 10,
-        overflow: 'hidden',
     },
 
     // Images Styles
