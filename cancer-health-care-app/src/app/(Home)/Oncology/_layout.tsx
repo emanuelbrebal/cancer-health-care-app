@@ -7,10 +7,13 @@ import { ScreenConfig } from "@/src/types/ScreenConfig";
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Área Oncológica" },
-    { name: "LegalArea/index", title: "Benefícios Legais" },
-    { name: "Leisure/index", title: "Opções de Lazer" },
     { name: "Motivational/index", title: "Motivação Diária" },
-    { name: "Nutrition/index", title: "Autocuidados" },
+    { name: "Motivational/CaringTheCaretaker/index", title: "Cuidar de quem Cuida" },
+    { name: "Nutrition/index", title: "Nutrição" },
+    { name: "Sleep/index", title: "Cuidados com o Sono" },
+    { name: "PhysicalExercises/index", title: "Exercícios Físicos" },
+    { name: "LegalArea/index", title: "Benefícios Legais" },
+    { name: "Leisure/index", title: "Recomendações de Lazer" },
     { name: "SpiritualArea/index", title: "Espiritualidade" },
 ];
 
