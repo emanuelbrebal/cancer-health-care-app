@@ -1,23 +1,25 @@
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
+import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
+import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
+import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/mockData';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CaringTheCaretaker() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Cuidar de quem Cuida - Oncologia</Text>
-    </View>
-  );
+    return (
+        <ScrollView contentContainerStyle={globalStyles.scrollContainer}
+            showsVerticalScrollIndicator={true}>
+            <View style={styles.container}>
+                <HorizontalBanner imagePath={require('@assets/images/Banners/caringTheCaretakerBanner.png')} />
+                
+            </View>
+        </ScrollView >
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent'
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: 'transparent',
+    },
 });

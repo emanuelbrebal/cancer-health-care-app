@@ -1,3 +1,4 @@
+import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
 import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
 import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/mockData';
@@ -9,7 +10,8 @@ export default function Leisure() {
         <ScrollView contentContainerStyle={globalStyles.scrollContainer}
             showsVerticalScrollIndicator={true}>
             <View style={styles.container}>
-                    <SearchBar />
+                <HorizontalBanner imagePath={require('@assets/images/Banners/leisureBanner.png')} />
+                <SearchBar />
                 <RecomendationPager headerTitle='Atividades em casa recomendadas' recomendationPagerData={homeActivitiesData} />
                 <RecomendationPager headerTitle='Livros recomendados' recomendationPagerData={booksData} />
                 <RecomendationPager headerTitle='Filmes recomendados' recomendationPagerData={moviesData} />

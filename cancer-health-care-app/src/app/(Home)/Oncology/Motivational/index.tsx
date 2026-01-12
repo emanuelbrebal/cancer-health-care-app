@@ -1,22 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
+import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
+import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
+import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/mockData';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-export default function Motivational() {
+export default function PatientMotivational() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Página da Área Motivacional</Text>
-        </View>
+        <ScrollView contentContainerStyle={globalStyles.scrollContainer}
+            showsVerticalScrollIndicator={true}>
+            <View style={styles.container}>
+                <HorizontalBanner imagePath={require('@assets/images/Banners/motivationalAreaBanner.png')} />
+                
+            </View>
+        </ScrollView >
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: 'transparent',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
     },
 });
