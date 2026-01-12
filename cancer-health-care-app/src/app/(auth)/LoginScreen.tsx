@@ -40,7 +40,7 @@ export default function LoginScreen() {
       </View>
 
       <Link href="/(auth)/ResetPassword">
-        <Text style={globalStyles.textHyperlink}>Esqueci minha senha</Text>
+        <Text style={[globalStyles.textHyperlink, { marginTop: 40 }]}>Esqueci minha senha</Text>
       </Link>
 
       <StatusBar style="auto" />
