@@ -7,7 +7,7 @@ const colors = {
 }
 export const DailyMessageStyles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -19,12 +19,15 @@ export const DailyMessageStyles = StyleSheet.create({
     borderColor: Colors.cyanSecondary,
     backgroundColor: Colors.cyan
   },
+  titleContainer:{
+    width: '100%'
+  },
   helloMessageContainer: {
-    paddingLeft: 20,
-    width: '68%',
+    paddingLeft: 15,
+    width: '70%',
   },
   imageContainer: {
-    width: '30%',
+    width: '25%',
     justifyContent: 'center',
     paddingRight: 20,
   },

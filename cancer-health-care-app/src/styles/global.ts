@@ -27,7 +27,7 @@ export const globalStyles = StyleSheet.create({
     // Containers
     layoutContainer: {
         ...container,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
     startContainer: {
         ...container,
@@ -71,7 +71,7 @@ export const globalStyles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'transparent',
         justifyContent: 'flex-start',
-        paddingTop: 40,
+        paddingTop: 50,
     },
 
     // Generic container for buttons
@@ -121,7 +121,7 @@ export const globalStyles = StyleSheet.create({
     },
     rectangleImageContainer: {
         ...rectangleHelper,
-        marginTop: 40,
+        marginTop: 20,
         marginBottom: 10,
     },
 

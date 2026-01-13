@@ -11,7 +11,7 @@ export default function HomeOncology() {
     { id: '2', title: 'Cuidadores', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaretaker.png'), route: '/Oncology/Motivational/CaringTheCaretaker' },
   ];
   const oncologyNavigationItems: CardItem[] = [
-    { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/MentalHealth' },
+    { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/MentalHealth/Meditation' },
     { id: '2', title: 'Sono', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Sleep.png'), route: '/Oncology/Sleep' },
     { id: '3', title: 'Exercício físico', icon: require('@assets/images/Icons/OncologyIcons/Navigation/PhysicalExercises.png'), route: '/Oncology/PhysicalExercises' },
     { id: '4', title: 'Nutrição', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Leisure.png'), route: '/Oncology/Nutrition' },
@@ -58,6 +58,7 @@ export default function HomeOncology() {
 
         <NavigationGrid
           data={legalBenefitsNavigationItems}
+          singleElement={true}
         />
       </View>
     </SafeAreaView>

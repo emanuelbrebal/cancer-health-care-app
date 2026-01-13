@@ -1,23 +1,16 @@
-import { Link } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import DailyMessage from '@/src/components/home/DailyMessage/DailyMessage';
+import EmergencyContacts from '@/src/components/ui/Buttons/PanicButton.tsx/EmergencyContacts';
+import { EmergencyContactsData } from '@/src/constants/mockEmergencyContacts';
+import { globalStyles } from '@/src/styles/global';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PanicButtonContacts() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Página de Contatos do Botão do Pânico - Saúde Mental</Text>
-    </View>
+    <SafeAreaView style={[globalStyles.scrollContainer, { paddingTop: 20 }]}>
+
+      <EmergencyContacts data={EmergencyContactsData} />
+
+      <DailyMessage title={"Lembre-se, Trote é crime!"} message="Ao ocupar uma linha de emergência sem necessidade, você pode impedir o salvamento de uma vida real. Utilize estes canais apenas em situações de verdadeira urgência." />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fabeffff',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-});
