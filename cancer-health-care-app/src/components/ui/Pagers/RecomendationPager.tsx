@@ -4,10 +4,10 @@ import { ImageContainer } from '../Images/ImageContainer';
 import PagerHeader from './PagerHeader';
 import { RecomendationType } from '@/src/constants/mockData';
 
+const CARD_HEIGHT = 100;
 const CARD_WIDTH = 160;
 
-const SPACING = 16;
-const CARD_HEIGHT = 100;
+const SPACING = 8;
 
 const SNAP_INTERVAL = CARD_WIDTH + SPACING;
 

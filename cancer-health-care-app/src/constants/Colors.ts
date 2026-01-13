@@ -3,6 +3,8 @@ export const Colors = {
     purpleSecondary: '#4E56C0',
     lilacPrimary: '#D78FEE',
 
+    redPrimary: 'rgb(233, 74, 74)',
+
     cyan: '#AFFFEC99',
     cyanSecondary: '#A6D6D6',
     white: '#FFFFFF',
