@@ -1,0 +1,47 @@
+import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
+import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
+import { Colors } from '@/src/constants/Colors';
+import { CardItem } from '@/src/interfaces/CardItem';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+export default function Presentation() {
+    const mourningPhasesNavigationItems: CardItem[] = [
+        { id: '1', title: 'Conheça as fases', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/MentalHealth/MourningPhases/Phases' },
+        { id: '2', title: 'Supere as fases!', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/MentalHealth/MourningPhases/Overcoming' },
+    ];
+    return (
+        <ScrollView contentContainerStyle={globalStyles.scrollContainer}
+            showsVerticalScrollIndicator={true}>
+            <View style={styles.container}>
+                <HorizontalBanner />
+                <View style={globalStyles.startContainer}>
+                    <Text style={globalStyles.title}>O que são as fases do luto? </Text>
+                    <Text style={styles.text}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
+                    <TouchableOpacity>
+                        <Text style={[styles.text, styles.hyperlink]}>Ver mais</Text>
+                    </TouchableOpacity>
+                    <NavigationGrid data={mourningPhasesNavigationItems} singleElement={true}/>
+                </View>
+
+            </View>
+        </ScrollView >
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        gap: 20,
+        backgroundColor: 'transparent',
+    },
+    text: {
+        ...globalStyles.title,
+        fontSize: 12
+    },
+    hyperlink: {
+        ...globalStyles.textHyperlink,
+        color: Colors.purplePrimary,
+        textAlign: 'left'
+    }
+});
