@@ -3,23 +3,22 @@ import { CardItem } from '@/src/interfaces/CardItem';
 import { Link } from 'expo-router';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-
 interface NavigationGridProps {
   data: CardItem[];
+  singleElement?: boolean
 }
 
 export default function NavigationGrid({
   data,
+  singleElement = false,
 }: NavigationGridProps) {
-
-  const soloContent = data.length === 1;
 
   const renderCard = ({ item }: { item: CardItem }) => (
     <Link href={item.route} asChild>
       <TouchableOpacity style={styles.card}>
         <View style={styles.iconContainer}>
           <Image
-            source={item.icon}
+            source={item.icon? item.icon : undefined}
             style={styles.icon}
             resizeMode="contain"
           />
@@ -29,17 +28,19 @@ export default function NavigationGrid({
     </Link>
   );
 
+  const containerStyle = singleElement ? styles.verticalContainer : styles.container
+
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
-        key={soloContent ? 'one-column' : 'two-columns'}
+        key={singleElement ? 'one-column' : 'two-columns'}
         renderItem={renderCard}
-        numColumns={soloContent ? 1 : 2}
+        numColumns={singleElement ? 1 : 2}
 
         contentContainerStyle={styles.listContent}
-        columnWrapperStyle={soloContent ? undefined : styles.columnWrapper}
+        columnWrapperStyle={singleElement ? undefined : styles.columnWrapper}
 
         showsVerticalScrollIndicator={true}
         scrollEnabled={false}
@@ -50,6 +51,10 @@ export default function NavigationGrid({
 const styles = StyleSheet.create({
   container: {
     flex: 0,
+  },
+  verticalContainer: {
+    flex: 0,
+    flexDirection: 'column'
   },
   listContent: {
     paddingHorizontal: 5,
