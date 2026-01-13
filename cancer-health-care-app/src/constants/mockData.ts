@@ -7,6 +7,14 @@ export type RecomendationType = {
     image?: ImageSourcePropType
 };
 
+export const meditationData: RecomendationType[] = [
+    { id: 1, title: 'Vídeo meditação 1', description: 'Um clássico sobre a simplicidade e o amor.' },
+    { id: 2, title: 'Vídeo meditação 2', description: 'Aceitando a própria vulnerabilidade.' },
+    { id: 3, title: 'Vídeo meditação 3', description: 'Uma história sobre recomeços e esperança.' },
+    { id: 4, title: 'Vídeo meditação 4', description: 'A disciplina busca por menos.' },
+    { id: 5, title: 'Vídeo meditação 5', description: 'A nova psicologia do sucesso.' },
+];
+
 export const booksData: RecomendationType[] = [
     { id: 1, title: 'O Pequeno Príncipe', description: 'Um clássico sobre a simplicidade e o amor.' },
     { id: 2, title: 'A Coragem de Ser Imperfeito', description: 'Aceitando a própria vulnerabilidade.' },
