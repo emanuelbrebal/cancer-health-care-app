@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
+import { Avatar } from "../ui/Images/Avatar";
 
 export function HeaderLogo() {
 
     return (
         <View style={styles.headerLeftContainer} >
-            <View style={styles.logoCircle} />
+            <Avatar style={{height: 44, width: 44 }}/>
             <Text style={styles.appName}>ONCOMENTE</Text>
         </View>
     );
@@ -17,12 +18,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         paddingLeft: 10,
-    },
-    logoCircle: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: '#5CC6FF',
     },
     appName: {
         color: 'white',

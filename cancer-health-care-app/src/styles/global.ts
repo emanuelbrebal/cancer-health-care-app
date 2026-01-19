@@ -27,7 +27,7 @@ export const globalStyles = StyleSheet.create({
     // Containers
     layoutContainer: {
         ...container,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
     },
     startContainer: {
         ...container,
@@ -66,6 +66,7 @@ export const globalStyles = StyleSheet.create({
     dynamicContent: {
         flex: 1,
         width: '100%',
+        marginVertical: 10,
     },
     scrollContainer: {
         flexGrow: 1,
@@ -92,7 +93,7 @@ export const globalStyles = StyleSheet.create({
     },
     textSecondary: {
         ...baseText,
-        color: Colors.text.primary,
+        color: Colors.text.secondary,
         fontSize: 17,
     },
     title: {

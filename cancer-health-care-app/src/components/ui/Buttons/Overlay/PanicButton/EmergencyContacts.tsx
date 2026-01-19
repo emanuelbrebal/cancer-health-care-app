@@ -10,6 +10,7 @@ interface EmergencyContactsListProps {
 
 export default function EmergencyContacts({ data }: EmergencyContactsListProps) {
 
+    // lembrete: antes de publicar o aplicativo colocar os números reais.
     const openDialer = (phoneNumber: string) => {
         if (!phoneNumber) return;
         const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
@@ -109,16 +110,16 @@ const styles = StyleSheet.create({
     },
     actionButton: {
         paddingVertical: 10,
-        paddingHorizontal: 16, // Garante que o botão tenha largura interna
+        paddingHorizontal: 16, 
         backgroundColor: '#F0F9FF', 
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#BAE6FD', // Um azul clarinho na borda
+        borderColor: '#BAE6FD', 
         alignItems: 'center',
         justifyContent: 'center',
     },
     buttonText: {
-        color: '#0284C7', // Azul mais forte para o texto
+        color: '#0284C7', 
         fontWeight: 'bold',
         fontSize: 14,
     }

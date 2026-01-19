@@ -1,6 +1,6 @@
 import { Colors } from '@/src/constants/Colors';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { Link } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface NavigationGridProps {
@@ -13,19 +13,24 @@ export default function NavigationGrid({
   singleElement = false,
 }: NavigationGridProps) {
 
+  const router = useRouter();
+  const handleAction = (route: Href) => {
+    if (route) {
+      router.push(route);
+    }
+  };
+
   const renderCard = ({ item }: { item: CardItem }) => (
-    <Link href={item.route} asChild>
-      <TouchableOpacity style={styles.card}>
-        <View style={styles.iconContainer}>
-          <Image
-            source={item.icon? item.icon : undefined}
-            style={styles.icon}
-            resizeMode="contain"
-          />
-        </View>
-        <Text style={styles.cardText}>{item.title}</Text>
-      </TouchableOpacity>
-    </Link>
+    <TouchableOpacity style={styles.card} onPress={() => handleAction(item.route)}>
+      <View style={styles.iconContainer}>
+        <Image
+          source={item.icon ? item.icon : undefined}
+          style={styles.icon}
+          resizeMode="contain"
+        />
+      </View>
+      <Text style={styles.cardText}>{item.title}</Text>
+    </TouchableOpacity>
   );
 
   const containerStyle = singleElement ? styles.verticalContainer : styles.container
