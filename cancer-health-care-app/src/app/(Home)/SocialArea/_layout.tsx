@@ -4,29 +4,22 @@ import { StatusBar } from 'expo-status-bar';
 import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
 import { Colors } from "@/src/constants/Colors";
 import { ScreenConfig } from "@/src/types/ScreenConfig";
+import { commonStackOptions } from "@/src/constants/CommonScreenOptions"
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Comunidade OncoMente" },
-    { name: "Chats/index", title: "Bate-papo" },
-    { name: "Topics/index", title: "Tópicos" },
-    { name: "Communities/index", title: "Comunidades" },
+    { name: "Forum/index", title: "Comunidade OncoMente" },
+    { name: "Forum/Chats/index", title: "Bate-papo" },
+    { name: "Forum/Topics/index", title: "Tópicos" },
+    { name: "Forum/Communities/index", title: "Comunidades" },
 ];
 
-export default function PersonalAreaStackLayout() {
+export default function SocialAreaStackLayout() {
     const color = Colors.purpleSecondary;
 
     return (
         <CommonAreasLayout>
-            <Stack screenOptions={{
-                headerShown: true,
-                headerTintColor: 'white',
-                headerTransparent: true,
-                headerTitle: "",
-                contentStyle: {
-                    backgroundColor: 'transparent',
-                    justifyContent: 'flex-end',
-                },
-            }}>
+            <Stack screenOptions={commonStackOptions}>
                 {screensConfig.map((screen) => (
                     <Stack.Screen 
                         key={screen.name} 

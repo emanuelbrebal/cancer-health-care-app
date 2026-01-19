@@ -4,7 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
 import { Colors } from "@/src/constants/Colors";
 import { ScreenConfig } from "@/src/types/ScreenConfig";
-import { PanicButton } from "@/src/components/ui/Buttons/PanicButton.tsx/PanicButton";
+import { PanicButton } from "@/src/components/ui/Buttons/Overlay/PanicButton/PanicButton";
+import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 
 const screensConfig: ScreenConfig[] = [
@@ -25,16 +26,7 @@ export default function MentalHealthStackLayout() {
 
     return (
         <CommonAreasLayout>
-            <Stack screenOptions={{
-                headerShown: true,
-                headerTintColor: 'white',
-                headerTransparent: true,
-                headerTitle: "",
-                contentStyle: {
-                    backgroundColor: 'transparent',
-                    justifyContent: 'flex-end',
-                },
-            }}>
+            <Stack screenOptions={commonStackOptions}>
                 {screensConfig.map((screen) => (
                     <Stack.Screen
                         key={screen.name}
