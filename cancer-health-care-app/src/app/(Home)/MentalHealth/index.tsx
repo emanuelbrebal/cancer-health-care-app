@@ -20,7 +20,7 @@ export default function HomeMentalHealth() {
 
   return (
 
-    <SafeAreaView style={globalStyles.layoutContainer}> 
+    <SafeAreaView style={globalStyles.startContainer}> 
       <HorizontalBanner
         imagePath={require('@assets/images/Banners/mentalHealthAreaBanner.png')}
       />
