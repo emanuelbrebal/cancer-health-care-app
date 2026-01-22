@@ -1,5 +1,5 @@
 
-import PublicationComponent from '@/src/components/socialArea/PublicationComponent';
+import PublicationComponent from '@/src/components/socialArea/PublicationComponent/PublicationComponent';
 import { NewPublicationButton } from '@/src/components/ui/Buttons/Overlay/NewPublication/NewPublication';
 import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
 import { globalStyles } from '@/src/styles/global';

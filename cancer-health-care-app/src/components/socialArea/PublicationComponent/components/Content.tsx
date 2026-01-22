@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { globalStyles } from '@/src/styles/global';
 import { ImageSourcePropType } from 'react-native';
-import { HorizontalBanner } from '../../ui/Images/HorizontalBanner';
+import { HorizontalBanner } from '../../../ui/Images/HorizontalBanner';
 
 interface PublicationProps {
     publication: {

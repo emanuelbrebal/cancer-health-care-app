@@ -1,7 +1,7 @@
 import { globalStyles } from '@/src/styles/global';
 import { View } from 'react-native';
-import Content from './components/Content';
 import { UserDetailsComponent } from './components/UserDetails';
+import Content from './components/Content';
 import { InteractionsComponent } from './components/InteractionsComponent';
 
 interface PublicationProps {
