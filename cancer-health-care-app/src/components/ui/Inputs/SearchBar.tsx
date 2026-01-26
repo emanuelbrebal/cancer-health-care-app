@@ -22,10 +22,7 @@ export function SearchBar() {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
-        justifyContent: 'center',
         gap: 15,
-        marginTop: 20,
     },
     input: {
         height: 40,

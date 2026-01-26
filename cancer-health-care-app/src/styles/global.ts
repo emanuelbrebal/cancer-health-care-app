@@ -38,7 +38,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     centeredContainer: {
-        ...container,
+        flex: 0,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',

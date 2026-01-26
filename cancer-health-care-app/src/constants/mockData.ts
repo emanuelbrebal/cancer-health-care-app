@@ -1,11 +1,29 @@
+import { Href } from "expo-router";
 import { ImageSourcePropType } from "react-native";
 
 export type RecomendationType = {
     id: number;
     title: string;
     description?: string;
-    image?: ImageSourcePropType
+    image?: ImageSourcePropType;
+    route?: Href
 };
+
+export const mockTopicsData: RecomendationType[] = [
+    { id: 1, title: 'Mindfulness Diário', description: 'Técnicas práticas para reduzir a ansiedade no dia a dia.', route:"/SocialArea/Forum/Topics"},
+    { id: 2, title: 'Nutrição e Energia', description: 'Alimentos que melhoram sua disposição e foco no trabalho.' },
+    { id: 3, title: 'Minimalismo Digital', description: 'Como usar a tecnologia de forma mais consciente e focada.' },
+    { id: 4, title: 'Rotina Matinal', description: 'Hábitos simples para começar o dia com mais produtividade.' },
+    { id: 5, title: 'Gestão de Emoções', description: 'Aprendendo a identificar e lidar com sentimentos difíceis.' },
+];
+
+export const mockCommunitiesData: RecomendationType[] = [
+    { id: 1, title: 'Clube do Livro', description: 'Debates mensais sobre literatura e desenvolvimento pessoal.' },
+    { id: 2, title: 'Ioga para Iniciantes', description: 'Compartilhamento de aulas, dicas de postura e respiração.' },
+    { id: 3, title: 'Desafio 30 Dias', description: 'Grupo de motivação mútua para criar novos hábitos saudáveis.' },
+    { id: 4, title: 'Meditação em Grupo', description: 'Encontros virtuais semanais para práticas guiadas.' },
+    { id: 5, title: 'Tech Detox', description: 'Dicas e relatos para desconectar e aproveitar o mundo offline.' },
+];
 
 export const meditationData: RecomendationType[] = [
     { id: 1, title: 'Vídeo meditação 1', description: 'Um clássico sobre a simplicidade e o amor.' },
