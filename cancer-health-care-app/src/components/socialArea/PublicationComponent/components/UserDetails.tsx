@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { globalStyles } from "@/src/styles/global";
-import { Avatar } from "../../ui/Images/Avatar";
+import { Avatar } from "../../../ui/Images/Avatar";
 
 export function UserDetailsComponent() {
     const username = "Marcela Souza";

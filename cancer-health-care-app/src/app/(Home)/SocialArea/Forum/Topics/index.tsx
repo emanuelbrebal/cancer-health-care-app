@@ -1,22 +1,27 @@
-import { StyleSheet, Text, View } from 'react-native';
+import PublicationComponent from '@/src/components/socialArea/PublicationComponent/PublicationComponent';
+import { NewPublicationButton } from '@/src/components/ui/Buttons/Overlay/NewPublication/NewPublication';
+import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, View } from 'react-native';
+import { useHeaderHeight } from '@react-navigation/elements';
 
-export default function Topics() {
+export default function CommunityTopics() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Visitar Tópicos da Comunidade</Text>
+        <View style={globalStyles.startContainer}>
+            <SearchBar />
+
+            <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={globalStyles.scrollContainer}
+                showsVerticalScrollIndicator={true}
+            >
+
+                <PublicationComponent />
+                <PublicationComponent />
+                <PublicationComponent />
+            </ScrollView>
+
+            <NewPublicationButton />
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-});

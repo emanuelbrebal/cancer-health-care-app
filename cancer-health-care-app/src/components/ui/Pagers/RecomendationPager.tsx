@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native
 import { ImageContainer } from '../Images/ImageContainer';
 import PagerHeader from './PagerHeader';
 import { RecomendationType } from '@/src/constants/mockData';
+import { Href, router } from 'expo-router';
 
 const CARD_HEIGHT = 100;
 const CARD_WIDTH = 160;
@@ -19,7 +20,9 @@ interface RecomendationPagerProps {
 export default function RecomendationPager({ headerTitle, recomendationPagerData }: RecomendationPagerProps) {
 
     const handlePressCard = (item: any) => {
-        console.log('Clicou no livro:', item.title);
+        // ajustar lógica para redirecionamento
+        console.log("redirecionando para", item.route)
+        router.push(item.route);
     };
     return (
         <View style={styles.container}>
@@ -83,8 +86,8 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     titleOverlay: {
-        position: 'absolute', 
-        top: 0,           
+        position: 'absolute',
+        top: 0,
         left: 0,
         right: 0,
         backgroundColor: Colors.lilacPrimary + '99',
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderTopRightRadius: RADIUS,
         borderTopLeftRadius: RADIUS,
-        
+
     },
     titleText: {
         opacity: 1,
