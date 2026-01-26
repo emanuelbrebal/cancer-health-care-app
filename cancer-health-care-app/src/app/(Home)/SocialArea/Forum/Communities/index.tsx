@@ -1,22 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import PublicationComponent from '@/src/components/socialArea/PublicationComponent/PublicationComponent';
+import { NewPublicationButton } from '@/src/components/ui/Buttons/Overlay/NewPublication/NewPublication';
+import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
+import { globalStyles } from '@/src/styles/global';
+import { ScrollView, Text, View } from 'react-native';
 
-export default function Communities() {
+export default function HomeCommunities() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Página da Área de Comunidades</Text>
+        <View style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={globalStyles.scrollContainer} showsVerticalScrollIndicator={true}>
+                <SearchBar />
+                <Text>Navegar pelas comunidades</Text>
+                {/* colocar a lista horizontal (de avatares) */}
+                {/* listar comunidades como se fossem publicações */}
+            </ScrollView>
+
+            <NewPublicationButton />
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-});

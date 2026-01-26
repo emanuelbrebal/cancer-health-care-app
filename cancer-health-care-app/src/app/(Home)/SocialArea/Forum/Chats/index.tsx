@@ -1,22 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { globalStyles } from "@/src/styles/global";
+import { Text, View } from "react-native";
 
-export default function Chats() {
+export default function TopicChat() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Visitar Áreas de Conversas</Text>
+        <View style={globalStyles.layoutContainer}>
+            <Text style={globalStyles.textPrimary}>Visitar Áreas de Conversas</Text>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-    },
-    text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-});
