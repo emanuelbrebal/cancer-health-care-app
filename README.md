@@ -89,9 +89,9 @@ $ npm run start:dev
 # O servidor iniciará geralmente em http://localhost:3000
 ```
 
-####2️⃣ Rodando o App Mobile (React Native + Expo)
-# Em outro terminal, entre na pasta do mobile
+#### 2️⃣ Rodando o App Mobile (React Native + Expo)
 ```bash
+# Em outro terminal, entre na pasta do mobile
 $ cd mobile
 
 # Instale as dependências
