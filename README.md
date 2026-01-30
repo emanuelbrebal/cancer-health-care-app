@@ -48,7 +48,7 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 2. **[Organização e Componentização]:** Entendi melhor como funciona organização de pastas, componentizações e reutilização.
 3. **[Ecossistema Javascript]:** Este sistema me deu a oportunidade de aprender melhor como funciona o ecossistema Javascript e Typescript, com as tecnologias React Native e Nest.js.
 4. **[Integração com IA]:** Também pude aprender como integrar IA em meus projetos afim de tornar a vida das pessoas melhor.
-5. **[Consumo e criação de APIs RESTful]**: Este sistema me 
+5. **[Consumo e criação de APIs RESTful]**: Este sistema me permitiu aprender melhores práticas e a integrar um aplicativo móvel a um gerenciador WEB, via APIs RESTful.
 
 ---
 
@@ -63,23 +63,40 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 
 ### 📦 Como rodar o projeto
 
+Este projeto é um monorepo dividido em duas partes principais:
+- **Server:** API e Gerenciador Web (Nest.js)
+- **Mobile:** Aplicativo (React Native + Expo)
+
+Você precisará de dois terminais abertos para rodar o ambiente completo.
+
+#### 1️⃣ Rodando a API / Gerenciador Web (NestJS)
+
 ```bash
-# Clone o repositório
-$ git clone [<https://github.com/seu-usuario/nome-do-projeto.git>](<https://github.com/seu-usuario/nome-do-projeto.git>)
+# Entre na pasta do backend
+$ cd server  # ou o nome da sua pasta do Nest
 
-# Acesse a pasta do projeto
-$ cd nome-do-projeto
-
-# Instale as dependências (Exemplo para Laravel/Node)
+# Instale as dependências
 $ npm install
 
-# Configure o arquivo .env
-$cp .env.example .env$ php artisan key:generate
+# Configure as variáveis de ambiente
+$ cp .env.example .env
 
-# Rode as migrações
-$ php artisan migrate
+# Suba o container do banco de dados (se estiver usando Docker)
+$ docker-compose up -d
 
-# Inicie o servidor
+# Rode o servidor em modo de desenvolvimento
+$ npm run start:dev
+# O servidor iniciará geralmente em http://localhost:3000
+```
+
+####2️⃣ Rodando o App Mobile (React Native + Expo)
+# Em outro terminal, entre na pasta do mobile
+```bash
+$ cd mobile
+
+# Instale as dependências
+$ npm install
+
+# Inicie o bundler do Expo
 $ npx expo start
-
 ```
