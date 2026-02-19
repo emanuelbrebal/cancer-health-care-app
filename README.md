@@ -13,8 +13,8 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 - **Back-end:** TypeScript, Nest.js (Gerenciador)
 - **Front-end:** React Native, React (Gerenciador)
-- **Banco de Dados:** PostgreSQL.
-- **Outros:** [Docker, AWS, etc]
+- **Banco de Dados:** PostgreSQL, PrismaORM.
+- **Outros:** Docker, Docker-compose. 
 
 ---
 
@@ -45,10 +45,11 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 
 1. **[Usabilidade]:** Aprendi a pensar melhor em layouts com maior usabilidade e acessibilidade.
-2. **[Organização e Componentização]:** Entendi melhor como funciona organização de pastas, componentizações e reutilização.
+2. **[Organização e Componentização]:** Entendi melhor como funciona organização de pastas (incluindo a criação de um MonoRepo), componentizações e reutilização.
 3. **[Ecossistema Javascript]:** Este sistema me deu a oportunidade de aprender melhor como funciona o ecossistema Javascript e Typescript, com as tecnologias React Native e Nest.js.
 4. **[Integração com IA]:** Também pude aprender como integrar IA em meus projetos afim de tornar a vida das pessoas melhor.
 5. **[Consumo e criação de APIs RESTful]**: Este sistema me permitiu aprender melhores práticas e a integrar um aplicativo móvel a um gerenciador WEB, via APIs RESTful.
+6. **[Dcoker]**: Esse sistema me permitiu aprender a configuração de um arquivo docker-compose e a conteinerização do projeto.
 
 ---
 
@@ -64,7 +65,8 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 ### 📦 Como rodar o projeto
 
 Este projeto é um monorepo dividido em duas partes principais:
-- **Server:** API e Gerenciador Web (Nest.js)
+- **Backend:** API (Nest.js)
+- **Gerenciador Web** Site fullstack (React)
 - **Mobile:** Aplicativo (React Native + Expo)
 
 Você precisará de dois terminais abertos para rodar o ambiente completo.
