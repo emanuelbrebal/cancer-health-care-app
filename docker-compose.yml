@@ -3,8 +3,8 @@ services:
     image: postgres:15-alpine
     container_name: oncomente-db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: Em4nu3l!@%23
       POSTGRES_DB: oncomente
     ports:
       - "5432:5432"
