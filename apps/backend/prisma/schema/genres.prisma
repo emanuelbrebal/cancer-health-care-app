@@ -1,0 +1,13 @@
+enum GenreType {
+  BOOK
+  MOVIE
+  SERIES
+}
+
+model Genre {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  type      MediaType 
+  active    Boolean   @default(true)
+  medias    Media[]
+}

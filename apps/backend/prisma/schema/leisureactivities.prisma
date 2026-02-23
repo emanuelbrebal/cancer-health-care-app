@@ -1,0 +1,9 @@
+model LeisureActivity {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(150)
+  type          String   
+  frequency     String?  
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
