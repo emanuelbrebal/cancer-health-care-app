@@ -12,10 +12,221 @@ datasource db {
   provider = "postgresql"
 }
 
+// ==============================
+// ENUMS GLOBAIS
+// ==============================
 enum StatusEnum {
   ACTIVE    
   INACTIVE  
   DELETED   
   PENDING  
   ARCHIVED  
+}
+
+// ==============================
+// MODELOS: USUÁRIO E ÁREA PESSOAL
+// ==============================
+
+enum UserRole {
+  PATIENT
+  CAREGIVER
+  ADMIN
+}
+
+enum PronounEnum {
+  SR
+  SRA
+  SRTA
+  CUSTOM
+  NOT_INFORMED 
+}
+
+model User {
+    id       String   @id @default(uuid())
+    email    String   @unique @db.VarChar(200) 
+    password String 
+    role     UserRole @default(PATIENT) 
+
+    createdAt DateTime @default(now())
+
+    name            String?      @db.VarChar(50)
+    pronoun         PronounEnum? @default(NOT_INFORMED) 
+    phone_number    String?      @db.VarChar(14) 
+    birthday        DateTime?
+    profile_picture String? 
+
+    logs DailyLog[]
+
+    ownedCommunities Community[] @relation("CommunityOwner")
+    topics           Topic[]     @relation("TopicAuthor")
+    posts            Post[]      @relation("PostAuthor")
+    comments         Comment[]   @relation("CommentAuthor")
+}
+
+model DailyMessage {
+    id String @id @default(uuid())
+    title String? @db.VarChar(25)
+    message String? @db.VarChar(25)
+    status StatusEnum @default(ACTIVE)
+}
+
+
+// ==============================
+// MODEL: FORUM AND SOCIAL
+// ==============================
+model Community {
+  id          String     @id @default(uuid())
+  name        String     @db.VarChar(150)
+  description String?    @db.VarChar(500)
+  status      StatusEnum @default(ACTIVE) 
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  ownerId     String
+  owner       User       @relation("CommunityOwner", fields: [ownerId], references: [id])
+  topics      Topic[]
+}
+
+
+model Topic {
+  id          String     @id @default(uuid())
+  title       String     @db.VarChar(150)
+  content     String     @db.VarChar(2000)
+  status      StatusEnum @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  
+  authorId    String
+  author      User       @relation("TopicAuthor", fields: [authorId], references: [id])
+  
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+  posts       Post[]
+}
+model Post {
+  id          String   @id @default(uuid())
+  content     String
+  
+  author      User     @relation("PostAuthor", fields: [authorId], references: [id])
+  authorId    String
+  topic       Topic    @relation(fields: [topicId], references: [id])
+  topicId     String
+  comments    Comment[]
+}
+
+model Comment {
+  id        String     @id @default(uuid())
+  content   String     @db.VarChar(1000)
+  status    StatusEnum @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  authorId  String
+  author    User       @relation("CommentAuthor", fields: [authorId], references: [id])
+  postId    String
+  post      Post       @relation(fields: [postId], references: [id])
+}
+
+// ==============================
+// MODELS: ONCOLOGY AND MEDIA TYPES
+// ==============================
+
+enum GenreType {
+  BOOK
+  MOVIE
+  SERIES
+}
+
+model Genre {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  type      MediaType 
+  active    Boolean   @default(true)
+  medias    Media[]
+}
+
+enum MediaType {
+  BOOK
+  MOVIE
+  SERIES
+}
+
+model Media {
+  id          String     @id @default(uuid())
+  title       String     @db.VarChar(150)
+  releaseYear Int?   
+  type        MediaType
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  genreId     String
+  genre       Genre      @relation(fields: [genreId], references: [id])
+
+  bookDetails   BookDetail?
+  movieDetails  MovieDetail?
+  seriesDetails SeriesDetail?
+}
+
+model LeisureActivity {
+  id            String   @id @default(uuid())
+  name          String   @db.VarChar(150)
+  type          String   
+  frequency     String?  
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SeriesDetail {
+  id           String  @id @default(uuid())
+  showrunner   String? @db.VarChar(120)
+  seasons      Int?
+  externalLink String?
+  isFree       Boolean @default(false)
+  whereToWatch String?
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}
+
+model MovieDetail {
+  id           String  @id @default(uuid())
+  director     String? @db.VarChar(120)
+  externalLink String?
+  isFree       Boolean @default(false)
+  whereToWatch String?
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}
+
+model BookDetail {
+  id           String  @id @default(uuid())
+  author       String  @db.VarChar(120)
+  isOpenSource Boolean @default(false)
+  eduCapesLink String?
+  visitCount   Int     @default(0)
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}
+
+// ==============================
+// MODELS: PERSONAL
+// ==============================
+enum FeelingEnum {
+    VERY_UNHAPPY
+    UNHAPPY
+    NEUTRAL
+    HAPPY
+    VERY_HAPPY
+}
+model DailyLog {
+  id        String   @id @default(uuid())
+  feeling   FeelingEnum @default(NEUTRAL)
+  content   String? 
+  createdAt DateTime @default(now())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
