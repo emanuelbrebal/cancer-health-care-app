@@ -1,0 +1,10 @@
+model MovieDetail {
+  id           String  @id @default(uuid())
+  director     String? @db.VarChar(120)
+  externalLink String?
+  isFree       Boolean @default(false)
+  whereToWatch String?
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}

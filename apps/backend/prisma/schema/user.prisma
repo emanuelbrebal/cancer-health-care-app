@@ -1,0 +1,36 @@
+enum UserRole {
+    PATIENT
+    CAREGIVER
+    ADMIN
+}
+
+enum PronounEnum {
+    SR
+    SRA
+    SRTA
+    CUSTOM
+    NOT_INFORMED
+}
+
+
+model User {
+    id       String   @id @default(uuid())
+    email    String   @unique @db.VarChar(200) 
+    password String 
+    role     UserRole @default(PATIENT) 
+
+    createdAt DateTime @default(now())
+
+    name            String?      @db.VarChar(50)
+    pronoun         PronounEnum? @default(NOT_INFORMED) 
+    phone_number    String?      @db.VarChar(14) 
+    birthday        DateTime?
+    profile_picture String? 
+
+    logs DailyLog[]
+
+    ownedCommunities Community[] @relation("CommunityOwner")
+    topics           Topic[]     @relation("TopicAuthor")
+    posts            Post[]      @relation("PostAuthor")
+    comments         Comment[]   @relation("CommentAuthor")
+}

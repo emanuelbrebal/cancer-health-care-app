@@ -1,0 +1,11 @@
+model SeriesDetail {
+  id           String  @id @default(uuid())
+  showrunner   String? @db.VarChar(120)
+  seasons      Int?
+  externalLink String?
+  isFree       Boolean @default(false)
+  whereToWatch String?
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}

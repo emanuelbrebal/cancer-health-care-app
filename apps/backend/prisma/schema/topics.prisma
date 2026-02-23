@@ -1,0 +1,14 @@
+model Topic {
+  id          String     @id @default(uuid())
+  title       String     @db.VarChar(150)
+  content     String     @db.VarChar(2000)
+  status      StatusEnum @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  
+  authorId    String
+  author      User       @relation("TopicAuthor", fields: [authorId], references: [id])
+  
+  communityId String?
+  community   Community? @relation(fields: [communityId], references: [id])
+  posts       Post[]
+}

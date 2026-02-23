@@ -1,0 +1,6 @@
+model DailyMessage {
+    id String @id @default(uuid())
+    title String? @db.VarChar(25)
+    message String? @db.VarChar(25)
+    status StatusEnum @default(ACTIVE)
+}

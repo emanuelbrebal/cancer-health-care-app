@@ -1,0 +1,10 @@
+model BookDetail {
+  id           String  @id @default(uuid())
+  author       String  @db.VarChar(120)
+  isOpenSource Boolean @default(false)
+  eduCapesLink String?
+  visitCount   Int     @default(0)
+
+  mediaId      String  @unique
+  media        Media   @relation(fields: [mediaId], references: [id])
+}

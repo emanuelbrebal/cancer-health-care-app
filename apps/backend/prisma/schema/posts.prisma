@@ -1,0 +1,13 @@
+model Post {
+  id        String     @id @default(uuid())
+  content   String     @db.VarChar(1000)
+  status    StatusEnum @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt 
+
+  authorId  String
+  author    User       @relation("PostAuthor", fields: [authorId], references: [id])
+  topicId   String
+  topic     Topic      @relation(fields: [topicId], references: [id])
+  comments  Comment[]
+}
