@@ -5,6 +5,7 @@ export default function HomePersonalArea() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Tela Inicial Área Pessoal</Text>
+      <Link href={'/(auth)/LoginScreen'}>Fazer login</Link>
     </View>
   );
 }
