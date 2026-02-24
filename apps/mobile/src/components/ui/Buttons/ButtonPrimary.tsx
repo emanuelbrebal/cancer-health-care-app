@@ -1,16 +1,21 @@
+import { ButtonProps } from "@/src/interfaces/ui/ButtonProps";
 import { ButtonStyles } from "@/src/styles/Buttons";
-import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
-interface ButtonProps {
-    title: string,
-    action: any
-}
-export function ButtonPrimary({ title, action }: ButtonProps) {
+export function ButtonPrimary({ title, action, loading = false }: ButtonProps) {
     return (
-        <TouchableOpacity style={ButtonStyles.buttonPrimary} onPress={action}>
-            <Text style={ButtonStyles.buttonTextPrimary}>
-                {title}
-            </Text>
+        <TouchableOpacity
+            onPress={action}
+            disabled={loading}
+            style={[ButtonStyles.buttonPrimary, loading && { opacity: 0.7 }]}>
+            {loading ? (
+                <ActivityIndicator color="FFF" />
+            ) : (
+                <Text style={ButtonStyles.buttonTextPrimary}>
+                    {title}
+                </Text>
+            )
+            }
         </TouchableOpacity>
     )
 }

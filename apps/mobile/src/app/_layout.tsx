@@ -4,6 +4,7 @@ import { Colors } from '../constants/Colors';
 import { globalStyles } from '../styles/global';
 
 export default function RootLayout() {
+  
   return (
     <LinearGradient
       colors={[Colors.bgGradient.start, Colors.lilacPrimary]}

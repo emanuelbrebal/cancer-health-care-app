@@ -2,33 +2,34 @@ import { Text, View } from "react-native";
 import { globalStyles } from "@/src/styles/global";
 import { InputWithIcon } from "../ui/Inputs/InputWithIcon";
 import { SelectWithIcon } from "../ui/Inputs/SelectWithIcon";
-import { useState } from "react";
 
 export interface FormProps {
   setEmail: (text: string) => void;
+  setUserRole: (text: string) => void;
   setPassword: (text: string) => void;
+  setConfirmPassword: (text: string) => void;
+  userRole: string;
   error?: string | false;
 }
-const accountTypeData = [
-  { label: 'Paciente', value: '0' },
-  { label: 'Cuidador', value: '1' },
+
+const userRoleData = [
+  { label: 'Paciente', value: 'PATIENT' },
+  { label: 'Cuidador', value: 'CAREGIVER' },
+  { label: 'Admin', value: 'ADMIN' },
 ];
 
-export function RegisterForm({setEmail, setPassword, error }: FormProps) {
+export function RegisterForm({setEmail, setPassword, setUserRole, setConfirmPassword, userRole, error }: FormProps) {
 
-  const [accountType, setAccountType] = useState('');
 
   return (
     <View style={globalStyles.formContainer}>
 
       <SelectWithIcon
         iconLeftName="user"
-        data={accountTypeData}
-        value={accountType}
+        data={userRoleData}
+        value={userRole}
         placeholder="Tipo de usuário"
-        onChange={item => {
-          setAccountType(item.value);
-        }}
+        onChange={item => { setUserRole(item.value) }}
       />
 
       <InputWithIcon
@@ -49,7 +50,7 @@ export function RegisterForm({setEmail, setPassword, error }: FormProps) {
       <InputWithIcon
         iconLeftName="lock"
         isPassword={true}
-        onChangeText={setPassword}
+        onChangeText={setConfirmPassword}
         placeholder='Confirmar senha'
       />
 

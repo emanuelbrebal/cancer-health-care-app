@@ -6,24 +6,41 @@ import { globalStyles } from '@/src/styles/global';
 import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
+import { authService } from '@/src/services/auth';
 
 export default function RegisterScreen() {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<false | string>(false);
+  const [userRole, setUserRole] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const handleLogin = () => {
-    if (email == 'teste' && password == '123') {
-      router.push('/(Home)');
-    } else {
-      setError('* Email ou senha incorretos!');
+  const [error, setError] = useState<false | string>(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleRegister = async () => {
+    if (!email || !password || !userRole) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem");
+      return;
+    }
+
+    try {
+      await authService.register({ email, password, role: userRole });
+      router.replace('/(auth)/LoginScreen');
+    } catch (err) {
+      setError("Erro ao cadastrar usuário");
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  const redirectRegister = () => {
-    router.push('/(auth)/RegisterScreen');
+  const redirectLogin = () => {
+    router.push('/(auth)/LoginScreen');
   }
 
   return (
@@ -31,12 +48,12 @@ export default function RegisterScreen() {
       textPrimary="Bem-vindo(a)"
       textSecondary="Faça seu cadastro para acessar o sistema!"
     >
-      <RegisterForm setEmail={setEmail} setPassword={setPassword} error={error} />
+      <RegisterForm setUserRole={setUserRole} setEmail={setEmail} setPassword={setPassword} setConfirmPassword={setConfirmPassword} userRole={userRole} error={error} />
 
       <View style={globalStyles.buttonContainer}>
-        <ButtonOutline title='Cadastrar' action={redirectRegister} />
+        <ButtonOutline title='Fazer Login' action={redirectLogin} loading={isLoading}/>
 
-        <ButtonPrimary title='Entrar' action={handleLogin} />
+        <ButtonPrimary title='Cadastrar' action={handleRegister} loading={isLoading}/>
       </View>
 
       <Link href="/(auth)/ResetPassword">
