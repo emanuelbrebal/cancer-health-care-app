@@ -140,7 +140,7 @@ model Genre {
   id        String    @id @default(uuid())
   name      String    @unique
   type      MediaType 
-  active    Boolean   @default(true)
+  status StatusEnum @default(ACTIVE)
   medias    Media[]
 }
 
@@ -155,7 +155,9 @@ model Media {
   title       String     @db.VarChar(150)
   releaseYear Int?   
   type        MediaType
-  active      Boolean    @default(true)
+  status StatusEnum @default(ACTIVE)
+  isFree       Boolean @default(false)
+  whereToFind String[] @default([])
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -172,7 +174,7 @@ model LeisureActivity {
   name          String   @db.VarChar(150)
   type          String   
   frequency     String?  
-  active        Boolean  @default(true)
+  status StatusEnum @default(ACTIVE)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -182,8 +184,6 @@ model SeriesDetail {
   showrunner   String? @db.VarChar(120)
   seasons      Int?
   externalLink String?
-  isFree       Boolean @default(false)
-  whereToWatch String?
 
   mediaId      String  @unique
   media        Media   @relation(fields: [mediaId], references: [id])
@@ -193,8 +193,6 @@ model MovieDetail {
   id           String  @id @default(uuid())
   director     String? @db.VarChar(120)
   externalLink String?
-  isFree       Boolean @default(false)
-  whereToWatch String?
 
   mediaId      String  @unique
   media        Media   @relation(fields: [mediaId], references: [id])
@@ -203,7 +201,6 @@ model MovieDetail {
 model BookDetail {
   id           String  @id @default(uuid())
   author       String  @db.VarChar(120)
-  isOpenSource Boolean @default(false)
   eduCapesLink String?
   visitCount   Int     @default(0)
 

@@ -2,6 +2,8 @@ import { BadRequestException, ConflictException, Injectable, UnauthorizedExcepti
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,12 +12,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) { }
 
-  async register(email: string, pass: string, role: any) {
+  async register(registerDto: RegisterDto) {
+    const {email, password, role} = registerDto;
     const userExists = await this.prisma.user.findUnique({ where: { email } });
     if (userExists) throw new ConflictException('E-mail já cadastrado');
 
     const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(pass, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     return this.prisma.user.create({
       data: {
@@ -26,7 +29,9 @@ export class AuthService {
     });
   }
 
-  async login(email: string, password: string) {
+  async login(loginDto: LoginDto) {
+    const {email, password} = loginDto;
+
     if (!email) {
       throw new BadRequestException('E-mail é obrigatório para o login');
     }
