@@ -13,24 +13,22 @@ export class AuthService {
   ) { }
 
   async register(registerDto: RegisterDto) {
-    const {email, password, role} = registerDto;
+    const { email, password, role } = registerDto;
     const userExists = await this.prisma.user.findUnique({ where: { email } });
     if (userExists) throw new ConflictException('E-mail já cadastrado');
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    return this.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role,
-      },
+    const user = await this.prisma.user.create({
+      data: { email, password: hashedPassword, role },
     });
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   async login(loginDto: LoginDto) {
-    const {email, password} = loginDto;
+    const { email, password } = loginDto;
 
     if (!email) {
       throw new BadRequestException('E-mail é obrigatório para o login');
