@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsOptional, MaxLength, IsInt } from 'class-validator';
+import { IsString, IsBoolean, IsOptional, MaxLength, IsInt, isBoolean } from 'class-validator';
 
 export class CreateBookDetailDto {
   // Dados da tabela Media
@@ -13,6 +13,9 @@ export class CreateBookDetailDto {
   @IsString()
   genreId: string;
 
+  @IsBoolean()
+  isFree: boolean
+  
   // Campos que vão para a tabela BookDetail
   @IsString()
   author: string;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
 import { BooksRepository } from './books.repository';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { CreateBookDetailDto } from './dto/create-book.dto';
@@ -11,27 +11,33 @@ export class BooksController {
   ) {}
 
   @Post()
-  create(@Body() createBookDto: CreateBookDetailDto) {
-    return this.booksRepository.create(createBookDto);
+  async create(@Body() createBookDto: CreateBookDetailDto) {
+    const book = await this.booksRepository.create(createBookDto);
+    if(!book)
+    return 
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.booksRepository.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.booksRepository.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.booksRepository.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksRepository.update(+id, updateBookDto);
+  async update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+    if (!updateBookDto || Object.keys(updateBookDto).length === 0) {
+                throw new BadRequestException('Nenhum dado válido fornecido para atualização');
+            }
+    return this.booksRepository.update(id, updateBookDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.booksRepository.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.booksRepository.delete(id);
+    return { message: 'Livro removido com sucesso' };
   }
 }

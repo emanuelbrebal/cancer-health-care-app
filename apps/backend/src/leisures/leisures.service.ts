@@ -4,6 +4,7 @@ import { UpdateLeisureDto } from './dto/update-leisure.dto';
 import { BooksRepository } from 'src/books/books.repository';
 import { ILeisureStrategy } from './strategy/leisure-strategy.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { StatusEnum } from '@prisma/client';
 
 @Injectable()
 export class LeisuresService {
@@ -27,7 +28,7 @@ export class LeisuresService {
   findAll() {
     return this.prisma.media.findMany({
       where: {
-        status: 'ACTIVE',
+        status: StatusEnum.ACTIVE,
       },
       include:{
         bookDetails: true,
