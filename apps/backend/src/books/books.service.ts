@@ -1,32 +1,39 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateUserDto } from 'src/user/dto/update-user.dto';
-import { UsersRepository } from 'src/user/user.repository';
+import { BooksRepository } from './books.repository';
+import { CreateBookDetailDto } from './dto/create-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(private readonly booksRepository: BooksRepository) {}
+
+  async create(createBookDto: CreateBookDetailDto) {
+    return this.booksRepository.create(createBookDto);
+  }
 
   async findAll() {
-    const users = await this.usersRepository.findAll();
-    if(!users) throw new NotFoundException('Nenhum usuário cadastrado.');
-    return this.usersRepository.findAll();
+    const books = await this.booksRepository.findAll();
+    if (!books || books.length === 0) {
+      throw new NotFoundException('Nenhum livro cadastrado.');
+    }
+    return books;
   }
 
   async findOne(id: string) {
-    const user = await this.usersRepository.findById(id);
-    if (!user) throw new NotFoundException('Usuário não encontrado.');
-    return user;
+    const book = await this.booksRepository.findOne(id);
+    if (!book) {
+      throw new NotFoundException('Livro não encontrado.');
+    }
+    return book;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id); 
-    if(!user) throw new NotFoundException('Nenhum usuário encontrado.');
-    return this.usersRepository.update(id, updateUserDto);
+  async update(id: string, updateBookDto: UpdateBookDto) {
+    await this.findOne(id); 
+    return this.booksRepository.update(id, updateBookDto);
   }
 
   async remove(id: string) {
-    const user = await this.findOne(id); 
-    if(!user) throw new NotFoundException('Nenhum usuário encontrado.');
-    return this.usersRepository.delete(id);
+    await this.findOne(id); 
+    return this.booksRepository.delete(id);
   }
 }
