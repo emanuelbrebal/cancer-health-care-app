@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateBookDetailDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UUID } from 'crypto';
+import { StatusEnum } from '@prisma/client';
 
 @Injectable()
 export class BooksRepository {
@@ -9,36 +11,35 @@ export class BooksRepository {
   constructor(private prisma: PrismaService) { }
 
   async create(data: CreateBookDetailDto) {
-  return this.prisma.media.create({
-    data: {
-      title: data.title,
-      releaseYear: data.releaseYear,
-      type: 'BOOK', 
-      genreId: data.genreId,
-      bookDetails: {
-        create: {
-          author: data.author,
-          isOpenSource: data.isOpenSource,
-          eduCapesLink: data.eduCapesLink,
-          visitCount: 0 
+    return this.prisma.media.create({
+      data: {
+        title: data.title,
+        releaseYear: data.releaseYear,
+        type: 'BOOK',
+        genreId: data.genreId,
+        isFree: data.isFree,
+        bookDetails: {
+          create: {
+            author: data.author,
+            eduCapesLink: data.eduCapesLink,
+            visitCount: 0
+          }
         }
-      }
-    },
-    include: { bookDetails: true } 
-  });
-}
+      },
+      include: { bookDetails: true }
+    });
+  }
 
   async findAll() {
     return this.prisma.media.findMany(
-      { 
+      {
         where: {
-          type: "BOOK",
-          status: "ACTIVE"
+          status: StatusEnum.ACTIVE
         },
         include: {
           bookDetails: true,
           genre: true
-        }, 
+        },
         orderBy: {
           createdAt: 'asc'
         }
@@ -46,15 +47,30 @@ export class BooksRepository {
     );
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(id: string) {
+    return this.prisma.media.findFirst({
+      where:
+      {
+        id: id,
+        status: StatusEnum.ACTIVE,
+      },
+      include: {
+        bookDetails: true,
+        genre: true
+      },
+    });
   }
 
-  async update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  async update(id: string, updateBookDto: UpdateBookDto) {
+    return this.prisma.media.update({ 
+      where: { id: id },
+      data: updateBookDto
+    });
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} book`;
+  async delete(id: string) {
+    return this.prisma.media.delete({ 
+      where: { id: id },
+      });
   }
 }

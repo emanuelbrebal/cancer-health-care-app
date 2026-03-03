@@ -1,43 +1,35 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserMapper } from './user.mapper';
-import { UsersRepository } from './user.repository';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UsersService } from './user.service';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-    constructor(private readonly usersRepository: UsersRepository) { }
+  constructor(private readonly usersService: UsersService) {}
 
-    @Get()
-    async findAll() {
-        const users = await this.usersRepository.findAll();
-        return users.map((user) => UserMapper.toDto(user));
-    }
+  @Get()
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return users.map(UserMapper.toDto);
+  }
 
-    @Get(':id')
-    async findOne(@Param('id') id: string) {
-        const user = await this.usersRepository.findById(id);
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const user = await this.usersService.findOne(id);
+    return UserMapper.toDto(user);
+  }
 
-        if (!user) {
-            throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
-        }
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.update(id, updateUserDto);
+    return UserMapper.toDto(user);
+  }
 
-        return UserMapper.toDto(user);
-    }
-
-    @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        if (!updateUserDto || Object.keys(updateUserDto).length === 0) {
-            throw new BadRequestException('Nenhum dado válido fornecido para atualização');
-        }
-        const user = await this.usersRepository.update(id, updateUserDto);
-        return UserMapper.toDto(user);
-    }
-
-    @Delete(':id')
-    async remove(@Param('id') id: string) {
-        await this.usersRepository.delete(id);
-        return { message: 'Usuário removido com sucesso' };
-    }
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(id);
+    return { message: 'Usuário removido com sucesso' };
+  }
 }
