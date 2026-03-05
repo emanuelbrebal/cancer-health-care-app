@@ -78,6 +78,7 @@ model Community {
   id          String     @id @default(uuid())
   name        String     @db.VarChar(150)
   description String?    @db.VarChar(500)
+  image_path String? 
   status      StatusEnum @default(ACTIVE) 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -92,6 +93,7 @@ model Topic {
   id          String     @id @default(uuid())
   title       String     @db.VarChar(150)
   content     String     @db.VarChar(2000)
+  image_path String? 
   status      StatusEnum @default(ACTIVE)
   createdAt   DateTime   @default(now())
   
@@ -105,7 +107,7 @@ model Topic {
 model Post {
   id          String   @id @default(uuid())
   content     String
-  
+  image_path String? 
   author      User     @relation("PostAuthor", fields: [authorId], references: [id])
   authorId    String
   topic       Topic    @relation(fields: [topicId], references: [id])
@@ -115,7 +117,7 @@ model Post {
 
 model Comment {
   id        String     @id @default(uuid())
-  content   String     @db.VarChar(1000)
+  content   String     @db.VarChar(300)
   status    StatusEnum @default(ACTIVE)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -158,6 +160,7 @@ model Media {
   status StatusEnum @default(ACTIVE)
   isFree       Boolean @default(false)
   whereToFind String[] @default([])
+  image_path String 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -173,6 +176,7 @@ model LeisureActivity {
   id            String   @id @default(uuid())
   name          String   @db.VarChar(150)
   type          String   
+  image_path String? 
   frequency     String?  
   status StatusEnum @default(ACTIVE)
   createdAt     DateTime @default(now())
@@ -183,6 +187,7 @@ model SeriesDetail {
   id           String  @id @default(uuid())
   showrunner   String? @db.VarChar(120)
   seasons      Int?
+  episodes Int?
   externalLink String?
 
   mediaId      String  @unique
@@ -192,6 +197,7 @@ model SeriesDetail {
 model MovieDetail {
   id           String  @id @default(uuid())
   director     String? @db.VarChar(120)
+  duration String? @db.VarChar(120)
   externalLink String?
 
   mediaId      String  @unique
@@ -202,6 +208,7 @@ model BookDetail {
   id           String  @id @default(uuid())
   author       String  @db.VarChar(120)
   eduCapesLink String?
+  page_count Int? 
   visitCount   Int     @default(0)
 
   mediaId      String  @unique
@@ -209,7 +216,7 @@ model BookDetail {
 }
 
 // ==============================
-// MODELS: PERSONAL
+// MODELS: PERSONAL AREA
 // ==============================
 enum FeelingEnum {
     VERY_UNHAPPY
