@@ -20,11 +20,9 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await this.prisma.user.create({
+    return this.prisma.user.create({
       data: { email, password: hashedPassword, role },
     });
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
   }
 
   async login(loginDto: LoginDto) {
@@ -52,12 +50,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        name: user.name
-      },
+      user: user,
     };
   }
 }

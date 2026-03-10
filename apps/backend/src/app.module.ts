@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './user/user.module';
-import { BooksModule } from './books/books.module';
+import { BooksModule } from './media/books/books.module';
 import { LeisuresModule } from './leisures/leisures.module';
 
 @Module({
