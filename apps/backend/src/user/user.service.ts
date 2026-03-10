@@ -8,8 +8,8 @@ export class UsersService {
 
   async findAll() {
     const users = await this.usersRepository.findAll();
-    if(!users) throw new NotFoundException('Nenhum usuário cadastrado.');
-    return this.usersRepository.findAll();
+    if(!users || users.length === 0) throw new NotFoundException('Nenhum usuário cadastrado.');
+    return users;
   }
 
   async findOne(id: string) {
@@ -19,14 +19,12 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id); 
-    if(!user) throw new NotFoundException('Nenhum usuário encontrado.');
+    await this.findOne(id); 
     return this.usersRepository.update(id, updateUserDto);
   }
 
   async remove(id: string) {
-    const user = await this.findOne(id); 
-    if(!user) throw new NotFoundException('Nenhum usuário encontrado.');
+    await this.findOne(id); 
     return this.usersRepository.delete(id);
   }
 }
