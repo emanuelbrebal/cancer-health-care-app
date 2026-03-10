@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLeisureDto } from './dto/create-leisure.dto';
 import { UpdateLeisureDto } from './dto/update-leisure.dto';
-import { BooksRepository } from 'src/books/books.repository';
 import { ILeisureStrategy } from './strategy/leisure-strategy.interface';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { StatusEnum } from '@prisma/client';
@@ -11,7 +10,6 @@ export class LeisuresService {
   private readonly strategies: ILeisureStrategy[];
 
   constructor(
-    private readonly booksRepository: BooksRepository,
     private readonly prisma: PrismaService
   ){};
 
