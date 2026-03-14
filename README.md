@@ -24,7 +24,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - [x]  **Feature Principal:** Navegação fácil em tabs pelo sistema. Navegue entre a homepage, área oncológica, área de saúde mental, área social (fórum) e área pessoal (configurações).
       
 - [x]  **Área Oncológica:** Área informativa e expositiva de informações relevantes ao tema de saúde oncológica: Área motivacional, Autocuidados, Recomendações de lazer e Benefícios legais (lei).
-- [ ]  **Cadastrar recomendações de lazer:** A área oncológica contém recomendações de lazer, que são cadastradas no gerenciador WEB. Todos são CRUDS: Livros, Séries, Filmes e Atividades em casa.
+- [x]  **Cadastrar recomendações de lazer:** A área oncológica contém recomendações de lazer, que são cadastradas no gerenciador WEB. Todos são CRUDS: Livros, Séries, Filmes e Atividades em casa.
       
 - [x]  **Área de Saúde Mental:** Área informativa e expositiva de informações relevantes ao tema de saúde mental, relacionada ao tratamento do câncer.
 - [x]  **Botão do Pânico:** Disponível em todas as telas da área de saúde mental, o botão do pânico é disposto acima de todos os elementos e fornece números relevantes à saúde mental (SAMU, CVV, CAVIDA) e discagem automática nativa.
