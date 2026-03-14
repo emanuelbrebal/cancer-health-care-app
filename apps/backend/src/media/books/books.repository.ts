@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBookDetailDto } from './dto/create-book.dto';
+import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { StatusEnum } from '@prisma/client';
+import { BaseMediaRepository } from '../common/base-media.repository';
 
 @Injectable()
-export class BooksRepository {
+export class BooksRepository extends BaseMediaRepository {
   readonly type = 'BOOK';
-  constructor(private prisma: PrismaService) { }
-
-  async create(data: CreateBookDetailDto) {
+  constructor(prisma: PrismaService) {
+    super(prisma);
+  }
+  async create(data: CreateBookDto) {
     return this.prisma.media.create({
       data: {
         title: data.title,
@@ -19,13 +21,13 @@ export class BooksRepository {
         isFree: data.isFree,
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
-        whereToFind: data.whereToFind,   
+        whereToFind: data.whereToFind,
         bookDetails: {
           create: {
             author: data.author,
             eduCapesLink: data.eduCapesLink,
             visitCount: 0,
-            page_count: data.pageCount
+            page_count: data.page_count
           }
         }
       },
@@ -56,17 +58,21 @@ export class BooksRepository {
   }
 
   async update(id: string, data: UpdateBookDto) {
-    const { author, eduCapesLink, pageCount, ...mediaData } = data;
+    const { author, eduCapesLink, page_count, genreId, ...mediaData } = data;
 
     return this.prisma.media.update({
-      where: { id: id },
+      where: { id },
+
       data: {
         ...mediaData,
+        ...(genreId && {
+          genre: { connect: { id: genreId } }
+        }),
         bookDetails: {
           update: {
             author,
             eduCapesLink,
-            page_count: pageCount
+            page_count
           }
         }
       },
@@ -74,12 +80,4 @@ export class BooksRepository {
     });
   }
 
-  async delete(id: string) {
-    return this.prisma.media.update({
-      where: { id: id },
-      data: {
-        status: StatusEnum.INACTIVE
-      }
-    });
-  }
 }

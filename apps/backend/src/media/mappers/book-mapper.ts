@@ -9,7 +9,7 @@ export class BookMapper {
       author: details.author,
       eduCapesLink: details.eduCapesLink,
       visitCount: details.visitCount,
-      pageCount: details.pageCount,
+      pageCount: details.page_count || 0,
     };
   }
 }
