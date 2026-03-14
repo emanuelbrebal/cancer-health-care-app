@@ -170,6 +170,8 @@ model Media {
   bookDetails   BookDetail?
   movieDetails  MovieDetail?
   seriesDetails SeriesDetail?
+
+  @@unique([title, type])
 }
 
 model LeisureActivity {
@@ -191,7 +193,7 @@ model SeriesDetail {
   externalLink String?
 
   mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  media        Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 }
 
 model MovieDetail {
@@ -201,7 +203,7 @@ model MovieDetail {
   externalLink String?
 
   mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  media        Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 }
 
 model BookDetail {
@@ -212,7 +214,7 @@ model BookDetail {
   visitCount   Int     @default(0)
 
   mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  media        Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 }
 
 // ==============================
