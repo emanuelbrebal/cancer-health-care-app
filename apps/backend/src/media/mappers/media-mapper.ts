@@ -1,4 +1,4 @@
-import { MediaResponseDto } from "../books/dto/media-response-dto";
+import { MediaResponseDto } from "../common/dto/media-response-dto";
 
 export class MediaMapper {
   static mapCommonFields(media: any): MediaResponseDto {
@@ -10,8 +10,8 @@ export class MediaMapper {
       status: media.status,
       isFree: media.isFree,
       whereToFind: media.whereToFind,
-      imagePath: media.imagePath,
-      genre: media.genre?.name,
+      imagePath: media.image_path || '', 
+      genre: media.genre?.name || 'Sem gênero',
     };
   }
 }
