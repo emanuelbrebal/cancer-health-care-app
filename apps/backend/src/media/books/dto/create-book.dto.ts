@@ -1,38 +1,21 @@
 import { IsString, IsBoolean, IsOptional, MaxLength, IsInt, IsUUID, IsUrl, IsArray } from 'class-validator';
+import { CreateMediaDto } from 'src/media/common/dto/CreateMediaDto';
 
-export class CreateBookDetailDto {
-  @IsString()
-  @MaxLength(200)
-  title: string;
-
-  @IsInt()
-  @IsOptional()
-  releaseYear?: number;
-
-  @IsUUID() 
-  genreId: string;
-
-  @IsBoolean()
-  isFree: boolean;
-
-  @IsString()
-  @IsOptional()
-  image_path?: string; 
-
-  @IsArray()
-  @IsString({ each: true })
-  whereToFind: string[];
-
+export class CreateBookDto extends CreateMediaDto {
   @IsString()
   @MaxLength(100)
-  author: string; 
+  author: string;
 
   @IsOptional()
   @IsUrl()
   @IsString()
   eduCapesLink?: string;
 
-  @IsInt()
   @IsOptional()
-  pageCount?: number; 
+  @IsInt({ message: "O número de visitas precisa ser um valor numérico." })
+  visitCount?: number | 0;
+
+  @IsOptional()
+  @IsInt({ message: "O número de páginas precisa ser um valor numérico." })
+  page_count?: number;
 }

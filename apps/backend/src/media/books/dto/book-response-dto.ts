@@ -1,4 +1,4 @@
-import { MediaResponseDto } from "./media-response-dto";
+import { MediaResponseDto } from "../../common/dto/media-response-dto";
 
 export class BookResponseDto extends MediaResponseDto {
   author: string;

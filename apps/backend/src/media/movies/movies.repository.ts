@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { StatusEnum } from '@prisma/client';
+import { UpdateMovieDto } from './dto/update-movie.dto';
+import { CreateMovieDto } from './dto/create-movie.dto';
 import { BaseMediaRepository } from '../common/base-media.repository';
 
 @Injectable()
-export class BooksRepository extends BaseMediaRepository {
-  readonly type = 'BOOK';
+export class MoviesRepository extends BaseMediaRepository {
+  readonly type = 'MOVIE';
   constructor(prisma: PrismaService) {
     super(prisma);
   }
-  async create(data: CreateBookDto) {
+  async create(data: CreateMovieDto) {
     return this.prisma.media.create({
       data: {
         title: data.title,
@@ -22,16 +22,15 @@ export class BooksRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
-        bookDetails: {
+        movieDetails: {
           create: {
-            author: data.author,
-            eduCapesLink: data.eduCapesLink,
-            visitCount: 0,
-            page_count: data.page_count
+            director: data.director,
+            duration: data.duration,
+            externalLink: data.externalLink
           }
         }
       },
-      include: { bookDetails: true, genre: true }
+      include: { movieDetails: true, genre: true }
     });
   }
 
@@ -41,7 +40,7 @@ export class BooksRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         type: this.type
       },
-      include: { bookDetails: true, genre: true },
+      include: { movieDetails: true, genre: true },
       orderBy: { createdAt: 'asc' }
     });
   }
@@ -53,30 +52,29 @@ export class BooksRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         type: this.type
       },
-      include: { bookDetails: true, genre: true },
+      include: { movieDetails: true, genre: true },
     });
   }
 
-  async update(id: string, data: UpdateBookDto) {
-    const { author, eduCapesLink, page_count, genreId, ...mediaData } = data;
+  async update(id: string, data: UpdateMovieDto) {
+    const { director, externalLink, duration, genreId, ...mediaData } = data;
 
     return this.prisma.media.update({
-      where: { id },
-
+      where: { id: id },
       data: {
         ...mediaData,
         ...(genreId && {
-          genre: { connect: { id: genreId } }
-        }),
-        bookDetails: {
+        genre: { connect: { id: genreId } }
+      }),
+        movieDetails: {
           update: {
-            author,
-            eduCapesLink,
-            page_count
+            director,
+            externalLink,
+            duration: duration
           }
         }
       },
-      include: { bookDetails: true, genre: true }
+      include: { movieDetails: true, genre: true }
     });
   }
 

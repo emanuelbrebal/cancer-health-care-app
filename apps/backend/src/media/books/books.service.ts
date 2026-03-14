@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BooksRepository } from './books.repository';
-import { CreateBookDetailDto } from './dto/create-book.dto';
+import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
   constructor(private readonly booksRepository: BooksRepository) {}
 
-  async create(createBookDto: CreateBookDetailDto) {
+  async create(createBookDto: CreateBookDto) {
     return this.booksRepository.create(createBookDto);
   }
 

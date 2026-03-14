@@ -1,8 +1,8 @@
 import { MovieResponseDto } from "../books/dto/movie-response.dto";
 import { MediaMapper } from "./media-mapper";
 
-export class SeriesMapper {
-   static toMovieDto(media: any): MovieResponseDto {
+export class MovieMapper {
+   static toDto(media: any): MovieResponseDto {
     const details = media.movieDetails || {};
     return {
       ...MediaMapper.mapCommonFields(media),
