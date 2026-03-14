@@ -1,60 +1,19 @@
-import { IsString, IsEnum, IsOptional, IsInt, IsBoolean, MaxLength, IsArray } from 'class-validator';
-import { MediaType, StatusEnum } from '@prisma/client';
+import { IsString, IsEnum, MaxLength, IsNotEmpty, IsOptional } from 'class-validator';
+import { LeisureType, FrequencyType } from '@prisma/client'; 
 
 export class CreateLeisureDto {
-    @IsEnum(MediaType)
-    type: MediaType;
-
     @IsString()
+    @IsNotEmpty()
     @MaxLength(150)
-    title: string;
+    name: string;
 
-    @IsInt()
-    @IsOptional()
-    releaseYear?: number;
+    @IsEnum(LeisureType, { message: 'Tipo de atividade inválido' })
+    type: LeisureType;
+
+    @IsEnum(FrequencyType, { message: 'Frequência inválida' })
+    frequency: FrequencyType;
 
     @IsString()
-    genreId: string;
-
-    @IsBoolean()
-    isFree: boolean;
-
-    @IsEnum(StatusEnum)
-    status: StatusEnum
-
     @IsOptional()
-    @IsArray()
-    whereToWatch?: string[];
-
-    // 3. Strategy Book
-    @IsOptional()
-    @IsString()
-    author?: string;
-
-    @IsOptional()
-    @IsString()
-    eduCapesLink?: string;
-
-    @IsOptional()
-    @IsInt()
-    visitCount?: 0;
-
-    // 4. Strategy Movie
-    @IsOptional()
-    @IsString()
-    director?: string;
-
-    @IsOptional()
-    @IsString()
-    externalLink?: string;
-
-    // 5. Strategy TV serie
-    @IsOptional()
-    @IsString()
-    showrunner?: string;
-
-    @IsOptional()
-    @IsInt()
-    seasons?: number;
-
+    image_path: string;
 }

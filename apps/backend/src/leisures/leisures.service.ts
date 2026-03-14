@@ -1,51 +1,35 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { LeisureRepository } from './leisures.repository';
 import { CreateLeisureDto } from './dto/create-leisure.dto';
 import { UpdateLeisureDto } from './dto/update-leisure.dto';
-import { ILeisureStrategy } from './strategy/leisure-strategy.interface';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { StatusEnum } from '@prisma/client';
 
 @Injectable()
 export class LeisuresService {
-  private readonly strategies: ILeisureStrategy[];
+  constructor(private readonly repository: LeisureRepository) {}
 
-  constructor(
-    private readonly prisma: PrismaService
-  ){};
+  async create(dto: CreateLeisureDto) {
+    return this.repository.create(dto);
+  }
 
-  create(createLeisureDto: CreateLeisureDto) {
-    const strategy = this.strategies.find(s => s.type === createLeisureDto.type);
+  async findAll() {
+    return this.repository.findAll();
+  }
 
-    if (!strategy) {
-      throw new BadRequestException('Tipo de mídia não oficial.');
+  async findOne(id: string) {
+    const leisure = await this.repository.findOne(id);
+    if (!leisure) {
+      throw new NotFoundException('Atividade de lazer não encontrada.');
     }
-
-    return strategy.create(createLeisureDto);
+    return leisure;
   }
 
-  findAll() {
-    return this.prisma.media.findMany({
-      where: {
-        status: StatusEnum.ACTIVE,
-      },
-      include:{
-        bookDetails: true,
-        movieDetails: true,
-        seriesDetails: true,
-        genre: true
-      }
-    });
+  async update(id: string, dto: UpdateLeisureDto) {
+    await this.findOne(id); 
+    return this.repository.update(id, dto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} leisure`;
-  }
-
-  update(id: number, updateLeisureDto: UpdateLeisureDto) {
-    return `This action updates a #${id} leisure`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} leisure`;
+  async remove(id: string) {
+    await this.findOne(id); 
+    return this.repository.delete(id);
   }
 }
