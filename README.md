@@ -49,7 +49,8 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 3. **[Ecossistema Javascript]:** Este sistema me deu a oportunidade de aprender melhor como funciona o ecossistema Javascript e Typescript, com as tecnologias React Native e Nest.js.
 4. **[Integração com IA]:** Também pude aprender como integrar IA em meus projetos afim de tornar a vida das pessoas melhor.
 5. **[Consumo e criação de APIs RESTful]**: Este sistema me permitiu aprender melhores práticas e a integrar um aplicativo móvel a um gerenciador WEB, via APIs RESTful.
-6. **[Dcoker]**: Esse sistema me permitiu aprender a configuração de um arquivo docker-compose e a conteinerização do projeto.
+6. **[Utilização de Design Patterns]**: Strategies, Mappers e Dtos foram bem utilizados. 
+7. **[Docker]**: Esse sistema me permitiu aprender a configuração de um arquivo docker-compose e a conteinerização do projeto.
 
 ---
 
