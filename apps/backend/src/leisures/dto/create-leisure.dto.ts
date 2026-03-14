@@ -1,4 +1,3 @@
-// apps/backend/src/leisures/dto/create-leisure.dto.ts
 import { IsString, IsEnum, MaxLength, IsNotEmpty, IsOptional } from 'class-validator';
 import { LeisureType, FrequencyType } from '@prisma/client'; 
 

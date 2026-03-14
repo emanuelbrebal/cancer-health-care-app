@@ -151,7 +151,6 @@ enum MediaType {
   MOVIE
   SERIES
 }
-
 model Media {
   id          String     @id @default(uuid())
   title       String     @db.VarChar(150)
@@ -170,17 +169,36 @@ model Media {
   bookDetails   BookDetail?
   movieDetails  MovieDetail?
   seriesDetails SeriesDetail?
+
+  @@unique([title, type])
 }
 
+enum LeisureType {
+  PHYSICAL     
+  CULTURAL    
+  SOCIAL      
+  THERAPY  
+  RECREATIONAL    
+  REST   
+}
+
+enum FrequencyType {
+  DAILY
+  WEEKLY
+  FORTWEEKLY
+  MONTHLY
+  SPORADICAL
+}
 model LeisureActivity {
-  id            String   @id @default(uuid())
-  name          String   @db.VarChar(150)
-  type          String   
-  image_path String? 
-  frequency     String?  
-  status StatusEnum @default(ACTIVE)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String        @id @default(uuid())
+  name        String        @db.VarChar(150)
+  type        LeisureType
+  frequency   FrequencyType
+  image_path  String
+  status      StatusEnum    @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  @@unique([name])
 }
 
 model SeriesDetail {
