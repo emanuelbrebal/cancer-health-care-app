@@ -30,7 +30,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - [x]  **Botão do Pânico:** Disponível em todas as telas da área de saúde mental, o botão do pânico é disposto acima de todos os elementos e fornece números relevantes à saúde mental (SAMU, CVV, CAVIDA) e discagem automática nativa.
     
 - [x]  **Área social (fórum):** Área responsável por reunir Comunidades, Tópicos, Publicações e Conversas.
-- [ ]  **Cadastrar Comunidades, Tópicos, Publicações e Conversas:** CRUDS feitos por usuários.
+- [x]  **Cadastrar Comunidades, Tópicos, Publicações e Conversas:** CRUDS feitos por usuários.
 
 - [x]  **Área social (fórum):** Área responsável por reunir Comunidades, Tópicos, Publicações e Conversas.
 - [ ]  **Mascote:** O sistema conta com uma integração a um agente de IA que gera mensagens de apoio baseada na personalidade do Mascote escolhido.
