@@ -54,18 +54,24 @@ async function main() {
 
   console.log('Populando atividades de lazer...');
   for (const activity of leisureActivities) {
-    await prisma.leisureActivity.upsert({
-      where: { id: '00000000-0000-0000-0000-000000000000' }, 
-      update: {},
-      create: {
-        name: activity.name,
-        type: activity.type as LeisureType,
-        frequency: activity.frequency as FrequencyType,
-        image_path: activity.image_path,
-        status: StatusEnum.ACTIVE,
-      }
-    });
-  }
+  await prisma.leisureActivity.upsert({
+    where: { name: activity.name }, 
+    
+    create: {
+      name: activity.name,
+      type: activity.type,
+      frequency: activity.frequency,
+      image_path: activity.image_path,
+      status: 'ACTIVE',
+    },
+    
+    update: {
+      type: activity.type,
+      frequency: activity.frequency,
+      image_path: activity.image_path,
+    },
+  });
+}
 
   // 3. SEED DE LIVROS (Curadoria Professora Mousinho)
   const professorBooks = [
