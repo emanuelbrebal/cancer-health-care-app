@@ -16,11 +16,11 @@ datasource db {
 // ENUMS GLOBAIS
 // ==============================
 enum StatusEnum {
-  ACTIVE    
-  INACTIVE  
-  DELETED   
-  PENDING  
-  ARCHIVED  
+  ACTIVE
+  INACTIVE
+  DELETED
+  PENDING
+  ARCHIVED
 }
 
 // ==============================
@@ -38,38 +38,37 @@ enum PronounEnum {
   SRA
   SRTA
   CUSTOM
-  NOT_INFORMED 
+  NOT_INFORMED
 }
 
 model User {
-    id       String   @id @default(uuid())
-    email    String   @unique @db.VarChar(200) 
-    password String 
-    role     UserRole @default(PATIENT) 
+  id       String   @id @default(uuid())
+  email    String   @unique @db.VarChar(200)
+  password String
+  role     UserRole @default(PATIENT)
 
-    createdAt DateTime @default(now())
+  createdAt DateTime @default(now())
 
-    name            String?      @db.VarChar(50)
-    pronoun         PronounEnum? @default(NOT_INFORMED) 
-    phone_number    String?      @db.VarChar(14) 
-    birthday        DateTime?
-    profile_picture String? 
+  name            String?      @db.VarChar(50)
+  pronoun         PronounEnum? @default(NOT_INFORMED)
+  phone_number    String?      @db.VarChar(14)
+  birthday        DateTime?
+  profile_picture String?
 
-    logs DailyLog[]
+  logs DailyLog[]
 
-    ownedCommunities Community[] @relation("CommunityOwner")
-    topics           Topic[]     @relation("TopicAuthor")
-    posts            Post[]      @relation("PostAuthor")
-    comments         Comment[]   @relation("CommentAuthor")
+  ownedCommunities Community[] @relation("CommunityOwner")
+  topics           Topic[]     @relation("TopicAuthor")
+  posts            Post[]      @relation("PostAuthor")
+  comments         Comment[]   @relation("CommentAuthor")
 }
 
 model DailyMessage {
-    id String @id @default(uuid())
-    title String? @db.VarChar(25)
-    message String? @db.VarChar(25)
-    status StatusEnum @default(ACTIVE)
+  id      String     @id @default(uuid())
+  title   String?    @db.VarChar(25)
+  message String?    @db.VarChar(25)
+  status  StatusEnum @default(ACTIVE)
 }
-
 
 // ==============================
 // MODEL: FORUM AND SOCIAL
@@ -78,41 +77,46 @@ model Community {
   id          String     @id @default(uuid())
   name        String     @db.VarChar(150)
   description String?    @db.VarChar(500)
-  image_path String? 
-  status      StatusEnum @default(ACTIVE) 
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  
-  ownerId     String
-  owner       User       @relation("CommunityOwner", fields: [ownerId], references: [id])
-  topics      Topic[]
-}
-
-
-model Topic {
-  id          String     @id @default(uuid())
-  title       String     @db.VarChar(150)
-  content     String     @db.VarChar(2000)
-  image_path String? 
+  image_path  String?
   status      StatusEnum @default(ACTIVE)
   createdAt   DateTime   @default(now())
-  
-  authorId    String
-  author      User       @relation("TopicAuthor", fields: [authorId], references: [id])
-  
+  updatedAt   DateTime   @updatedAt
+
+  ownerId String
+  owner   User    @relation("CommunityOwner", fields: [ownerId], references: [id])
+  topics  Topic[]
+}
+
+model Topic {
+  id         String     @id @default(uuid())
+  title      String     @db.VarChar(150)
+  content    String     @db.VarChar(2000)
+  image_path String?
+  status     StatusEnum @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  authorId String
+  author   User   @relation("TopicAuthor", fields: [authorId], references: [id])
+
   communityId String?
   community   Community? @relation(fields: [communityId], references: [id])
   posts       Post[]
 }
+
 model Post {
-  id          String   @id @default(uuid())
-  content     String
-  image_path String? 
-  author      User     @relation("PostAuthor", fields: [authorId], references: [id])
-  authorId    String
-  topic       Topic    @relation(fields: [topicId], references: [id])
-  topicId     String
-  comments    Comment[]
+  id         String     @id @default(uuid())
+  content    String
+  image_path String?
+  status     StatusEnum @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  author   User      @relation("PostAuthor", fields: [authorId], references: [id])
+  authorId String
+  topic    Topic     @relation(fields: [topicId], references: [id])
+  topicId  String
+  comments Comment[]
 }
 
 model Comment {
@@ -122,10 +126,10 @@ model Comment {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  authorId  String
-  author    User       @relation("CommentAuthor", fields: [authorId], references: [id])
-  postId    String
-  post      Post       @relation(fields: [postId], references: [id])
+  authorId String
+  author   User   @relation("CommentAuthor", fields: [authorId], references: [id])
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id])
 }
 
 // ==============================
@@ -139,11 +143,11 @@ enum GenreType {
 }
 
 model Genre {
-  id        String    @id @default(uuid())
-  name      String    @unique
-  type      MediaType 
+  id     String     @id @default(uuid())
+  name   String     @unique
+  type   MediaType
   status StatusEnum @default(ACTIVE)
-  medias    Media[]
+  medias Media[]
 }
 
 enum MediaType {
@@ -151,20 +155,21 @@ enum MediaType {
   MOVIE
   SERIES
 }
+
 model Media {
   id          String     @id @default(uuid())
   title       String     @db.VarChar(150)
-  releaseYear Int?   
+  releaseYear Int?
   type        MediaType
-  status StatusEnum @default(ACTIVE)
-  isFree       Boolean @default(false)
-  whereToFind String[] @default([])
-  image_path String 
+  status      StatusEnum @default(ACTIVE)
+  isFree      Boolean    @default(false)
+  whereToFind String[]   @default([])
+  image_path  String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  genreId     String
-  genre       Genre      @relation(fields: [genreId], references: [id])
+  genreId String
+  genre   Genre  @relation(fields: [genreId], references: [id])
 
   bookDetails   BookDetail?
   movieDetails  MovieDetail?
@@ -174,12 +179,12 @@ model Media {
 }
 
 enum LeisureType {
-  PHYSICAL     
-  CULTURAL    
-  SOCIAL      
-  THERAPY  
-  RECREATIONAL    
-  REST   
+  PHYSICAL
+  CULTURAL
+  SOCIAL
+  THERAPY
+  RECREATIONAL
+  REST
 }
 
 enum FrequencyType {
@@ -189,15 +194,17 @@ enum FrequencyType {
   MONTHLY
   SPORADICAL
 }
+
 model LeisureActivity {
-  id          String        @id @default(uuid())
-  name        String        @db.VarChar(150)
-  type        LeisureType
-  frequency   FrequencyType
-  image_path  String
-  status      StatusEnum    @default(ACTIVE)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id         String        @id @default(uuid())
+  name       String        @db.VarChar(150)
+  type       LeisureType
+  frequency  FrequencyType
+  image_path String
+  status     StatusEnum    @default(ACTIVE)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
   @@unique([name])
 }
 
@@ -205,50 +212,51 @@ model SeriesDetail {
   id           String  @id @default(uuid())
   showrunner   String? @db.VarChar(120)
   seasons      Int?
-  episodes Int?
+  episodes     Int?
   externalLink String?
 
-  mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  mediaId String @unique
+  media   Media  @relation(fields: [mediaId], references: [id])
 }
 
 model MovieDetail {
   id           String  @id @default(uuid())
   director     String? @db.VarChar(120)
-  duration String? @db.VarChar(120)
+  duration     String? @db.VarChar(120)
   externalLink String?
 
-  mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  mediaId String @unique
+  media   Media  @relation(fields: [mediaId], references: [id])
 }
 
 model BookDetail {
   id           String  @id @default(uuid())
   author       String  @db.VarChar(120)
   eduCapesLink String?
-  page_count Int? 
+  page_count   Int?
   visitCount   Int     @default(0)
 
-  mediaId      String  @unique
-  media        Media   @relation(fields: [mediaId], references: [id])
+  mediaId String @unique
+  media   Media  @relation(fields: [mediaId], references: [id])
 }
 
 // ==============================
 // MODELS: PERSONAL AREA
 // ==============================
 enum FeelingEnum {
-    VERY_UNHAPPY
-    UNHAPPY
-    NEUTRAL
-    HAPPY
-    VERY_HAPPY
+  VERY_UNHAPPY
+  UNHAPPY
+  NEUTRAL
+  HAPPY
+  VERY_HAPPY
 }
+
 model DailyLog {
-  id        String   @id @default(uuid())
+  id        String      @id @default(uuid())
   feeling   FeelingEnum @default(NEUTRAL)
-  content   String? 
-  createdAt DateTime @default(now())
-  
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  content   String?
+  createdAt DateTime    @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }

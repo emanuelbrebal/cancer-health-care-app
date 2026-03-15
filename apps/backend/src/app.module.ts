@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './user/user.module';
@@ -8,10 +7,31 @@ import { BooksModule } from './media/books/books.module';
 import { LeisuresModule } from './leisures/leisures.module';
 import { MoviesModule } from './media/movies/movies.module';
 import { SeriesModule } from './media/series/series.module';
+import { CommunitiesModule } from './social/communities/communities.module';
+import { TopicsModule } from './social/topics/topics.module';
+import { PostsModule } from './social/posts/posts.module';
+import { CommentsModule } from './social/comments/comments.module';
+import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, BooksModule, MoviesModule, SeriesModule, LeisuresModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    // Social Modules
+    CommunitiesModule,
+    TopicsModule,
+    PostsModule,
+    CommentsModule,
+    // Media Modules
+    BooksModule,
+    MoviesModule,
+    SeriesModule,
+    LeisuresModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
-export class AppModule {}
+export class AppModule { }
