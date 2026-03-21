@@ -5,6 +5,7 @@ export const commonStackOptions: NativeStackNavigationOptions = {
     headerTintColor: 'white',
     headerTransparent: true,
     headerTitle: "",
+    headerShadowVisible: false, 
     contentStyle: {
         backgroundColor: 'transparent',
         justifyContent: 'flex-end',

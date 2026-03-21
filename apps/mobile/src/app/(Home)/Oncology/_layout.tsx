@@ -8,8 +8,8 @@ import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Área Oncológica" },
-    { name: "Motivational/index", title: "Motivação Diária" },
-    { name: "Motivational/CaringTheCaretaker/index", title: "Cuidar de quem Cuida" },
+    { name: "Motivational/Patient/index", title: "Motivação Diária" },
+    { name: "Motivational/CaringTheCaregiver/index", title: "Cuidar de quem Cuida" },
     { name: "Nutrition/index", title: "Nutrição" },
     { name: "Sleep/index", title: "Cuidados com o Sono" },
     { name: "PhysicalExercises/index", title: "Exercícios Físicos" },

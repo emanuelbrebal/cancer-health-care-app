@@ -243,20 +243,28 @@ model BookDetail {
 // ==============================
 // MODELS: PERSONAL AREA
 // ==============================
-enum FeelingEnum {
-  VERY_UNHAPPY
-  UNHAPPY
-  NEUTRAL
-  HAPPY
-  VERY_HAPPY
+model DailyLog {
+  id        String   @id @default(uuid())
+  title     String   @db.VarChar(150)
+  content   String   @db.VarChar(2000)
+  
+  emotes    String[] 
+  
+  date      DateTime @default(now()) @db.Date 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
 }
 
-model DailyLog {
-  id        String      @id @default(uuid())
-  feeling   FeelingEnum @default(NEUTRAL)
-  content   String?
-  createdAt DateTime    @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+model DailyLogAudit {
+  id        String   @id @default(uuid())
+  logId     String
+  userId    String
+  action    String   
+  timestamp DateTime @default(now())
 }

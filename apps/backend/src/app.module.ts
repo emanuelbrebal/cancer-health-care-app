@@ -12,6 +12,7 @@ import { TopicsModule } from './social/topics/topics.module';
 import { PostsModule } from './social/posts/posts.module';
 import { CommentsModule } from './social/comments/comments.module';
 import { AppService } from './app.service';
+import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
 
 @Module({
   imports: [
@@ -28,6 +29,8 @@ import { AppService } from './app.service';
     MoviesModule,
     SeriesModule,
     LeisuresModule,
+    //Personal Modules,
+    DailyLogsModule
   ],
   controllers: [AppController],
   providers: [
