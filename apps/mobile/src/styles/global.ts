@@ -1,13 +1,14 @@
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 import { Colors } from "../constants/Colors";
+import { ImageStyle } from 'react-native';
 
 export const baseText: TextStyle = {
     fontFamily: 'Montserrat',
 }
 
-const bigImageContainer = {
-    height: 230,
-    width: 160,
+const bigImageContainer: ImageStyle = {
+    height: 320, 
+    width: '100%', 
 };
 
 const rectangleHelper: ViewStyle = {
@@ -21,6 +22,7 @@ const rectangleHelper: ViewStyle = {
 const container: ViewStyle = {
     flex: 1,
     backgroundColor: 'transparent',
+    elevation: 0
 }
 
 export const globalStyles = StyleSheet.create({
@@ -59,14 +61,13 @@ export const globalStyles = StyleSheet.create({
     titleContainer: {
         textAlign: 'left',
         justifyContent: 'flex-start',
-        paddingTop: 10,
         paddingLeft: 10,
         paddingRight: 10
     },
     dynamicContent: {
         flex: 1,
         width: '100%',
-        marginVertical: 10,
+        height: '100%',
     },
     scrollContainer: {
         flexGrow: 1,
