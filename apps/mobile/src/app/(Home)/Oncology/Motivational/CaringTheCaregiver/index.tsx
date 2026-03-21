@@ -5,12 +5,12 @@ import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/con
 import { globalStyles } from '@/src/styles/global';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-export default function CaringTheCaretaker() {
+export default function CaringTheCaregiver() {
     return (
         <ScrollView contentContainerStyle={globalStyles.scrollContainer}
             showsVerticalScrollIndicator={true}>
             <View style={styles.container}>
-                <HorizontalBanner imagePath={require('@assets/images/Banners/caringTheCaretakerBanner.png')} />
+                <HorizontalBanner imagePath={require('@assets/images/Banners/caringTheCaregiverBanner.png')} />
                 
             </View>
         </ScrollView >

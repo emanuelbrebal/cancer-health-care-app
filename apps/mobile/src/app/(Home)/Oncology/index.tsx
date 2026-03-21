@@ -7,8 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeOncology() {
   const motivationalNavigationItems: CardItem[] = [
-    { id: '1', title: 'Pacientes', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology/Motivational' },
-    { id: '2', title: 'Cuidadores', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaretaker.png'), route: '/Oncology/Motivational/CaringTheCaretaker' },
+    { id: '1', title: 'Pacientes', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology/Motivational/Patient' },
+    { id: '2', title: 'Cuidadores', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaregiver.png'), route: '/Oncology/Motivational/CaringTheCaregiver' },
   ];
   const oncologyNavigationItems: CardItem[] = [
     { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/MentalHealth/Meditation' },

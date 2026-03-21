@@ -1,7 +1,6 @@
-import { Link } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function CaringTheCaretaker() {
+export default function CaringTheCaregiver() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Cuidar de quem Cuida - Saúde Mental</Text>
