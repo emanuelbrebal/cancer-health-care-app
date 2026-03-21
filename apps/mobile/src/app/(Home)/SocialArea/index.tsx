@@ -15,9 +15,10 @@ export default function HomeSocialArea() {
   }
 
   return (
-    <SafeAreaView style={[globalStyles.scrollContainer]}>
-        <ImageContainer imagePath={require('@assets/images/Home/blueMascotPlaceholder.png')} />
+    <SafeAreaView style={[globalStyles.startContainer]}>
+      <ImageContainer imagePath={require('@/assets/images/Home/forumPlaceholder.png')} />
       <View style={styles.content}>
+
         <Text style={styles.title}>
           A Comunidade OncoMente
         </Text>
