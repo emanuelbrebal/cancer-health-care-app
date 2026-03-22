@@ -5,7 +5,28 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { globalStyles } from '@/src/styles/global';
 import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
 
-const NAV_BUTTONS = [
+export type AppRoutes = 
+  | '/PersonalArea/Diary'
+  | '/PersonalArea/Treatment'
+  | '/PersonalArea/Mascot'
+  | '/PersonalArea/Calendar'
+  | '/PersonalArea/ReportsArea';
+
+export type IconLibrary = 'Feather' | 'Material';
+export interface NavButtonProps {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  lib: IconLibrary;
+  route: AppRoutes; 
+  bgColor: string;
+  iconBg: string;
+  borderColor: string;
+  color: string;
+}
+
+const NAV_BUTTONS: NavButtonProps[] = [
   {
     id: '1',
     title: 'Diário',
@@ -53,6 +74,18 @@ const NAV_BUTTONS = [
     iconBg: '#FFEBD6',
     borderColor: '#facea7', 
     color: '#E67E22'
+  },
+  {
+    id: '5',
+    title: 'Sofreu discriminação?',
+    subtitle: 'Veja canais de denúncia',
+    icon: 'shield', 
+    lib: 'Feather',
+    route: '/PersonalArea/ReportsArea', 
+    bgColor: '#FEF2F2', 
+    iconBg: '#FDEAEA', 
+    borderColor: '#F8B4B4', 
+    color: '#D32F2F' 
   }
 ];
 
@@ -178,8 +211,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconWrapper: {
-    width: 46,
-    height: 46,
+    width: 40,
+    height: 40,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
