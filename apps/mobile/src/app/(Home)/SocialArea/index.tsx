@@ -16,7 +16,7 @@ export default function HomeSocialArea() {
 
   return (
     <SafeAreaView style={[globalStyles.startContainer]}>
-      <ImageContainer imagePath={require('@/assets/images/Home/forumPlaceholder.png')} />
+      <ImageContainer imagePath={require('@/assets/images/Home/forumPlaceholder.png')} reverted={true} />
       <View style={styles.content}>
 
         <Text style={styles.title}>
