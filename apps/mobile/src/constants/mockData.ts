@@ -10,7 +10,7 @@ export type RecomendationType = {
 };
 
 export const mockTopicsData: RecomendationType[] = [
-    { id: 1, title: 'Mindfulness Diário', description: 'Técnicas práticas para reduzir a ansiedade no dia a dia.', route:"/SocialArea/Forum/Topics"},
+    { id: 1, title: 'Mindfulness Diário', description: 'Técnicas práticas para reduzir a ansiedade no dia a dia.', route: "/SocialArea/Forum/Posts" },
     { id: 2, title: 'Nutrição e Energia', description: 'Alimentos que melhoram sua disposição e foco no trabalho.' },
     { id: 3, title: 'Minimalismo Digital', description: 'Como usar a tecnologia de forma mais consciente e focada.' },
     { id: 4, title: 'Rotina Matinal', description: 'Hábitos simples para começar o dia com mais produtividade.' },
@@ -23,6 +23,14 @@ export const mockCommunitiesData: RecomendationType[] = [
     { id: 3, title: 'Desafio 30 Dias', description: 'Grupo de motivação mútua para criar novos hábitos saudáveis.' },
     { id: 4, title: 'Meditação em Grupo', description: 'Encontros virtuais semanais para práticas guiadas.' },
     { id: 5, title: 'Tech Detox', description: 'Dicas e relatos para desconectar e aproveitar o mundo offline.' },
+];
+
+export const mockPostsData: RecomendationType[] = [
+    { id: 1, title: 'Mariana Silva no Clube do Livro', description: '"Hábitos Atômicos" mudou minha percepção sobre rotina. Alguém quer discutir o capítulo 3?' },
+    { id: 2, title: 'Lucas Oliveira no Tech Detox', description: 'Primeiro final de semana sem redes sociais concluído. Sensação de liberdade indescritível!' },
+    { id: 3, title: 'Ana Beatriz no Ioga para Iniciantes', description: 'Dica: Seus calcanhares não precisam tocar o chão no cachorro olhando para baixo. Foque na coluna!'},
+    { id: 4, title: 'Ricardo Santos no Desafio 30 Dias', description: 'Dia 15/30: A constância vence o talento. 3 litros de água batidos hoje! 💧' },
+    { id: 5, title: 'Carla Dias no Meditação em Grupo', description: 'Lembrete: Nossa meditação guiada começa em 15 minutos. Preparem o ambiente.' },
 ];
 
 export const meditationData: RecomendationType[] = [

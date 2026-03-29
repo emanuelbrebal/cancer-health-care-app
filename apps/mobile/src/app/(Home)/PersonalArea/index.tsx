@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'; // Removido ScrollView
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { globalStyles } from '@/src/styles/global';
 import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
 
@@ -11,11 +11,11 @@ const NAV_BUTTONS = [
     title: 'Diário',
     subtitle: 'Diga como foi seu dia',
     icon: 'edit-3',
-    lib: 'Feather', 
+    lib: 'Feather',
     route: '/PersonalArea/Diary',
-    bgColor: '#F5F0FA', 
+    bgColor: '#F5F0FA',
     iconBg: '#E9DEFA',
-    borderColor: '#d2aef0', 
+    borderColor: '#d2aef0',
     color: '#8257E5'
   },
   {
@@ -25,21 +25,21 @@ const NAV_BUTTONS = [
     icon: 'plus-circle',
     lib: 'Feather',
     route: '/PersonalArea/Treatment',
-    bgColor: '#F0F6FC', 
+    bgColor: '#F0F6FC',
     iconBg: '#E1EDF9',
-    borderColor: '#a4c9f1', 
+    borderColor: '#a4c9f1',
     color: '#2980B9'
   },
   {
     id: '3',
     title: 'Mascote',
     subtitle: 'Converse com nosso mascote',
-    icon: 'robot-happy-outline', 
-    lib: 'Material', 
+    icon: 'robot-happy-outline',
+    lib: 'Material',
     route: '/PersonalArea/Mascot',
-    bgColor: '#F0F7F2', 
+    bgColor: '#F0F7F2',
     iconBg: '#E0F0E4',
-    borderColor: '#93e0ad', 
+    borderColor: '#93e0ad',
     color: '#1e9951'
   },
   {
@@ -49,10 +49,22 @@ const NAV_BUTTONS = [
     icon: 'calendar',
     lib: 'Feather',
     route: '/PersonalArea/Calendar',
-    bgColor: '#FFF7F0', 
+    bgColor: '#FFF7F0',
     iconBg: '#FFEBD6',
-    borderColor: '#facea7', 
+    borderColor: '#facea7',
     color: '#E67E22'
+  },
+  {
+    id: '5',
+    title: 'Sofreu discriminação?',
+    subtitle: 'Veja canais de denúncia',
+    icon: 'shield',
+    lib: 'Feather',
+    route: '/PersonalArea/ReportsArea',
+    bgColor: '#FEF2F2',
+    iconBg: '#FDEAEA',
+    borderColor: '#F8B4B4',
+    color: '#D32F2F'
   }
 ];
 
@@ -83,13 +95,13 @@ export default function AreaPessoalScreen() {
 
           <View style={styles.listContainer}>
             {NAV_BUTTONS.map((button) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={button.id}
                 style={[
-                  styles.navCard, 
+                  styles.navCard,
                   { backgroundColor: button.bgColor, borderColor: button.borderColor }
-                ]} 
-                onPress={() => router.push(button.route)}
+                ]}
+                onPress={() => router.push(button.route as any)}
               >
                 <View style={styles.navContent}>
                   <View style={[styles.iconWrapper, { backgroundColor: button.iconBg }]}>
@@ -99,7 +111,7 @@ export default function AreaPessoalScreen() {
                       <Feather name={button.icon as any} size={22} color={button.color} />
                     )}
                   </View>
-                  
+
                   <View style={styles.textGroup}>
                     <Text style={[styles.cardTitle, { color: button.color }]}>{button.title}</Text>
                     <Text style={[styles.cardSubText, { color: button.color, opacity: 0.8 }]}>{button.subtitle}</Text>
@@ -126,9 +138,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   staticContent: {
-    flex: 1, 
+    flex: 1,
     padding: 24,
-    paddingBottom: 30, 
+    paddingBottom: 30,
   },
   settingsFullButton: {
     width: '100%',
@@ -159,17 +171,17 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   listContainer: {
-    flex: 1, 
+    flex: 1,
     gap: 12,
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
   },
   navCard: {
-    width: '100%', 
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 18,
-    padding: 16, 
+    padding: 14,
     borderWidth: 1,
   },
   navContent: {

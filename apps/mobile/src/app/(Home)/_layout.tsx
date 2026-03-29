@@ -72,7 +72,7 @@ export default function HomeLayout() {
 
             <Tabs.Screen name="SocialArea"
                 options={{
-                    tabBarLabel: "Área Social",
+                    tabBarLabel: "Comunidade",
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "chatbubble-ellipses", "chatbubble-ellipses-outline"
                     ),
