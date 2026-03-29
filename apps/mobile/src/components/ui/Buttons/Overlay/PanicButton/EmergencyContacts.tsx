@@ -1,16 +1,20 @@
-import React from 'react';
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Linking from 'expo-linking';
-import { Colors } from '@/src/constants/Colors';
 import { EmergencyContact } from '@/src/interfaces/EmergencyContact';
+import { AccordionCard } from '../../../Accordion/AccordionCard';
 
 interface EmergencyContactsListProps {
     data: EmergencyContact[];
 }
 
 export default function EmergencyContacts({ data }: EmergencyContactsListProps) {
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
-    // lembrete: antes de publicar o aplicativo colocar os números reais.
+    const toggleExpand = (id: string) => {
+        setExpandedId(prevId => (prevId === id ? null : id));
+    };
+
     const openDialer = (phoneNumber: string) => {
         if (!phoneNumber) return;
         const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
@@ -25,38 +29,36 @@ export default function EmergencyContacts({ data }: EmergencyContactsListProps) 
         });
     };
 
-    const renderCard = ({ item }: { item: EmergencyContact }) => (
-        <View style={styles.card}>
-            <View style={styles.textContainer}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                
-                {item.description ? (
-                    <Text style={styles.cardDescription}>
-                        {item.description}
-                    </Text>
-                ) : null}
-            </View>
+    const renderCard = ({ item }: { item: EmergencyContact }) => {
+        const isExpanded = expandedId === item.id;
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                    activeOpacity={0.7}
-                    onPress={() => openDialer(item.phoneNumber)}
-                    style={styles.actionButton}
-                >
-                    <Text style={styles.buttonText}>Ligar</Text>
-                </TouchableOpacity>
+        return (
+            <View style={styles.cardWrapper}>
+                <AccordionCard
+                    title={item.title}
+                    description={item.description || "Nenhuma descrição disponível."}
+                    isExpanded={isExpanded}
+                    onToggle={() => toggleExpand(String(item.id))}
+                    actionText="Ligar"
+                    actionIcon="phone"
+                    onAction={() => openDialer(item.phoneNumber)}
+                    actionButtonColor="#0284C7"
+                    expandedBorderColor="#0284C7" 
+                    chevronColor="#9CA3AF"       
+                />
             </View>
-        </View>
-    );
+        );
+    };
 
     return (
         <View style={styles.container}>
             <FlatList
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => String(item.id)}
                 renderItem={renderCard}
                 contentContainerStyle={styles.listContent}
                 scrollEnabled={false}
+                ListEmptyComponent={<Text style={styles.emptyText}>Nenhum contato encontrado.</Text>}
             />
         </View>
     );
@@ -65,62 +67,18 @@ export default function EmergencyContacts({ data }: EmergencyContactsListProps) 
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        flex: 1,
     },
     listContent: {
         paddingHorizontal: 5,
         paddingBottom: 20,
     },
-    card: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        
-        padding: 16,
-        borderRadius: 16,
-        backgroundColor: Colors.white,
-        
-        borderWidth: 1,
-        borderColor: Colors.cyan || '#E0E0E0',
-        marginBottom: 10,
-        elevation: 2,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
+    cardWrapper: {
+        marginBottom: 12,
     },
-    textContainer: {
-        flex: 1,
-        marginRight: 12, 
-        maxWidth: '70%'
-    },
-    buttonContainer: {
-        flexShrink: 0, 
-    },
-    cardTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: Colors.black,
-        marginBottom: 4,
-    },
-    cardDescription: {
-        fontSize: 13,
+    emptyText: {
+        textAlign: 'center',
         color: '#666',
-        lineHeight: 18,
-    },
-    actionButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 16, 
-        backgroundColor: '#F0F9FF', 
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#BAE6FD', 
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    buttonText: {
-        color: '#0284C7', 
-        fontWeight: 'bold',
-        fontSize: 14,
+        marginTop: 20,
     }
 });

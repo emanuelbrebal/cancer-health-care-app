@@ -5,7 +5,6 @@ export const commonAreaLayoutStyles = StyleSheet.create({
     flex: 1,
     maxHeight: '93%',
     backgroundColor: 'white',
-    paddingHorizontal: 20,
     borderTopRightRadius: 50,
     borderTopLeftRadius: 50,
     width: '100%',

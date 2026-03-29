@@ -71,10 +71,10 @@ const styles = StyleSheet.create({
   },
   card: {
     height: 55,
-    width: 'auto',
     minWidth: '49%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 12,
     borderRadius: 24,
     borderWidth: 2,

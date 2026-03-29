@@ -7,8 +7,8 @@ export const baseText: TextStyle = {
 }
 
 const bigImageContainer: ImageStyle = {
-    height: 320, 
-    width: '100%', 
+    height: 320,
+    width: '100%',
 };
 
 const rectangleHelper: ViewStyle = {
@@ -22,7 +22,7 @@ const rectangleHelper: ViewStyle = {
 const container: ViewStyle = {
     flex: 1,
     backgroundColor: 'transparent',
-    elevation: 0
+    elevation: 0,
 }
 
 export const globalStyles = StyleSheet.create({
@@ -62,7 +62,8 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'left',
         justifyContent: 'flex-start',
         paddingLeft: 10,
-        paddingRight: 10
+        paddingRight: 10,
+        paddingVertical: 10,
     },
     dynamicContent: {
         flex: 1,
@@ -74,6 +75,7 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: 'transparent',
         justifyContent: 'flex-start',
         paddingTop: 50,
+        paddingHorizontal: 15
     },
 
     // Generic container for buttons
