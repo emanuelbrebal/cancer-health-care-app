@@ -6,7 +6,7 @@ import { globalStyles } from '@/src/styles/global';
 import { UserProfileCenter } from '@/src/components/ui/UserProfile/ProfileCenter';
 
 const dadosGeral: BaseActionItem[] = [
-  { id: '1', title: 'Editar perfil' },
+  { id: '1', title: 'Editar perfil', route: "/PersonalArea/OnboardingForm" },
   { id: '2', title: 'Editar notificações' },
   { id: '3', title: 'Gerenciar preferências' },
   { id: '4', title: 'Gerenciamento do mascote interativo' },
@@ -17,7 +17,8 @@ const dadosSeguranca: BaseActionItem[] = [
   { id: '6', title: 'Histórico de atividade' },
   { id: '7', title: 'LGPD e Termos de uso' },
   { id: '8', title: 'Mudar senha' },
-  { id: '9', title: 'Desativar conta', textColor: '#FF4C4C' },
+  { id: '9', title: 'Sair do aplicativo' },
+  { id: '10', title: 'Desativar conta', textColor: '#FF4C4C' },
 ];
 
 export default function AccountConfigurationIndex() {
