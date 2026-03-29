@@ -7,7 +7,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 
 export default function CommunityTopics() {
     return (
-        <View style={globalStyles.startContainer}>
+        <View style={[globalStyles.scrollContainer, {paddingTop: 70,paddingHorizontal: 0}]}>
             <SearchBar />
 
             <ScrollView

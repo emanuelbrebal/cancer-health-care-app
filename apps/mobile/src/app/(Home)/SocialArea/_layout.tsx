@@ -12,6 +12,10 @@ const screensConfig: ScreenConfig[] = [
     { name: "Forum/Chats/index", title: "Bate-papo" },
     { name: "Forum/Topics/index", title: "Tópicos" },
     { name: "Forum/Communities/index", title: "Comunidades" },
+    { name: "Forum/Posts/index", title: "Publicações" },
+    { name: "Forum/CreationsHub/Community/index", title: "Criar comunidade" },
+    { name: "Forum/CreationsHub/Topics/index", title: "Criar tópico" },
+    { name: "Forum/CreationsHub/Posts/index", title: "Criar publicação" },
 ];
 
 export default function SocialAreaStackLayout() {
