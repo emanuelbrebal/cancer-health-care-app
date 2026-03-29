@@ -10,7 +10,8 @@ import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Área de Saúde Mental" },
-    { name: "CaringTheCaregiver/index", title: "Cuidar de quem cuida" },
+    { name: "Motivational/Patient/index", title: "Motivação diária" },
+    { name: "Motivational/CaringTheCaregiver/index", title: "Cuidar de quem cuida" },
     { name: "Meditation/index", title: "Meditação guiada" },
     { name: "MourningPhases/Presentation/index", title: "O que são as fases do luto" },
     { name: "MourningPhases/Overcoming/index", title: "Como Superar fases do luto" },
