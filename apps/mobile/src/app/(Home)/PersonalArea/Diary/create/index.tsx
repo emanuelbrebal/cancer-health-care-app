@@ -63,7 +63,6 @@ export default function DiaryCreateScreen() {
                             </View>
                         </View>
 
-                        {/* Campo de Visualização (Preview) */}
                         <View style={localStyles.inputSection}>
                             <Text style={[globalStyles.textSecondary, localStyles.sectionTitle]}>
                                 Deixe aqui seus pensamentos:
@@ -73,7 +72,7 @@ export default function DiaryCreateScreen() {
                                     style={localStyles.mainTextArea}
                                     placeholder="Comece a escrever seus pensamentos aqui..."
                                     multiline
-                                    textAlignVertical="top" // Garante que o texto comece no topo no Android
+                                    textAlignVertical="top" 
                                     value={diaryEntry}
                                     onChangeText={setDiaryEntry}
                                     maxLength={2000}
@@ -83,7 +82,6 @@ export default function DiaryCreateScreen() {
                         </View>
                     </ScrollView>
 
-                    {/* Barra de Input Estilo Chat */}
                     <View style={localStyles.footerContainer}>
                         <TouchableOpacity
                             style={[

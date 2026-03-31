@@ -62,7 +62,6 @@ export default function CreateTreatment() {
 
                 <View style={styles.formContainer}>
 
-                    {/* Nome do Remédio */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Nome do Remédio</Text>
                         <TextInput
@@ -75,7 +74,6 @@ export default function CreateTreatment() {
                         />
                     </View>
 
-                    {/* Data e Hora na mesma linha */}
                     <View style={styles.row}>
                         <View style={[styles.inputWrapper, { flex: 1 }]}>
                             <Text style={styles.label}>Hora Início</Text>
@@ -101,7 +99,6 @@ export default function CreateTreatment() {
                         </View>
                     </View>
 
-                    {/* Frequência */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Frequência</Text>
                         <View style={styles.chipGrid}>
@@ -127,7 +124,6 @@ export default function CreateTreatment() {
 
                     <View style={styles.divider} />
 
-                    {/* Médico */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Médico (Opcional)</Text>
                         <TextInput
@@ -147,7 +143,6 @@ export default function CreateTreatment() {
                         />
                     </View>
 
-                    {/* Hospital */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Hospital (Opcional)</Text>
                         <TextInput

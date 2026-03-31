@@ -6,7 +6,6 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   Alert, 
-  Animated 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -22,7 +21,6 @@ const EMOTE_MAP: any = {
   bad:        { icon: 'emoticon-confused-outline',color: '#BDBFFF', label: 'Ruim' },
 };
 
-// Mock de dados seguindo o esquema DailyLog da imagem
 const MOCK_DIARIOS = [
   { 
     id: 'uuid-1', 
@@ -58,7 +56,6 @@ export default function DiaryIndex() {
   const headerHeight = useHeaderHeight();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  // Formatação de data amigável (Ex: 21 de Março, 2026)
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: 'numeric',
@@ -85,7 +82,6 @@ export default function DiaryIndex() {
   return (
     <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
       
-      {/* Header Fixo */}
       <View style={[globalStyles.betweenContainer, styles.headerPadding]}>
         <View style={{ flex: 1 }}>
           <Text style={[globalStyles.textPrimary, { color: Colors.purplePrimary }]}>Meus diários</Text>
@@ -118,7 +114,6 @@ export default function DiaryIndex() {
                 activeOpacity={0.7}
               >
                 <View style={styles.rowAlign}>
-                  {/* Badge de Humor com Ícone da Biblioteca */}
                   <View style={[styles.emojiBadge, { backgroundColor: emoteInfo.color }]}>
                     <MaterialCommunityIcons 
                       name={isExpanded ? (emoteInfo.icon.replace('-outline', '') as any) : emoteInfo.icon as any} 
@@ -144,7 +139,6 @@ export default function DiaryIndex() {
                 />
               </TouchableOpacity>
 
-              {/* Conteúdo Expandido (Gaveta) */}
               {isExpanded && (
                 <View style={styles.expandedArea}>
                   <View style={styles.contentContainer}>

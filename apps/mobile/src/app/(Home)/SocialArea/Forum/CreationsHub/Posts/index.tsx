@@ -10,7 +10,6 @@ import { SelectWithIcon } from '@/src/components/ui/Inputs/SelectWithIcon';
 export default function CreatePostScreen() {
   const router = useRouter();
 
-  // Estados baseados no Prisma: Post
   const [content, setContent] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [selectedTopicId, setSelectedTopicId] = useState<string>('');
@@ -33,7 +32,6 @@ export default function CreatePostScreen() {
     <View style={globalStyles.scrollContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
-        {/* Seleção de Tópico (Obrigatório) */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Vincule um tópico: </Text>
           <SelectWithIcon

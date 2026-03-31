@@ -16,14 +16,14 @@ export default function EditTreatment() {
     const { id, currentNome, currentFreq, currentHora, currentFim, currentMedico, currentHospital } = useLocalSearchParams();
     const headerHeight = useHeaderHeight();
 
-    // Estados inicializados com os valores vindos por parâmetro (ou strings vazias)
+  
     const [nome, setNome] = useState(currentNome || '');
     const [frequencia, setFrequencia] = useState(currentFreq || FREQUENCIAS[2]);
     const [horaInicio, setHoraInicio] = useState(currentHora || '');
     const [dataFim, setDataFim] = useState(currentFim || '');
 
     const [nomeMedico, setNomeMedico] = useState(currentMedico || '');
-    const [contatoMedico, setContatoMedico] = useState(''); // Se houver contato salvo
+    const [contatoMedico, setContatoMedico] = useState(''); salvo
     const [nomeHospital, setNomeHospital] = useState(currentHospital || '');
 
     const handleSaveEdit = () => {
@@ -81,7 +81,6 @@ export default function EditTreatment() {
 
                 <View style={styles.formContainer}>
 
-                    {/* Nome do Remédio */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Nome do Remédio</Text>
                         <TextInput
@@ -94,7 +93,6 @@ export default function EditTreatment() {
                         />
                     </View>
 
-                    {/* Data e Hora na mesma linha */}
                     <View style={styles.row}>
                         <View style={[styles.inputWrapper, { flex: 1 }]}>
                             <Text style={styles.label}>Hora Início</Text>
@@ -120,7 +118,6 @@ export default function EditTreatment() {
                         </View>
                     </View>
 
-                    {/* Frequência */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Frequência Atualizada</Text>
                         <View style={styles.chipGrid}>
@@ -146,7 +143,6 @@ export default function EditTreatment() {
 
                     <View style={styles.divider} />
 
-                    {/* Médico */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Médico (Opcional)</Text>
                         <TextInput
@@ -166,7 +162,6 @@ export default function EditTreatment() {
                         />
                     </View>
 
-                    {/* Hospital */}
                     <View style={styles.inputWrapper}>
                         <Text style={styles.label}>Hospital (Opcional)</Text>
                         <TextInput

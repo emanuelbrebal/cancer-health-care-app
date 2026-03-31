@@ -5,7 +5,6 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 
-// Configuração para o calendário ficar em Português
 LocaleConfig.locales['pt-br'] = {
   monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
   monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
@@ -27,8 +26,6 @@ export default function CalendarioInterativo() {
           contentContainerStyle={{ paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
         >
-            {/* transformar isso em componente */}
-          {/* Header com Banner de Conscientização */}
           <View style={[globalStyles.titleContainer, { paddingHorizontal: 20 }]}>
             <Text style={[globalStyles.textPrimary, { fontSize: 24, fontWeight: 'bold' }]}>Meu Calendário</Text>
             
@@ -50,7 +47,6 @@ export default function CalendarioInterativo() {
             </View>
           </View>
 
-          {/* Card do Calendário */}
           <View style={{ 
             margin: 10, 
             borderRadius: 10, 
@@ -88,7 +84,6 @@ export default function CalendarioInterativo() {
             />
           </View>
 
-          {/* Seção de Progresso */}
           <View style={{ paddingHorizontal: 25 }}>
             <Text style={[globalStyles.title, { marginBottom: 15 }]}>Progresso do Tratamento</Text>
             
@@ -120,7 +115,6 @@ export default function CalendarioInterativo() {
               <Text style={{ color: '#999', fontSize: 13 }}>{totalDias - diasCumpridos} dias restantes</Text>
             </View>
             
-            {/* Feedback do Mascote */}
             <View style={{ 
               marginTop: 25, 
               padding: 18, 

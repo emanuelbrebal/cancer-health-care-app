@@ -18,7 +18,6 @@ export default function OnboardingProfileScreen() {
     return (
         <ScrollView contentContainerStyle={[globalStyles.scrollContainer, styles.paddingGeral]}>
 
-            {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity>
                     <Feather name="arrow-left" size={24} color="#FFFFFF" />
@@ -27,7 +26,6 @@ export default function OnboardingProfileScreen() {
                 <View style={{ width: 24 }} />
             </View>
 
-            {/* Avatar Section */}
             <View style={styles.avatarContainer}>
                 <View style={styles.avatarWrapper}>
                     <Image
@@ -40,10 +38,8 @@ export default function OnboardingProfileScreen() {
                 </View>
             </View>
 
-            {/* Formulário */}
             <View style={globalStyles.formContainer}>
 
-                {/* Uso do SelectWithIcon */}
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Como deseja ser tratado?</Text>
                     <SelectWithIcon
@@ -82,7 +78,6 @@ export default function OnboardingProfileScreen() {
 
             </View>
 
-            {/* Botões de Ação */}
             <View style={styles.actionsContainer}>
                 <TouchableOpacity style={styles.primaryButton}>
                     <Text style={styles.primaryButtonText}>Salvar Informações</Text>
