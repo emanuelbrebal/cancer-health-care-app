@@ -11,8 +11,9 @@ Este projeto surgiu da necessidade de democratizar o conhecimento sobre prevenç
 
 O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
-- **Back-end:** TypeScript, Nest.js (Gerenciador)
-- **Front-end:** React Native, React (Gerenciador)
+- **Back-end:** TypeScript, Nest.js.
+- **Front-end (Gerenciador):** React. 
+- **Aplicativo móvel:** React Native.
 - **Banco de Dados:** PostgreSQL, PrismaORM.
 - **Outros:** Docker, Docker-compose. 
 
