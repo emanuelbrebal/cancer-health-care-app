@@ -1,8 +1,9 @@
 import { HeaderLogo } from '@/src/components/home/HeaderLogo';
 import { ScreenTitle } from '@/src/components/ui/ScreenTitle';
 import { Colors } from '@/src/constants/Colors';
+import { useAuthStore } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { StyleSheet, View } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -23,7 +24,8 @@ const renderTabBarIcon = (focused: boolean, color: any, activeIcon: any, inactiv
 );
 
 export default function HomeLayout() {
-
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const router = useRouter();
     return (
         <Tabs screenOptions={{
             sceneStyle: {
@@ -77,6 +79,15 @@ export default function HomeLayout() {
                         focused, color, "chatbubble-ellipses", "chatbubble-ellipses-outline"
                     ),
                 }}
+                listeners={{
+                    tabPress: (e) => {
+                        if (!isAuthenticated) {
+                            e.preventDefault();
+
+                            router.push('/SocialArea');
+                        }
+                    },
+                }}
             />
 
             <Tabs.Screen name="PersonalArea"
@@ -85,6 +96,15 @@ export default function HomeLayout() {
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
                         focused, color, "person-circle", "person-circle-outline"
                     ),
+                }}
+                listeners={{
+                    tabPress: (e) => {
+                        if (!isAuthenticated) {
+                            e.preventDefault();
+
+                            router.push('/PersonalArea');
+                        }
+                    },
                 }}
             />
         </Tabs>

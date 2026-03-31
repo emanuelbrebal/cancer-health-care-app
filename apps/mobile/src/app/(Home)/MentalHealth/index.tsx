@@ -4,6 +4,7 @@ import { CardItem } from '@/src/interfaces/CardItem';
 import { globalStyles } from '@/src/styles/global';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { createAuthStore } from '../../../../../../packages/shared/store/useAuthStore';
 
 export enum UserRole {
   PATIENT = 'PATIENT',
@@ -52,15 +53,15 @@ export default function HomeMentalHealth() {
   ];
 
   // alterar quando colocar o zustand
-  // const { user } = useAuth();
+  const { user } = createAuthStore();
 
-  // const userSpecificNavigationItems = motivationalNavigationItems.filter(
-  //   item => item.allowedRole === user?.role
-  // );
+  const userSpecificNavigationItems = motivationalNavigationItems.filter(
+    item => item.allowedRole === user?.role
+  );
 
-  // <NavigationGrid
-  //   data={userSpecificNavigationItems}
-  // />
+  <NavigationGrid
+    data={userSpecificNavigationItems}
+  />
 
   return (
 

@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@nestjs/cli": "^11.0.17",
+    "@nestjs/core": "^11.1.17",
+    "@nestjs/testing": "^11.1.17",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/native": "^7.1.8",
     "axios": "^1.13.5",
     "expo": "~54.0.22",
@@ -24,7 +28,9 @@
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-web-browser": "~15.0.9",
+    "lerna": "9.0.7",
     "lodash": "^4.17.21",
+    "prisma": "7.6.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
@@ -39,7 +45,7 @@
   "devDependencies": {
     "@types/react": "~19.1.0",
     "babel-plugin-module-resolver": "^5.0.2",
-    "expo-module-scripts": "^5.0.8",
+    "expo-module-scripts": "^3.0.5",
     "react-test-renderer": "19.1.0",
     "typescript": "~5.9.2"
   },

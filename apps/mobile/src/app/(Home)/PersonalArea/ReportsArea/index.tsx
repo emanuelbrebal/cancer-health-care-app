@@ -75,7 +75,7 @@ export default function ReportsAreaScreen() {
   };
 
   return (
-    <View style={globalStyles.startContainer}>
+    <View style={globalStyles.scrollContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
         <View style={styles.section}>

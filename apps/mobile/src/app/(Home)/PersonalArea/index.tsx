@@ -1,211 +1,78 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
+import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
+import { ImageContainer } from '@/src/components/ui/Images/ImageContainer';
 import { globalStyles } from '@/src/styles/global';
-import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
+import { router } from 'expo-router';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const NAV_BUTTONS = [
-  {
-    id: '1',
-    title: 'Diário',
-    subtitle: 'Diga como foi seu dia',
-    icon: 'edit-3',
-    lib: 'Feather',
-    route: '/PersonalArea/Diary',
-    bgColor: '#F5F0FA',
-    iconBg: '#E9DEFA',
-    borderColor: '#d2aef0',
-    color: '#8257E5'
-  },
-  {
-    id: '2',
-    title: 'Tratamentos',
-    subtitle: 'Gerencie lembretes',
-    icon: 'plus-circle',
-    lib: 'Feather',
-    route: '/PersonalArea/Treatment',
-    bgColor: '#F0F6FC',
-    iconBg: '#E1EDF9',
-    borderColor: '#a4c9f1',
-    color: '#2980B9'
-  },
-  {
-    id: '3',
-    title: 'Mascote',
-    subtitle: 'Converse com nosso mascote',
-    icon: 'robot-happy-outline',
-    lib: 'Material',
-    route: '/PersonalArea/Mascot',
-    bgColor: '#F0F7F2',
-    iconBg: '#E0F0E4',
-    borderColor: '#93e0ad',
-    color: '#1e9951'
-  },
-  {
-    id: '4',
-    title: 'Calendário Interativo',
-    subtitle: 'Acompanhe seus lembretes',
-    icon: 'calendar',
-    lib: 'Feather',
-    route: '/PersonalArea/Calendar',
-    bgColor: '#FFF7F0',
-    iconBg: '#FFEBD6',
-    borderColor: '#facea7',
-    color: '#E67E22'
-  },
-  {
-    id: '5',
-    title: 'Sofreu discriminação?',
-    subtitle: 'Veja canais de denúncia',
-    icon: 'shield',
-    lib: 'Feather',
-    route: '/PersonalArea/ReportsArea',
-    bgColor: '#FEF2F2',
-    iconBg: '#FDEAEA',
-    borderColor: '#F8B4B4',
-    color: '#D32F2F'
+export default function HomePersonalArea() {
+  function redirectRegister() {
+    router.push('/(auth)/RegisterScreen');
   }
-];
+  
+  function handleLogin() {
+    router.push('/PersonalArea/Hub'); 
+  }
 
-export default function AreaPessoalScreen() {
   return (
-    <View style={globalStyles.startContainer}>
-      <View style={styles.mainCard}>
-        <View style={styles.staticContent}>
+    <SafeAreaView style={[globalStyles.startContainer]}>
+     
+      <ImageContainer imagePath={require('@assets/images/Home/purpleMascotSunglasses.png')} />
+      
+      <View style={styles.content}>
+        <Text style={styles.title}>
+          Sua Área Pessoal OncoMente
+        </Text>
 
-          <UserProfileRow
-            name="Barbara da Silva"
-            email="B.daSilva@mail.com"
-          />
+        <Text style={styles.descriptionText}>
+          Um espaço exclusivo para sua jornada. Registre suas emoções no Diário, gerencie Tratamentos, acompanhe seu Calendário e converse com nosso Mascote!
+        </Text>
 
-          <TouchableOpacity 
-            style={styles.settingsFullButton}
-            onPress={() => router.push('/PersonalArea/AccountConfigurations')}
-            activeOpacity={0.6}
-          >
-            <View style={styles.settingsInner}>
-              <Feather name="settings" size={18} color="#888" />
-              <Text style={styles.settingsButtonText}>Configurações da Conta</Text>
-            </View>
-            <Feather name="chevron-right" size={16} color="#CCC" />
-          </TouchableOpacity>
+        <Text style={styles.callToAction}>
+          Acesse suas ferramentas agora!
+        </Text>
 
-          <View style={styles.divider} />
-
-          <View style={styles.listContainer}>
-            {NAV_BUTTONS.map((button) => (
-              <TouchableOpacity
-                key={button.id}
-                style={[
-                  styles.navCard,
-                  { backgroundColor: button.bgColor, borderColor: button.borderColor }
-                ]}
-                onPress={() => router.push(button.route as any)}
-              >
-                <View style={styles.navContent}>
-                  <View style={[styles.iconWrapper, { backgroundColor: button.iconBg }]}>
-                    {button.lib === 'Material' ? (
-                      <MaterialCommunityIcons name={button.icon as any} size={24} color={button.color} />
-                    ) : (
-                      <Feather name={button.icon as any} size={22} color={button.color} />
-                    )}
-                  </View>
-
-                  <View style={styles.textGroup}>
-                    <Text style={[styles.cardTitle, { color: button.color }]}>{button.title}</Text>
-                    <Text style={[styles.cardSubText, { color: button.color, opacity: 0.8 }]}>{button.subtitle}</Text>
-                  </View>
-                </View>
-                <Feather name="chevron-right" size={20} color={button.color} style={{ opacity: 0.3 }} />
-              </TouchableOpacity>
-            ))}
-          </View>
-
+        <View style={globalStyles.buttonContainer}>
+          <ButtonPrimary title='Criar Conta' action={redirectRegister} />
+          <ButtonOutline title='Entrar' action={handleLogin} />
         </View>
+
+        <Text style={styles.footerText}>
+          Tudo centralizado, gratuito e seguro.
+        </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  mainCard: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    marginTop: 60,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    overflow: 'hidden',
-  },
-  staticContent: {
-    flex: 1,
-    padding: 24,
-    paddingBottom: 30,
-  },
-  settingsFullButton: {
-    width: '100%',
-    flexDirection: 'row',
+  content: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#FAFAFA',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
+    paddingHorizontal: 15,
   },
-  settingsInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000',
+    marginBottom: 10,
   },
-  settingsButtonText: {
-    fontSize: 14,
-    color: '#777',
-    fontWeight: '600',
-    marginLeft: 10,
+  descriptionText: {
+    fontSize: 15, 
+    textAlign: 'center',
+    color: '#333',
+    lineHeight: 22,
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#F0F0F0',
-    marginVertical: 20,
-  },
-  listContainer: {
-    flex: 1,
-    gap: 12,
-    justifyContent: 'flex-start',
-  },
-  navCard: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 18,
-    padding: 14,
-    borderWidth: 1,
-  },
-  navContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconWrapper: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textGroup: {
-    marginLeft: 14,
-    flex: 1,
-  },
-  cardTitle: {
+  callToAction: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 15, 
   },
-  cardSubText: {
-    fontSize: 13,
-    marginTop: 2,
-  },
+  footerText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  }
 });

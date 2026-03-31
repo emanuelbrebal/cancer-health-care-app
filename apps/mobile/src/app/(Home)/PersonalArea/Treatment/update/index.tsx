@@ -23,7 +23,7 @@ export default function EditTreatment() {
     const [dataFim, setDataFim] = useState(currentFim || '');
 
     const [nomeMedico, setNomeMedico] = useState(currentMedico || '');
-    const [contatoMedico, setContatoMedico] = useState(''); salvo
+    const [contatoMedico, setContatoMedico] = useState(''); 
     const [nomeHospital, setNomeHospital] = useState(currentHospital || '');
 
     const handleSaveEdit = () => {

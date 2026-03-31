@@ -16,7 +16,7 @@ const dadosSeguranca: BaseActionItem[] = [
   { id: '5', title: 'Permissões de Usuário' },
   { id: '6', title: 'Histórico de atividade' },
   { id: '7', title: 'LGPD e Termos de uso' },
-  { id: '8', title: 'Mudar senha' },
+  { id: '8', title: 'Mudar senha', route: '/(auth)/RecoverPassword' },
   { id: '9', title: 'Sair do aplicativo' },
   { id: '10', title: 'Desativar conta', textColor: '#FF4C4C' },
 ];
