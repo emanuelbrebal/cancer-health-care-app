@@ -13,6 +13,7 @@ import { PostsModule } from './social/posts/posts.module';
 import { CommentsModule } from './social/comments/comments.module';
 import { AppService } from './app.service';
 import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
+import { MascotModule } from './mascot/mascot.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
     SeriesModule,
     LeisuresModule,
     //Personal Modules,
-    DailyLogsModule
+    DailyLogsModule,
+    MascotModule
   ],
   controllers: [AppController],
   providers: [

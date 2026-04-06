@@ -55,6 +55,7 @@ model User {
   birthday        DateTime?
   profile_picture String?
 
+  lastAiAnalysis DateTime?
   logs DailyLog[]
 
   ownedCommunities Community[] @relation("CommunityOwner")
@@ -267,4 +268,16 @@ model DailyLogAudit {
   userId    String
   action    String   
   timestamp DateTime @default(now())
+}
+
+// ==============================
+// MODELS: MASCOT USECASE
+// ==============================
+model PatientSupportLog {
+  id        String   @id @default(uuid())
+  userId    String
+  prompt    String
+  response  String
+  context   Json     
+  createdAt DateTime @default(now())
 }
