@@ -29,11 +29,7 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
       
 - [x]  **Área de Saúde Mental:** Área informativa e expositiva de informações relevantes ao tema de saúde mental, relacionada ao tratamento do câncer.
 - [x]  **Botão do Pânico:** Disponível em todas as telas da área de saúde mental, o botão do pânico é disposto acima de todos os elementos e fornece números relevantes à saúde mental (SAMU, CVV, CAVIDA) e discagem automática nativa.
-    
-- [x]  **Área social (fórum):** Área responsável por reunir Comunidades, Tópicos, Publicações e Conversas.
-- [x]  **Cadastrar Comunidades, Tópicos, Publicações e Conversas:** CRUDS feitos por usuários.
 
-- [x]  **Área social (fórum):** Área responsável por reunir Comunidades, Tópicos, Publicações e Conversas.
 - [x]  **Mascote:** O sistema conta com uma integração a um agente de IA que gera mensagens de apoio baseada na personalidade do Mascote escolhido.
 - [ ]  **Notificações:** O sistema conta com um sistema de notificações personalizadas e cadastráveis (com os protocolos de tratamento/medicamentos).
 - [x]  **Diário Virtual:** O usuário pode cadastrar um diário escolhendo um emote (para definir "como estou me sentindo hoje") e o relato. O sistema guarda em segredo e pode gerar um relatório de emoções baseada em um filtro de tempo.
