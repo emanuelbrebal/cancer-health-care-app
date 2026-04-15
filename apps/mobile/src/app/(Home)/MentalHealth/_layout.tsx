@@ -13,9 +13,6 @@ const screensConfig: ScreenConfig[] = [
     { name: "Motivational/Patient/index", title: "Motivação diária" },
     { name: "Motivational/CaringTheCaregiver/index", title: "Cuidar de quem cuida" },
     { name: "Meditation/index", title: "Meditação guiada" },
-    { name: "MourningPhases/Presentation/index", title: "O que são as fases do luto" },
-    { name: "MourningPhases/Overcoming/index", title: "Como Superar fases do luto" },
-    { name: "MourningPhases/Phases/index", title: "Quais são as fases do luto" },
     { name: "PanicButtonContacts/index", title: "Contatos de emergência" },
 ];
 

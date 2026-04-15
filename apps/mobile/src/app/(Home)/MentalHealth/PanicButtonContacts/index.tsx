@@ -1,6 +1,6 @@
 import DailyMessage from '@/src/components/home/DailyMessage/DailyMessage';
 import EmergencyContacts from '@/src/components/ui/Buttons/Overlay/PanicButton/EmergencyContacts';
-import { EmergencyContactsData } from '@/src/constants/mockEmergencyContacts';
+import { EmergencyContactsData } from '@/src/constants/Mocks/mockEmergencyContacts';
 import { globalStyles } from '@/src/styles/global';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

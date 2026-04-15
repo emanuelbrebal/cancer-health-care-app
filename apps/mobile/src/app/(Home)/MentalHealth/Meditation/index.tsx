@@ -2,7 +2,7 @@ import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
 import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
 import { Colors } from '@/src/constants/Colors';
-import { meditationData } from '@/src/constants/mockData';
+import { meditationData } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { globalStyles } from '@/src/styles/global';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 

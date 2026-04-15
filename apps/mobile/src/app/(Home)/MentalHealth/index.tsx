@@ -40,19 +40,8 @@ export default function HomeMentalHealth() {
       icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
       route: '/MentalHealth/Meditation'
     },
-    {
-      id: '5',
-      title: 'Apoio psicológico',
-      icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
-      route: '/MentalHealth/Meditation'
-    },
   ];
 
-  const mourningPhasesNavigationItems: CardItem[] = [
-    { id: '1', title: 'Conheça e supere cada uma delas!', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/MentalHealth/MourningPhases/Presentation' },
-  ];
-
-  // alterar quando colocar o zustand
   const { user } = createAuthStore();
 
   const userSpecificNavigationItems = motivationalNavigationItems.filter(
@@ -79,16 +68,6 @@ export default function HomeMentalHealth() {
         />
       </View>
 
-      <View style={globalStyles.titleContainer}>
-        <Text style={globalStyles.title}>
-          Fases do Luto
-        </Text>
-
-        <NavigationGrid
-          data={mourningPhasesNavigationItems}
-          singleElement={true}
-        />
-      </View>
       <View style={globalStyles.titleContainer}>
         <Text style={globalStyles.title}>
           Tópicos em saúde mental
