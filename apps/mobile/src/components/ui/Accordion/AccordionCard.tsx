@@ -4,16 +4,16 @@ import { Feather } from '@expo/vector-icons';
 
 interface AccordionCardProps {
     title: string;
-    description: string;
+    description?: string;
     isExpanded: boolean;
     onToggle: () => void;
     actionText?: string;
     actionIcon?: string;
     onAction?: () => void;
     actionButtonColor?: string;
-    // Novas props opcionais para customização de cores
     chevronColor?: string;
     expandedBorderColor?: string;
+    children?: React.ReactNode;
 }
 
 export function AccordionCard({
@@ -24,14 +24,14 @@ export function AccordionCard({
     actionText,
     actionIcon,
     onAction,
-    actionButtonColor = '#D32F2F', // Vermelho original
-    chevronColor = '#D32F2F',      // Vermelho original
-    expandedBorderColor = '#F8B4B4' // Vermelho original
+    actionButtonColor = '#D32F2F', 
+    chevronColor = '#D32F2F',       
+    expandedBorderColor = '#F8B4B4',
+    children
 }: AccordionCardProps) {
     return (
         <View style={[
             styles.accordionCard, 
-            // Aplica a borda customizada apenas quando estiver expandido
             isExpanded && { borderColor: expandedBorderColor }
         ]}>
             <TouchableOpacity
@@ -43,17 +43,22 @@ export function AccordionCard({
                 <Feather
                     name={isExpanded ? "chevron-up" : "chevron-down"}
                     size={24}
-                    color={chevronColor} // Usa a cor customizada ou original
+                    color={chevronColor} 
                 />
             </TouchableOpacity>
 
             {isExpanded && (
                 <View style={styles.accordionContent}>
-                    <Text style={styles.description}>{description}</Text>
+                    {description && <Text style={styles.description}>{description}</Text>}
+
+                    {children}
 
                     {actionText && actionIcon && onAction && (
                         <TouchableOpacity
-                            style={[styles.actionButton, { backgroundColor: actionButtonColor }]}
+                            style={[
+                                styles.actionButton, 
+                                { backgroundColor: actionButtonColor, marginTop: children ? 16 : 0 }
+                            ]}
                             activeOpacity={0.8}
                             onPress={onAction}
                         >
@@ -80,7 +85,6 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 3,
     },
-    // Removi a classe 'accordionCardExpanded' daqui, pois agora aplicamos a cor diretamente no View
     accordionHeader: {
         flexDirection: 'row',
         alignItems: 'center',

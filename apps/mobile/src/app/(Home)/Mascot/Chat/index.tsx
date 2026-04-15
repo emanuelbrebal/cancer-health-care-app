@@ -24,7 +24,7 @@ interface IMessage {
 
 export default function MascotChat() {
   const [messages, setMessages] = useState<IMessage[]>([
-    { id: '1', text: 'Olá! Sou o seu parceiro. Como posso ajudar?', sender: 'bot' },
+    { id: '1', text: 'Olá! Sou o mascote virtual Oncomente. Meu papel é tirar tuas dúvidas sobre oncologia e saúde mental além, claro, de fazer teu dia melhor! Como posso ajudar? 💜', sender: 'bot' },
   ]);
 
   const { user, isAuthenticated } = useAuthStore();
@@ -64,9 +64,9 @@ export default function MascotChat() {
         }
       );
 
-      const botText = response.data?.response || 
-                  (typeof response.data === 'string' ? response.data : null) || 
-                  "Sinto muito, recebi uma resposta vazia. Pode repetir?";
+      const botText = response.data?.response ||
+        (typeof response.data === 'string' ? response.data : null) ||
+        "Sinto muito, recebi uma resposta vazia. Pode repetir? 💜";
 
       const botResponse: IMessage = {
         id: (Date.now() + 1).toString(),
@@ -82,12 +82,10 @@ export default function MascotChat() {
     } catch (error) {
       const errorMsg: IMessage = {
         id: Date.now().toString(),
-        text: 'Sinto muito, tive um probleminha técnico. Pode tentar me perguntar de novo? 💙',
+        text: 'Sinto muito, tive um probleminha técnico. Pode tentar me perguntar de novo? 💜',
         sender: 'bot',
       };
       setMessages(prev => [errorMsg, ...prev]);
-
-      console.error("Erro Chat IA:", error);
     } finally {
       setLoading(false);
     }

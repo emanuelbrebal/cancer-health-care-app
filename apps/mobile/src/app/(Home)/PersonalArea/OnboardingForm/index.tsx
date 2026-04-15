@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { baseText, globalStyles } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { SelectWithIcon } from '@/src/components/ui/Inputs/SelectWithIcon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const treatmentData = [
     { label: 'Sr', value: '1' },
@@ -16,7 +17,7 @@ export default function OnboardingProfileScreen() {
     const [treatment, setTreatment] = useState('');
 
     return (
-        <ScrollView contentContainerStyle={[globalStyles.scrollContainer, styles.paddingGeral]}>
+        <SafeAreaView style={[globalStyles.scrollContainer, styles.paddingGeral]}>
 
             <View style={styles.header}>
                 <TouchableOpacity>
@@ -82,13 +83,9 @@ export default function OnboardingProfileScreen() {
                 <TouchableOpacity style={styles.primaryButton}>
                     <Text style={styles.primaryButtonText}>Salvar Informações</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity style={styles.skipButton}>
-                    <Text style={styles.skipButtonText}>Pular</Text>
-                </TouchableOpacity>
             </View>
 
-        </ScrollView>
+        </SafeAreaView>
     );
 }
 

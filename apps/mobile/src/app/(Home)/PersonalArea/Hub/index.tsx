@@ -32,30 +32,18 @@ const NAV_BUTTONS = [
   },
   {
     id: '3',
-    title: 'Mascote',
-    subtitle: 'Converse com nosso mascote',
-    icon: 'robot-happy-outline',
-    lib: 'Material',
-    route: '/PersonalArea/Mascot',
-    bgColor: '#F0F7F2',
+    title: 'Calendário Interativo',
+    subtitle: 'Acompanhe seus lembretes',
+    icon: 'calendar',
+    lib: 'Feather',
+    route: '/PersonalArea/Calendar',
+   bgColor: '#F0F7F2',
     iconBg: '#E0F0E4',
     borderColor: '#93e0ad',
     color: '#1e9951'
   },
   {
     id: '4',
-    title: 'Calendário Interativo',
-    subtitle: 'Acompanhe seus lembretes',
-    icon: 'calendar',
-    lib: 'Feather',
-    route: '/PersonalArea/Calendar',
-    bgColor: '#FFF7F0',
-    iconBg: '#FFEBD6',
-    borderColor: '#facea7',
-    color: '#E67E22'
-  },
-  {
-    id: '5',
     title: 'Sofreu discriminação?',
     subtitle: 'Veja canais de denúncia',
     icon: 'shield',
@@ -68,7 +56,7 @@ const NAV_BUTTONS = [
   }
 ];
 
-export default function AreaPessoalScreen() {
+export default function HubPersonalAreaScreen() {
   return (
     <View style={globalStyles.startContainer}>
       <View style={styles.mainCard}>

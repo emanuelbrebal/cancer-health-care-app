@@ -9,19 +9,15 @@ export default function SpiritualArea() {
             showsVerticalScrollIndicator={true}>
             <View style={styles.container}>
                 <HorizontalBanner imagePath={require('@assets/images/Banners/spiritualityBanner.png')} />
-                <SearchBar />
                 <View style={globalStyles.startContainer}>
-                    <Text style={globalStyles.title}>Cuidados com o sono: </Text>
-                    <Text style={[globalStyles.title, { fontSize: 12 }]}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
-                </View> 
-                <View style={globalStyles.startContainer}>
-                    <Text style={globalStyles.title}>Cuidados com o sono: </Text>
-                    <Text style={[globalStyles.title, { fontSize: 12 }]}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
-                </View> 
-                <View style={globalStyles.startContainer}>
-                    <Text style={globalStyles.title}>Cuidados com o sono: </Text>
-                    <Text style={[globalStyles.title, { fontSize: 12 }]}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
+                    <Text style={globalStyles.title}>Espiritualidade: </Text>
+                    <Text style={[globalStyles.title, { fontSize: 12 }]}>Incluir "versículo do dia" e área de oração (cadastro leve)
+                    </Text>
+
+
                 </View>
+
+
             </View>
         </ScrollView >
     );

@@ -26,7 +26,7 @@ export default function HomePersonalArea() {
         </Text>
 
         <Text style={styles.descriptionText}>
-          Um espaço exclusivo para sua jornada. Registre suas emoções no Diário, gerencie Tratamentos, acompanhe seu Calendário e converse com nosso Mascote!
+          Um espaço exclusivo para sua jornada. Registre suas emoções no Diário, gerencie Tratamentos e acompanhe seu Calendário!
         </Text>
 
         <Text style={styles.callToAction}>

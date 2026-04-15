@@ -4,36 +4,32 @@ import { Colors } from '@/src/constants/Colors';
 import ActionCardList, { BaseActionItem } from '@/src/components/ui/Pagers/ActionCardList';
 import { globalStyles } from '@/src/styles/global';
 import { UserProfileCenter } from '@/src/components/ui/UserProfile/ProfileCenter';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const dadosGeral: BaseActionItem[] = [
+const generalData: BaseActionItem[] = [
   { id: '1', title: 'Editar perfil', route: "/PersonalArea/OnboardingForm" },
   { id: '2', title: 'Editar notificações' },
-  { id: '3', title: 'Gerenciar preferências' },
-  { id: '4', title: 'Gerenciamento do mascote interativo' },
 ];
 
-const dadosSeguranca: BaseActionItem[] = [
-  { id: '5', title: 'Permissões de Usuário' },
-  { id: '6', title: 'Histórico de atividade' },
-  { id: '7', title: 'LGPD e Termos de uso' },
-  { id: '8', title: 'Mudar senha', route: '/(auth)/RecoverPassword' },
-  { id: '9', title: 'Sair do aplicativo' },
-  { id: '10', title: 'Desativar conta', textColor: '#FF4C4C' },
+const securityData: BaseActionItem[] = [
+  { id: '1', title: 'Mudar senha', route: '/(auth)/RecoverPassword' },
+  { id: '2', title: 'Encerrar sessão' },
+  { id: '3', title: 'Desativar conta', textColor: '#FF4C4C' },
 ];
 
 export default function AccountConfigurationIndex() {
   return (
-    <ScrollView showsVerticalScrollIndicator={true} contentContainerStyle={globalStyles.scrollContainer}>
+    <SafeAreaView style={globalStyles.scrollContainer}>
 
       <UserProfileCenter name='Barbara da Silva' email="B.daSilva@mail.com" />
 
       <Text style={styles.sectionHeader}>Geral</Text>
-      <ActionCardList data={dadosGeral} containerStyle={styles.listContainer} />
+      <ActionCardList data={generalData} containerStyle={styles.listContainer} />
 
       <Text style={styles.sectionHeader}>Segurança e privacidade</Text>
-      <ActionCardList data={dadosSeguranca} containerStyle={styles.listContainer} />
+      <ActionCardList data={securityData} containerStyle={styles.listContainer} />
 
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
