@@ -1,4 +1,4 @@
-import { EmergencyContact } from "../interfaces/EmergencyContact";
+import { EmergencyContact } from "@/src/interfaces/EmergencyContact";
 
 export const EmergencyContactsData: EmergencyContact[] = [
     {
