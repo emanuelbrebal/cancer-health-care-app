@@ -72,11 +72,11 @@ export default function HomeLayout() {
                 }}
             />
 
-            <Tabs.Screen name="SocialArea"
+            <Tabs.Screen name="Mascot"
                 options={{
-                    tabBarLabel: "Comunidade",
+                    tabBarLabel: "Mascote Virtual",
                     tabBarIcon: ({ focused, color }) => renderTabBarIcon(
-                        focused, color, "chatbubble-ellipses", "chatbubble-ellipses-outline"
+                        focused, color, "chatbubbles", "chatbubbles-outline"
                     ),
                 }}
                 listeners={{
@@ -84,7 +84,7 @@ export default function HomeLayout() {
                         if (!isAuthenticated) {
                             e.preventDefault();
 
-                            router.push('/SocialArea');
+                            router.push('/Mascot');
                         }
                     },
                 }}

@@ -9,7 +9,7 @@ export default function HomePage() {
   const homeNavigationItems: CardItem[] = [
     { id: '1', title: 'Oncologia', icon: require('@assets/images/Home/oncologyAreaIcon.png'), route: '/Oncology' },
     { id: '2', title: 'Saúde Mental', icon: require('@assets/images/Home/mentalHealthIcon.png'), route: '/MentalHealth' },
-    { id: '3', title: 'Comunidade', icon: require('@assets/images/Home/communityIcon.png'), route: '/SocialArea' },
+    { id: '3', title: 'Mascote Virtual', icon: require('@assets/images/Home/communityIcon.png'), route: '/Mascot' },
     { id: '4', title: 'Meu Perfil', icon: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
   ];
 
