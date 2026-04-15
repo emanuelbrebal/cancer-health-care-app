@@ -8,9 +8,9 @@ import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Área Pessoal" },
+    { name: "Hub/index", title: "Área Pessoal" },
     { name: "Calendar/index", title: "Calendário Interativo" },
     { name: "Diary/index", title: "Diário Virtual" },
-    { name: "Mascot/index", title: "Mascote Interativo" },
     { name: "Notifications/index", title: "Autocuidados" },
     { name: "ReportsArea/index", title: "Espaço de denúncias" },
     { name: "Treatment/index", title: "Gerenciar tratamentos" },
