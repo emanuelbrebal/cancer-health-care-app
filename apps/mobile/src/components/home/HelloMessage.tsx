@@ -1,14 +1,15 @@
+import { useAuthStore } from '@/src/store/useAuthStore';
 import { Image, StyleSheet, Text, View } from 'react-native';
-interface patient {
-  patient_name: string
-}
-export default function HelloMessage({ patient_name }: patient) {
+
+export default function HelloMessage() {
+
+  const { user } = useAuthStore();
 
   return (
     <View style={styles.container}>
 
       <View style={styles.helloMessageContainer}>
-        <Text style={styles.text}>Olá, {patient_name? patient_name : 'Paciente'}!</Text>
+        <Text style={styles.text}>Olá, {user?.name ? user.name : 'Paciente'}!</Text>
         <Text style={styles.text}>Que bom te ter aqui!</Text>
         <Text style={styles.subtext}>Vamos cuidar de você hoje?</Text>
       </View>

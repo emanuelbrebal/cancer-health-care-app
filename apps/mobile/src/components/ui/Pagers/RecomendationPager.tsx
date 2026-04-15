@@ -2,7 +2,7 @@ import { Colors } from '@/src/constants/Colors';
 import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { ImageContainer } from '../Images/ImageContainer';
 import PagerHeader from './PagerHeader';
-import { RecomendationType } from '@/src/constants/mockData';
+import { RecomendationType } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { Href, router } from 'expo-router';
 
 const CARD_HEIGHT = 100;
@@ -20,7 +20,6 @@ interface RecomendationPagerProps {
 export default function RecomendationPager({ headerTitle, recomendationPagerData }: RecomendationPagerProps) {
 
     const handlePressCard = (item: any) => {
-        // ajustar lógica para redirecionamento
         console.log("redirecionando para", item.route)
         router.push(item.route);
     };
