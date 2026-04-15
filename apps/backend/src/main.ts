@@ -11,8 +11,8 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
-    .setTitle('Oncomente Backend API')
-    .setDescription('Descreve todo o processo de utilização do sistema fullstack (gerenciador WEB e aplicativo móvel)')
+    .setTitle('OncoMente Backend API')
+    .setDescription('Documentação oficial da API REST do ecossistema OncoMente. Fornece os endpoints de integração para o aplicativo móvel e gerenciador web, abrangendo gestão de usuários, registros de diário virtual, controle de mídia (livros, filmes, séries) e suporte assistencial via Inteligência Artificial.')
     .setVersion('1.0')
     .build();
 
