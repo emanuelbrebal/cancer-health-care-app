@@ -1,7 +1,7 @@
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import { SearchBar } from '@/src/components/ui/Inputs/SearchBar';
 import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
-import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/mockData';
+import { booksData, homeActivitiesData, moviesData, seriesData } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { globalStyles } from '@/src/styles/global';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
