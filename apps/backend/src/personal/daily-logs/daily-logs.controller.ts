@@ -6,6 +6,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { DailyLogsReportService } from './daily-logs-report.service';
 import type { Response } from 'express';
 import { Res } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 @UseGuards(JwtAuthGuard)
 @Controller('daily-logs')
@@ -55,6 +56,7 @@ export class DailyLogsController {
     return { message: 'Entrada apagada permanentemente. Você pode realizar uma nova entrada hoje.' };
   }
 
+  @Throttle({ default: { limit: 2, ttl: 60000 } })
   @Get('report/pdf')
   async exportPdf(
     @Req() req: any,
