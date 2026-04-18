@@ -7,7 +7,8 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function PhysicalExercises() {
-    const [expandedSection, setExpandedSection] = useState<'warmup' | 'strength' | null>('warmup');
+    // Alterado de 'warmup' para null para iniciar fechado
+    const [expandedSection, setExpandedSection] = useState<'warmup' | 'strength' | null>(null);
 
     return (
         <ScrollView
@@ -18,9 +19,16 @@ export default function PhysicalExercises() {
                 <HorizontalBanner imagePath={require('@assets/images/Banners/physicalExercisesBanner.png')} />
 
                 <View style={globalStyles.startContainer}>
-                    <Text style={globalStyles.title}>Cuidados com o corpo</Text>
-                    <Text style={styles.descriptionText}>
-                        Realize os movimentos de forma controlada. Se sentir dor, interrompa o exercício.
+                    <Text style={globalStyles.title}>Movimente seu corpo no seu ritmo</Text>
+                    <Text style={globalStyles.descriptionText}>
+                        A atividade física leve pode ajudar a reduzir o cansaço, melhorar o humor e aumentar sua disposição durante o tratamento.
+                    </Text>
+                    <Text style={globalStyles.title}>Você conseguiu se movimentar hoje?</Text>
+                    <Text style={globalStyles.descriptionText}>
+                        Dica: Respeite os limites do seu corpo. Realize os movimentos de forma controlada. Se sentir dor, interrompa o exercício.
+                    </Text>
+                    <Text style={globalStyles.descriptionText}>
+                        Abaixo: segue conteúdo visual de exercícios de alongamento e de atividades físicas:
                     </Text>
 
                     <View style={styles.accordionWrapper}>
@@ -59,10 +67,4 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         width: '100%',
     },
-    descriptionText: {
-        fontSize: 14,
-        color: '#4B5563',
-        marginBottom: 20,
-        lineHeight: 20,
-    }
 });

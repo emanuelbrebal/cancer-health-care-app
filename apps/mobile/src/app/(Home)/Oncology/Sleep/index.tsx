@@ -12,15 +12,13 @@ export default function Sleep() {
             <View style={styles.container}>
                 <HorizontalBanner imagePath={require('@assets/images/Banners/sleepBanner.png')} />
                 <View style={globalStyles.startContainer}>
-                    <Text style={globalStyles.title}>Cuidados com o sono: </Text>
-                    <Text style={styles.text}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
-                    <TouchableOpacity>
-                        <Text style={[styles.text, styles.hyperlink]}>Ver mais</Text>
-                    </TouchableOpacity>
-
-                    <MediaList items={sleepMusicMock} key={'id'}/>
+                    <Text style={globalStyles.title}>Como está seu sono hoje? </Text>
+                    <Text style={globalStyles.descriptionText}>O sono é essencial para a recuperação do seu corpo e para o equilíbrio emocional. Durante o tratamento, é comum ter alterações no sono — e tudo bem, estamos aqui para te ajudar.</Text>
+                    <Text style={globalStyles.title}>Você dormiu bem esta noite? </Text>
+                    <Text style={globalStyles.descriptionText}>Dica: Evite telas antes de dormir e tente manter um horário regular de sono. </Text>
+                    <Text style={globalStyles.descriptionText}>Selecionamos uma playlist especial para te auxiliar a dormir melhor: </Text>
+                    <MediaList items={sleepMusicMock} key={'id'} />
                 </View>
-
             </View>
         </ScrollView >
     );
@@ -31,10 +29,6 @@ const styles = StyleSheet.create({
         flex: 1,
         gap: 20,
         backgroundColor: 'transparent',
-    },
-    text: {
-        ...globalStyles.title,
-        fontSize: 12
     },
     hyperlink: {
         ...globalStyles.textHyperlink,
