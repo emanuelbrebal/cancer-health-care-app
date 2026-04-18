@@ -11,11 +11,12 @@ const screensConfig: ScreenConfig[] = [
     { name: "Hub/index", title: "Área Pessoal" },
     { name: "Calendar/index", title: "Calendário Interativo" },
     { name: "Diary/index", title: "Diário Virtual" },
-    { name: "Notifications/index", title: "Autocuidados" },
+    { name: "Notifications/index", title: "Notificações" },
     { name: "ReportsArea/index", title: "Espaço de denúncias" },
     { name: "Treatment/index", title: "Gerenciar tratamentos" },
     { name: "AccountConfigurations/index", title: "Configurações" },
     { name: "OnboardingForm/index", title: "Editar Perfil" },
+    { name: "About/index", title: "Sobre o Projeto" },
 ];
 
 export default function SocialStackLayout() {
