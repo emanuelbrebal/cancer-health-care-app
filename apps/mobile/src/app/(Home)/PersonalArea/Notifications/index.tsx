@@ -258,8 +258,7 @@ const styles = StyleSheet.create({
     listScroll: {
         flexGrow: 1,
         padding: 16,
-        paddingTop: 20,
-        backgroundColor: '#F8F4FF',
+        paddingTop: 60,
     },
     groupLabel: {
         fontSize: 12,
