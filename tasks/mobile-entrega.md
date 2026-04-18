@@ -98,7 +98,7 @@
 ## BLOCO 4 — Correções e Polimento
 
 - [x] **Home: `patient_name` dinâmico** — `HelloMessage` lê do `useAuthStore`. Prop hardcoded removida.
-- [ ] **Modal de login suave** — `SoftLoginModal` criado. Abre na Home quando não autenticado, é pulável. Ao logar, `HelloMessage` atualiza com nome do usuário. Incluir botão para redirecionamento para o cadastro caso o usuário não possua conta. Aumentar a área de visibilidade do componente para uns 70% da altura da tela
+- [ ] **Modal de login suave** — `SoftLoginModal` criado. Abre na Home quando não autenticado, é pulável. Ao logar, `HelloMessage` atualiza com nome do usuário. Incluir botão para redirecionamento para o cadastro caso o usuário não possua conta. Aumentar a área de visibilidade do componente para uns 70% da altura da tela para que os componentes sejam exibidos corretamente. verificar se o usuário já está autenticado antes de exibir o modal.
 - [ ] **PersonalArea/Hub: dados reais do usuário** — "Barbara da Silva" ainda hardcoded. Substituir por `user.name` e `user.profile_picture` do Zustand store.
 - [ ] **app.json: ícone** — corrigir path de `icon.png` para `icon.jpg` (ou converter o arquivo para `.png`).
 - [ ] **Splash screen** — corrigir path e atualizar para identidade visual final.
