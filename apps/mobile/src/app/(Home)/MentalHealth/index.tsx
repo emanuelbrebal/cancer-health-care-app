@@ -5,6 +5,7 @@ import { globalStyles } from '@/src/styles/global';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createAuthStore } from '../../../../../../packages/shared/store/useAuthStore';
+import { PanicButton } from '@/src/components/ui/Buttons/Overlay/PanicButton/PanicButton';
 
 export enum UserRole {
   PATIENT = 'PATIENT',
@@ -38,7 +39,13 @@ export default function HomeMentalHealth() {
       id: '2',
       title: 'Exercícios de respiração',
       icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
-      route: '/MentalHealth/Meditation'
+      route: '/MentalHealth/BreathingExercises'
+    },
+    {
+      id: '3',
+      title: 'Apoio psicológico',
+      icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
+      route: '/MentalHealth/PsychologicalSupport'
     },
   ];
 
@@ -78,6 +85,7 @@ export default function HomeMentalHealth() {
           singleElement={true}
         />
       </View>
+      <PanicButton />
     </SafeAreaView>
   );
 }

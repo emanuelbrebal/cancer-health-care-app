@@ -14,13 +14,14 @@ const screensConfig: ScreenConfig[] = [
     { name: "Motivational/CaringTheCaregiver/index", title: "Cuidar de quem cuida" },
     { name: "Meditation/index", title: "Meditação guiada" },
     { name: "PanicButtonContacts/index", title: "Contatos de emergência" },
+    { name: "BreathingExercises/index", title: "Exercícios de respiração" },
+    { name: "PsychologicalSupport/index", title: "Apoio Psicológico" },
 ];
 
 export default function MentalHealthStackLayout() {
     const color = Colors.purpleSecondary;
-    
-    const pathname = usePathname();
-    const isContactsPage = pathname.includes('PanicButtonContacts');
+
+
 
     return (
         <CommonAreasLayout>
@@ -35,7 +36,6 @@ export default function MentalHealthStackLayout() {
                     />
                 ))}
             </Stack>
-            {!isContactsPage && <PanicButton />}
             <StatusBar style="auto" />
         </CommonAreasLayout>
     );
