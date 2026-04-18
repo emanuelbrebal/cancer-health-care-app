@@ -47,29 +47,29 @@ Com base nos arquivos alterados, identifique:
 **IMPORTANTE:** PRs sempre vão para `main`.
 
 ```bash
-gh pr create --base main --title "<titulo>" --body "$(cat <<'EOF'
-## Resumo
-<1-3 bullet points resumindo as mudanças>
+gh pr create --base main --title "<title>" --body "$(cat <<'EOF'
+## Summary
+<1-3 bullet points summarizing the changes>
 
-## Mudanças
-- [lista de mudanças significativas por app/módulo]
+## Changes
+- [list of significant changes per app/module]
 
-## Plano de Testes
-- [ ] Fluxo testado manualmente no dispositivo/emulador
-- [ ] Nenhuma regressão visível nas telas adjacentes
-- [ ] Lint passou sem erros
+## Test Plan
+- [ ] Flow tested manually on device/emulator
+- [ ] No visible regressions on adjacent screens
+- [ ] Lint passed without errors
 
 ## Checklist
-- [ ] Código segue convenções do projeto (inglês para código, PT-BR para conteúdo)
-- [ ] Sem dados sensíveis ou credenciais no código
-- [ ] Mocks atualizados se necessário
-- [ ] tasks/mobile-entrega.md atualizado com tarefas concluídas (se aplicável)
+- [ ] Code follows project conventions (English for code, PT-BR for user-facing content)
+- [ ] No sensitive data or credentials in the code
+- [ ] Mocks updated if necessary
+- [ ] tasks/mobile-entrega.md updated with completed tasks (if applicable)
 
-## Relacionado
+## Related
 - Refs: `tasks/mobile-entrega.md`
 
 ---
-🤖 Gerado com Claude Code
+🤖 Generated with Claude Code
 EOF
 )"
 ```
@@ -93,4 +93,4 @@ Exemplos:
 - `🔧 chore(seed): add test users and complete media data`
 - `♻️ refactor(components): extract MediaCard component`
 
-## Responda sempre em Português (pt-BR).
+## Responda sempre em Inglês (en-US).
