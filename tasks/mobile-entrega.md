@@ -8,8 +8,8 @@
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Checklist (pendências)** | 24 | 66 | ~36% |
-| **Projeto completo (estimado)** | 46 | 85 | **~54%** |
+| **Checklist (pendências)** | 28 | 66 | ~42% |
+| **Projeto completo (estimado)** | 50 | 85 | **~59%** |
 
 > O "projeto completo" considera telas já funcionais fora do checklist (auth, home, sleep, exercícios, meditação, hub, diary list) + todas as tarefas do checklist.
 
@@ -18,8 +18,8 @@
 | Bloco | Concluído | Total | % |
 |---|---|---|---|
 | 0 — Problemas Conhecidos | 2 | 2 | 100% ✅ |
-| 1 — Identidade Visual | 0 | 5 | 0% |
-| 2 — Telas Pendentes | 18 | 19 | 95% ✅ |
+| 1 — Identidade Visual | 3 | 5 | 60% |
+| 2 — Telas Pendentes | 19 | 19 | 100% ✅ |
 | 3 — Listagem + Detalhe | 1 | 10 | 10% |
 | 4 — Correções e Polimento | 2 | 9 | 22% |
 | 5 — Integração Backend | 1 | 14 | 7% |
@@ -38,11 +38,11 @@
 
 ## BLOCO 1 — Identidade Visual e App Store
 
-- [ ] **Substituir ícone do app** — `app.json` aponta para `icon.png` mas o arquivo real é `icon.jpg`. Renomear ou substituir.
-- [ ] **Atualizar splash screen** com a logo oficial do sistema (mesmo problema: aponta para `icon.png` inexistente).
-- [ ] **Adicionar logomarca CESMAC** nos assets (`assets/images/logos/` — pasta não existe ainda).
-- [ ] **Criar tela "Sobre o Projeto"** com: logo do sistema, logo CESMAC, descrição do projeto, versão, equipe/créditos.
-- [ ] **Adicionar rota `/About`** e link para ela na Home ou menu.
+- [x] **Substituir ícone do app** — `app.json` corrigido: `icon.png` → `icon.jpg` (iOS + raiz). Splash apontada para `splash-icon.png` existente.
+- [ ] **Atualizar splash screen** com a logo oficial do sistema (substituir `splash-icon.png` pela identidade visual final).
+- [ ] **Adicionar logomarca CESMAC** nos assets — pasta `assets/images/logos/` criada. Aguardando arquivo `cesmac-logo.png` e `oncomente-logo.png`.
+- [x] **Criar tela "Sobre o Projeto"** — `PersonalArea/About/index.tsx` implementada com: logo do sistema, placeholder CESMAC, descrição, versão, equipe/créditos.
+- [x] **Adicionar rota `/About`** — rota registrada no `PersonalArea/_layout.tsx`; botão "Sobre o Projeto" adicionado no Hub.
 
 ---
 
@@ -68,7 +68,7 @@
 - [x] **Treatment/create/index.tsx** — formulário de criação implementado.
 - [x] **Treatment/update/index.tsx** — formulário de edição implementado.
 - [x] **Calendar/index.tsx** — calendário interativo com progresso de dias.
-- [ ] **Notifications/index.tsx** — apenas placeholder ("Página da Gerência de Notificações"). Implementar.
+- [x] **Notifications/index.tsx** — módulo de notificações implementado: tela de consentimento LGPD (AsyncStorage) + lista de mensagens agrupadas em "Novas" e "Anteriores". Mock pronto para integração com `GET /notifications`.
 - [x] **ReportsArea/index.tsx** — implementada com canais de denúncia e acordeon de leis.
 - [x] **Diary/create/index.tsx** — formulário completo (título, emoção, conteúdo).
 - [x] **Diary/update/index.tsx** — formulário de edição implementado.
@@ -162,7 +162,7 @@
 | Oncologia | 6/6 subrotas | ✅ Todas implementadas |
 | Saúde Mental | 6/6 subrotas | ✅ Todas implementadas |
 | Mascote | 2 telas | ⚠️ Precisa verificar integração do chat |
-| Área Pessoal | 8/9 subrotas | ⚠️ Notifications pendente; Hub com dados mockados |
+| Área Pessoal | 9/9 subrotas | ⚠️ Hub com dados mockados; Notifications integrada (LGPD) |
 | Identidade Visual | — | ❌ Ícone/splash/sobre pendentes |
 | Listagem + Detalhe | 1/10 | ❌ Books/Movies/Series/Activities a implementar |
 | Integração Backend | — | ❌ Somente auth + seed integrados |
