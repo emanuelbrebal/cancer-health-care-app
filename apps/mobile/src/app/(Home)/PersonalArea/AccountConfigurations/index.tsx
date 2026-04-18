@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { Colors } from '@/src/constants/Colors';
 import ActionCardList, { BaseActionItem } from '@/src/components/ui/Pagers/ActionCardList';
 import { globalStyles } from '@/src/styles/global';
@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const generalData: BaseActionItem[] = [
   { id: '1', title: 'Editar perfil', route: "/PersonalArea/OnboardingForm" },
-  { id: '2', title: 'Editar notificações' },
+  { id: '2', title: 'Editar notificações', route: '/PersonalArea/Notifications' },
 ];
 
 const securityData: BaseActionItem[] = [
