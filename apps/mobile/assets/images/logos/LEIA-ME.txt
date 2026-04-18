@@ -1,0 +1,8 @@
+Pasta reservada para logomarcas do projeto.
+
+Arquivos esperados:
+- cesmac-logo.png   — logomarca da CESMAC (fundo transparente, formato quadrado ou retangular)
+- oncomente-logo.png — logomarca oficial do sistema OncoMente
+
+Referenciados em:
+- apps/mobile/src/app/(Home)/PersonalArea/About/index.tsx

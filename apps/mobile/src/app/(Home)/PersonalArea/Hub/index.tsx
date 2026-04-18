@@ -53,6 +53,18 @@ const NAV_BUTTONS = [
     iconBg: '#FDEAEA',
     borderColor: '#F8B4B4',
     color: '#D32F2F'
+  },
+  {
+    id: '5',
+    title: 'Sobre o Projeto',
+    subtitle: 'Equipe, versão e créditos',
+    icon: 'info',
+    lib: 'Feather',
+    route: '/PersonalArea/About',
+    bgColor: '#F5F0FA',
+    iconBg: '#E9DEFA',
+    borderColor: '#d2aef0',
+    color: '#7C3AED'
   }
 ];
 
