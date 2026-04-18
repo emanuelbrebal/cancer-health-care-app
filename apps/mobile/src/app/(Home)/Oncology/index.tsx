@@ -17,7 +17,7 @@ export default function HomeOncology() {
   ];
 
   const legalBenefitsNavigationItems: CardItem[] = [
-    { id: '1', title: 'Visualizar: Cartilha lei dos 60 dias', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: 'https://educapes.capes.gov.br/bitstream/capes/921209/2/LEI%20dos%2060%20dias.pdf' },
+    { id: '1', title: 'Lei dos 60 dias', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route:'/Oncology/LegalArea'  },
   ];
 
   return (

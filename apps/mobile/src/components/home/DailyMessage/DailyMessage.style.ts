@@ -19,21 +19,20 @@ export const DailyMessageStyles = StyleSheet.create({
     borderColor: Colors.cyanSecondary,
     backgroundColor: Colors.cyan
   },
-  titleContainer:{
+  titleContainer: {
     width: '100%'
   },
   helloMessageContainer: {
     paddingLeft: 15,
-    width: '70%',
+    width: '75%',
   },
   imageContainer: {
     width: '25%',
     justifyContent: 'center',
-    paddingRight: 20,
   },
   image: {
-    height: 80,
-    width: 80,
+    height: 75,
+    width: 75,
     transform: [{ scaleX: -1 }],
   },
   text: {
@@ -42,7 +41,6 @@ export const DailyMessageStyles = StyleSheet.create({
     color: colors.text
   },
   subtext: {
-    fontSize: 14,
+    fontSize: 13,
   }
-
 });

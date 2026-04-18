@@ -1,20 +1,28 @@
+import DailyMessage from '@/src/components/home/DailyMessage/DailyMessage';
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import { Colors } from '@/src/constants/Colors';
+import { caregiverMessagesData } from '@/src/constants/Mocks/mockCaregiverMotivationalMessages';
 import { globalStyles } from '@/src/styles/global';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function CaringTheCaregiver() {
     return (
         <ScrollView contentContainerStyle={globalStyles.scrollContainer}
-                    showsVerticalScrollIndicator={true}>
-                    <View style={styles.container}>
-                        <HorizontalBanner imagePath={require('@assets/images/Banners/motivationalAreaBanner.png')} />
-                        <Text style={globalStyles.title}>Mensagem de motivação diária: </Text>
-                        <Text style={styles.text}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
-                        <Text style={styles.text}>Ver a viabilidade do mascote gerar essa motivação via cron job uma vez por dia.</Text>
-        
-                    </View>
-                </ScrollView >
+            showsVerticalScrollIndicator={true}>
+            <View style={styles.container}>
+                <View style={{ paddingBottom: 10 }}>
+                    <HorizontalBanner imagePath={require('@assets/images/Banners/motivationalAreaBanner.png')} />
+                </View>
+
+                <Text style={globalStyles.title}>Cuidar também é um ato de amor!</Text>
+                <Text style={globalStyles.descriptionText}>Ser cuidador pode ser desafiador. Lembre-se de que você também precisa de cuidado e atenção.</Text>
+                <Text style={globalStyles.descriptionText}>Você não precisa ser forte o tempo todo. Permita-se descansar e pedir ajuda.</Text>
+
+                <View style={{ paddingVertical: 10 }}>
+                    <DailyMessage title='Cuidar de quem cuida:' message={caregiverMessagesData} />
+                </View>
+            </View>
+        </ScrollView >
     );
 }
 

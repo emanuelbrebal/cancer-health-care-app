@@ -4,29 +4,29 @@ export interface MediaItem {
     url: string;
 }
 
-export const sleepMusicMock = [
+export const sleepMusicMock: MediaItem[] = [
     {
-        id: '1',
+        id: 1,
         title: 'Música para Sono (Busca Original - 435Hz+)',
         url: 'https://www.youtube.com/watch?v=rZMyAeVVrbg'
     },
     {
-        id: '2',
+        id: 2,
         title: 'Música de Cura Profunda para o Corpo e Alma (432Hz)',
         url: 'https://www.youtube.com/watch?v=7GDCmwCNLqU'
     },
     {
-        id: '3',
+        id: 3,
         title: 'Relaxamento e Acalmar a Mente para Sono REM (432Hz)',
         url: 'https://www.youtube.com/watch?v=ZTxEYxWdX_4'
     },
     {
-        id: '4',
+        id: 4,
         title: 'Regeneração do Corpo e Reparo do DNA (528Hz)',
         url: 'https://www.youtube.com/watch?v=OS6RmdqvQPk'
     },
     {
-        id: '5',
+        id: 5,
         title: 'Cura e Harmonização Frequência Solfeggio (963Hz)',
         url: 'https://www.youtube.com/watch?v=198zyhAKA90'
     }
