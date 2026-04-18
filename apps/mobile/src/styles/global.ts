@@ -25,6 +25,8 @@ const container: ViewStyle = {
     elevation: 0,
 }
 
+
+
 export const globalStyles = StyleSheet.create({
     // Containers
     layoutContainer: {
@@ -99,12 +101,20 @@ export const globalStyles = StyleSheet.create({
         color: Colors.text.secondary,
         fontSize: 17,
     },
+    descriptionText: {
+        fontSize: 14,
+        color: '#4B5563',
+        marginBottom: 20,
+        lineHeight: 20,
+    },
     title: {
         ...baseText,
         color: Colors.text.primary,
         fontWeight: '600',
         marginBottom: 15,
     },
+
+
     textHyperlink: {
         ...baseText,
         color: Colors.purpleSecondary,
@@ -121,6 +131,7 @@ export const globalStyles = StyleSheet.create({
     // Images Containers
     imageContainer: {
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     rectangleImageContainer: {
