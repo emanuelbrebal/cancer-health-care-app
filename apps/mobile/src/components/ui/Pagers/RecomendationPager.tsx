@@ -60,7 +60,7 @@ const RADIUS = 16;
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 10,
+        paddingVertical: 5,
     },
     card: {
         width: CARD_WIDTH,
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.lilacPrimary,
         borderWidth: 0.5,
         overflow: 'hidden',
+        paddingTop: 30,
 
         elevation: 2,
         shadowColor: Colors.black,
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        backgroundColor: Colors.lilacPrimary + '99',
+        backgroundColor: Colors.lilacPrimary,
         padding: 3,
         alignItems: 'center',
         borderTopRightRadius: RADIUS,
