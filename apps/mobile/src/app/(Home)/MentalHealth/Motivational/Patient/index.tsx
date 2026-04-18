@@ -1,5 +1,7 @@
+import DailyMessage from '@/src/components/home/DailyMessage/DailyMessage';
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import { Colors } from '@/src/constants/Colors';
+import { patientMessagesData } from '@/src/constants/Mocks/mockPatientMotivationalMessages';
 import { globalStyles } from '@/src/styles/global';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -8,11 +10,17 @@ export default function PatientMotivational() {
         <ScrollView contentContainerStyle={globalStyles.scrollContainer}
             showsVerticalScrollIndicator={true}>
             <View style={styles.container}>
-                <HorizontalBanner imagePath={require('@assets/images/Banners/motivationalAreaBanner.png')} />
-                <Text style={globalStyles.title}>Mensagem de motivação diária: </Text>
-                <Text style={styles.text}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Blanditiis ipsam nemo velit totam nostrum iure quod nihil rem vitae in ratione perferendis, hic doloremque praesentium magnam reprehenderit amet veniam ex! </Text>
-                <Text style={styles.text}>Ver a viabilidade do mascote gerar essa motivação via cron job uma vez por dia.</Text>
+                <View style={{ paddingBottom: 10 }}>
+                    <HorizontalBanner imagePath={require('@assets/images/Banners/motivationalAreaBanner.png')} />
+                </View>
 
+                <Text style={[globalStyles.title, { fontSize: 18 }]}>Você é mais forte do que pensa!</Text>
+                <Text style={globalStyles.descriptionText}>Sabemos que o tratamento pode ser difícil, mas você não está sozinho. Cada dia enfrentado é uma vitória.</Text>
+                <Text style={globalStyles.descriptionText}>Respeite seu tempo, acolha seus sentimentos e celebre cada pequeno avanço.</Text>
+
+                <View style={{ paddingVertical: 10 }}>
+                    <DailyMessage title='Motivação do dia!' message={patientMessagesData} />
+                </View>
             </View>
         </ScrollView >
     );
@@ -25,7 +33,7 @@ const styles = StyleSheet.create({
     },
     text: {
         ...globalStyles.title,
-        fontSize: 12
+        fontSize: 14
     },
     hyperlink: {
         ...globalStyles.textHyperlink,
