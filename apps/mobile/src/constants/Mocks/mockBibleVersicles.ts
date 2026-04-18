@@ -1,9 +1,6 @@
-export interface DailyMessageProps {
-    id: number;
-    message: string;
-}
+import { MessageItem } from "@/src/components/home/DailyMessage/DailyMessage";
 
-export const BibleVersicles: DailyMessageProps[] = [
+export const BibleVersicles: MessageItem[] = [
     { id: 1, message: "Buscai ao senhor e à sua força; buscai continuamente a sua face. (1 crônicas 16:11)" },
     { id: 2, message: "Lance sobre ele toda a sua ansiedade, porque ele tem cuidado de você. (1 pedro 5:7)" },
     { id: 3, message: "O senhor é o meu pastor, nada me faltará. (salmos 23)" },

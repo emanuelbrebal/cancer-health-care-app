@@ -1,9 +1,6 @@
-export interface DailyMessageProps {
-    id: number;
-    message: string;
-}
+import { MessageItem } from "@/src/components/home/DailyMessage/DailyMessage";
 
-export const DailyMessages: DailyMessageProps[] = [
+export const DailyMessages: MessageItem[] = [
     { id: 1, message: "Que a luz da manhã traga serenidade para o seu coração."},
     { id: 2, message: "A beleza está nos pequenos detalhes de um sorriso sincero."},
     { id: 3, message: "Cultive pensamentos gentis e colha momentos de paz."},
