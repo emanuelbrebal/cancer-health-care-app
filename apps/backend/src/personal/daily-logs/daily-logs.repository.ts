@@ -5,12 +5,9 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class DailyLogsRepository {
   constructor(private readonly prisma: PrismaService) { }
 
-  async findExistingByDate(userId: string, start: Date, end: Date) {
+  async findExistingByDate(userId: string, date: Date) {
     return this.prisma.dailyLog.findFirst({
-      where: {
-        userId,
-        createdAt: { gte: start, lte: end },
-      },
+      where: { userId, date },
     });
   }
 
@@ -19,7 +16,7 @@ export class DailyLogsRepository {
   }
 
   async createWithAudit(data: any) {
-  const { userId, title, content, emotes } = data; 
+  const { userId, title, content, emotes, date } = data;
 
   if (!userId) {
     throw new Error('UserId é obrigatório para criar um diário.');
@@ -31,7 +28,8 @@ export class DailyLogsRepository {
         title,
         content,
         emotes,
-        userId, 
+        userId,
+        ...(date && { date }),
       },
     });
 

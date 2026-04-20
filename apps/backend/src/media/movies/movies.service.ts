@@ -12,11 +12,7 @@ export class MoviesService {
     }
   
     async findAll() {
-      const movies = await this.moviesRepository.findAll();
-      if (!movies || movies.length === 0) {
-        throw new NotFoundException('Nenhum filme cadastrado.');
-      }
-      return movies;
+      return this.moviesRepository.findAll();
     }
   
     async findOne(id: string) {
