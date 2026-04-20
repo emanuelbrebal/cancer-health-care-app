@@ -13,6 +13,10 @@ export const InputStyles = StyleSheet.create({
         backgroundColor: Colors.white,
         width: '100%',
     },
+    inputContainerError: {
+        borderColor: Colors.status.error,
+        borderWidth: 1.5,
+    },
     iconLeft: {
         marginRight: 10,
     },
@@ -23,5 +27,12 @@ export const InputStyles = StyleSheet.create({
         fontFamily: 'Montserrat',
         fontSize: 16,
         borderWidth: 0,
-    }
+    },
+    errorText: {
+        fontFamily: 'Montserrat',
+        fontSize: 12,
+        color: Colors.status.error,
+        marginTop: 4,
+        marginLeft: 4,
+    },
 })
