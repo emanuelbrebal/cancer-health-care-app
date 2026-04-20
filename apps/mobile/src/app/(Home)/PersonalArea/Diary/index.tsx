@@ -1,127 +1,201 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Alert, 
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-
-const EMOTE_MAP: any = {
-  very_happy: { icon: 'emoticon-excited-outline', color: '#D1FFBD', label: 'Incrível' },
-  happy:      { icon: 'emoticon-happy-outline',   color: '#BDE3FF', label: 'Bem' },
-  neutral:    { icon: 'emoticon-neutral-outline', color: '#FFFDB7', label: 'Normal' },
-  sad:        { icon: 'emoticon-sad-outline',     color: '#FFD1BD', label: 'Baixo' },
-  bad:        { icon: 'emoticon-confused-outline',color: '#BDBFFF', label: 'Ruim' },
-};
-
-const MOCK_DIARIOS = [
-  { 
-    id: 'uuid-1', 
-    title: 'Progresso no Tratamento',
-    content: 'Hoje me senti muito disposto. Consegui caminhar por 20 minutos e a alimentação foi bem leve. Sem efeitos colaterais por enquanto.', 
-    date: '2026-03-21T10:00:00Z', 
-    emotes: 'very_happy', 
-    userId: 'user-123',
-    updatedAt: '2026-03-21T10:00:00Z'
-  },
-  { 
-    id: 'uuid-2', 
-    title: 'Dia de Repouso',
-    content: 'Senti um pouco de fadiga após o almoço. Decidi descansar e ler um livro. Amanhã espero estar melhor.', 
-    date: '2026-03-20T14:30:00Z', 
-    emotes: 'neutral', 
-    userId: 'user-123',
-    updatedAt: '2026-03-20T14:30:00Z'
-  },
-  { 
-    id: 'uuid-3', 
-    title: 'Noite Difícil',
-    content: 'Tive dificuldade para pegar no sono. Muita ansiedade com os exames de amanhã.', 
-    date: '2026-03-18T08:00:00Z', 
-    emotes: 'sad', 
-    userId: 'user-123',
-    updatedAt: '2026-03-18T08:00:00Z'
-  },
-];
+import { Ionicons } from '@expo/vector-icons';
+import diaryService, { DailyLog } from '@/src/services/diaryService';
+import { EMOTE_BY_ID } from '@/src/constants/Emotes';
+import { toastService } from '@/src/services/toastService';
 
 export default function DiaryIndex() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
+  const [entries, setEntries] = useState<DailyLog[]>([]);
+  const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [contentMap, setContentMap] = useState<Record<string, string>>({});
+  const [streak, setStreak] = useState(0);
+  const [todayEntry, setTodayEntry] = useState<DailyLog | null>(null);
+  const [search, setSearch] = useState('');
+
+  const calcStreak = (data: DailyLog[]): number => {
+    let s = 0;
+    const cursor = new Date();
+    for (const entry of data) {
+      const entryDate = entry.date?.slice(0, 10);
+      const cursorDate = cursor.toISOString().slice(0, 10);
+      if (entryDate === cursorDate) { s++; cursor.setDate(cursor.getDate() - 1); }
+      else break;
+    }
+    return s;
+  };
+
+  const loadEntries = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await diaryService.getAll();
+      setEntries(data);
+      const today = new Date().toISOString().slice(0, 10);
+      setTodayEntry(data.find(e => e.date?.slice(0, 10) === today) ?? null);
+      setStreak(calcStreak(data));
+    } catch {
+      toastService.error('Não foi possível carregar o diário.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(useCallback(() => { loadEntries(); }, [loadEntries]));
+
+  const handleExpand = async (id: string) => {
+    const isExpanded = expandedId === id;
+    setExpandedId(isExpanded ? null : id);
+    if (!isExpanded && contentMap[id] === undefined) {
+      try {
+        const entry = await diaryService.getOne(id);
+        setContentMap(prev => ({ ...prev, [id]: entry.content ?? '' }));
+      } catch {
+        setContentMap(prev => ({ ...prev, [id]: '' }));
+      }
+    }
+  };
+
+  const handleDelete = (item: DailyLog) => {
+    Alert.alert(
+      'Excluir Registro',
+      `Deseja apagar permanentemente a anotação: "${item.title}"?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await diaryService.remove(item.id);
+              const updated = entries.filter(e => e.id !== item.id);
+              setEntries(updated);
+              if (expandedId === item.id) setExpandedId(null);
+              const today = new Date().toISOString().slice(0, 10);
+              setTodayEntry(updated.find(e => e.date?.slice(0, 10) === today) ?? null);
+              setStreak(calcStreak(updated));
+              toastService.success('Entrada removida do diário.');
+            } catch {
+              toastService.error('Não foi possível excluir a entrada.');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: 'numeric',
       month: 'long',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
-  const handleDelete = (item: any) => {
-    Alert.alert(
-      "Excluir Registro",
-      `Deseja apagar permanentemente a anotação: "${item.title}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        { 
-          text: "Excluir", 
-          style: "destructive", 
-          onPress: () => console.log("Deletar ID:", item.id) 
-        }
-      ]
+  if (loading) {
+    return (
+      <View style={[globalStyles.startContainer, { paddingTop: headerHeight, justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      </View>
     );
-  };
+  }
 
   return (
     <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
-      
+
       <View style={[globalStyles.betweenContainer, styles.headerPadding]}>
         <View style={{ flex: 1 }}>
           <Text style={[globalStyles.textPrimary, { color: Colors.purplePrimary }]}>Meus diários</Text>
           <Text style={globalStyles.textSecondary}>Acompanhe sua jornada emocional</Text>
         </View>
-        
-        <TouchableOpacity 
-          style={[styles.addButton, { backgroundColor: Colors.purplePrimary }]} 
-          onPress={() => router.push("/PersonalArea/Diary/create")}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="add" size={28} color="#FFF" />
-        </TouchableOpacity>
+
+        <View style={styles.headerRight}>
+          {streak > 0 && (
+            <View style={styles.streakBadge}>
+              <Text style={styles.streakText}>📓 {streak} {streak === 1 ? 'dia' : 'dias'}</Text>
+            </View>
+          )}
+          {!todayEntry && (
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: Colors.purplePrimary }]}
+              onPress={() => router.push('/PersonalArea/Diary/create')}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="add" size={28} color="#FFF" />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+
+      {todayEntry && (
+        <View style={styles.todayBanner}>
+          <Text style={styles.todayBannerText}>🎉 Você já fez seu diário hoje! Amanhã um novo espaço estará disponível.</Text>
+        </View>
+      )}
+
+      <View style={styles.searchWrapper}>
+        <Ionicons name="search-outline" size={18} color="#AAA" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar no diário..."
+          placeholderTextColor="#BBB"
+          value={search}
+          onChangeText={setSearch}
+          returnKeyType="search"
+        />
+        {search.length > 0 && (
+          <TouchableOpacity onPress={() => setSearch('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Ionicons name="close-circle" size={18} color="#BBB" />
+          </TouchableOpacity>
+        )}
       </View>
 
       <FlatList
-        data={MOCK_DIARIOS}
+        data={entries.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listPadding}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={{ alignItems: 'center', marginTop: 60 }}>
+            <Text style={{ fontFamily: 'Montserrat', color: Colors.text.secondary, fontSize: 14 }}>
+              Nenhuma entrada ainda. Comece registrando seu dia!
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => {
           const isExpanded = expandedId === item.id;
-          const emoteInfo = EMOTE_MAP[item.emotes] || EMOTE_MAP.neutral;
+          const emoteKey = Array.isArray(item.emotes) ? item.emotes[0] : (item.emotes as unknown as string);
+          const emoteInfo = EMOTE_BY_ID[emoteKey] ?? EMOTE_BY_ID['neutral'];
+          const content = contentMap[item.id];
 
           return (
             <View style={[styles.card, isExpanded && styles.cardActive]}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.cardMainContent}
-                onPress={() => setExpandedId(isExpanded ? null : item.id)}
+                onPress={() => handleExpand(item.id)}
                 activeOpacity={0.7}
               >
                 <View style={styles.rowAlign}>
                   <View style={[styles.emojiBadge, { backgroundColor: emoteInfo.color }]}>
-                    <MaterialCommunityIcons 
-                      name={isExpanded ? (emoteInfo.icon.replace('-outline', '') as any) : emoteInfo.icon as any} 
-                      size={26} 
-                      color={isExpanded ? Colors.purpleSecondary : "#444"} 
-                    />
+                    <Text style={styles.emoteEmoji}>{emoteInfo.emoji}</Text>
                   </View>
-                  
+
                   <View style={styles.infoColumn}>
                     <Text style={[globalStyles.title, { marginBottom: 2, fontSize: 16 }]} numberOfLines={1}>
                       {item.title}
@@ -132,23 +206,25 @@ export default function DiaryIndex() {
                   </View>
                 </View>
 
-                <Ionicons 
-                  name={isExpanded ? "chevron-up" : "chevron-down"} 
-                  size={20} 
-                  color={isExpanded ? Colors.purplePrimary : "#CCC"} 
+                <Ionicons
+                  name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                  size={20}
+                  color={isExpanded ? Colors.purplePrimary : '#CCC'}
                 />
               </TouchableOpacity>
 
               {isExpanded && (
                 <View style={styles.expandedArea}>
                   <View style={styles.contentContainer}>
-                    <Text style={styles.diaryFullText}>{item.content}</Text>
+                    <Text style={styles.diaryFullText}>
+                      {content === undefined ? '...' : content || '(sem conteúdo)'}
+                    </Text>
                   </View>
 
                   <View style={styles.actionMenu}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.menuItem}
-                      onPress={() => router.push({ pathname: "/PersonalArea/Diary/update", params: { id: item.id } })}
+                      onPress={() => router.push({ pathname: '/PersonalArea/Diary/update', params: { id: item.id } })}
                     >
                       <Ionicons name="create-outline" size={20} color={Colors.purplePrimary} />
                       <Text style={styles.menuItemText}>Editar relato</Text>
@@ -156,7 +232,7 @@ export default function DiaryIndex() {
 
                     <View style={styles.divider} />
 
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.menuItem}
                       onPress={() => handleDelete(item)}
                     >
@@ -179,11 +255,11 @@ const styles = StyleSheet.create({
     flex: 0,
     paddingHorizontal: 20,
     paddingVertical: 15,
-    marginBottom: 10
+    marginBottom: 10,
   },
   listPadding: {
     paddingHorizontal: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   addButton: {
     width: 48,
@@ -211,19 +287,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   cardActive: {
-    borderColor: Colors.purplePrimary + '40', // Borda sutil quando aberto
+    borderColor: Colors.purplePrimary + '40',
     borderWidth: 1.5,
   },
   cardMainContent: {
     flexDirection: 'row',
     padding: 16,
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   rowAlign: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
   },
   emojiBadge: {
     width: 48,
@@ -231,17 +307,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15
+    marginRight: 15,
   },
   infoColumn: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   dateText: {
     fontFamily: 'Montserrat',
     fontSize: 12,
     color: Colors.text.secondary,
-    marginTop: -4
+    marginTop: -4,
   },
   expandedArea: {
     backgroundColor: '#FAFAFA',
@@ -284,5 +360,64 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F0F0F0',
     marginHorizontal: 16,
-  }
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  streakBadge: {
+    backgroundColor: '#EDE7F6',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#D1C4E9',
+  },
+  streakText: {
+    fontFamily: 'Montserrat',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#5C4B9B',
+  },
+  todayBanner: {
+    marginHorizontal: 20,
+    marginBottom: 12,
+    backgroundColor: '#F0FFF4',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#B2DFDB',
+  },
+  todayBannerText: {
+    fontFamily: 'Montserrat',
+    fontSize: 13,
+    color: '#2E7D32',
+    textAlign: 'center',
+  },
+  searchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 14,
+    marginHorizontal: 20,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#EEE',
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    color: '#333',
+    padding: 0,
+  },
+  emoteEmoji: {
+    fontSize: 26,
+  },
 });
