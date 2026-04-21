@@ -12,11 +12,7 @@ export class BooksService {
   }
 
   async findAll() {
-    const books = await this.booksRepository.findAll();
-    if (!books || books.length === 0) {
-      throw new NotFoundException('Nenhum livro cadastrado.');
-    }
-    return books;
+    return this.booksRepository.findAll();
   }
 
   async findOne(id: string) {

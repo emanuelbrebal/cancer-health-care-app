@@ -14,6 +14,14 @@ const screensConfig: ScreenConfig[] = [
     { name: "LegalArea/index", title: "Benefícios Legais" },
     { name: "Leisure/index", title: "Recomendações de Lazer" },
     { name: "SpiritualArea/index", title: "Espiritualidade" },
+    { name: "Leisure/Books/index", title: "Livros Recomendados" },
+    { name: "Leisure/Books/[id]", title: "Detalhes do Livro" },
+    { name: "Leisure/Movies/index", title: "Filmes Recomendados" },
+    { name: "Leisure/Movies/[id]", title: "Detalhes do Filme" },
+    { name: "Leisure/Series/index", title: "Séries Recomendadas" },
+    { name: "Leisure/Series/[id]", title: "Detalhes da Série" },
+    { name: "Leisure/Activities/index", title: "Atividades de Lazer" },
+    { name: "Leisure/Activities/[id]", title: "Detalhes da Atividade" },
 ];
 
 export default function OncologyStackLayout() {

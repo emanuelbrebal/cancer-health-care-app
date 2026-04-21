@@ -1,7 +1,14 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { globalStyles } from "@/src/styles/global";
 import { InputWithIcon } from "../ui/Inputs/InputWithIcon";
 import { SelectWithIcon } from "../ui/Inputs/SelectWithIcon";
+
+export interface RegisterFormErrors {
+  role?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 export interface FormProps {
   setEmail: (text: string) => void;
@@ -9,6 +16,8 @@ export interface FormProps {
   setPassword: (text: string) => void;
   setConfirmPassword: (text: string) => void;
   userRole: string;
+  errors?: RegisterFormErrors;
+  /** @deprecated use errors */
   error?: string | false;
 }
 
@@ -18,18 +27,16 @@ const userRoleData = [
   { label: 'Admin', value: 'ADMIN' },
 ];
 
-export function RegisterForm({setEmail, setPassword, setUserRole, setConfirmPassword, userRole, error }: FormProps) {
-
-
+export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPassword, userRole, errors = {} }: FormProps) {
   return (
     <View style={globalStyles.formContainer}>
-
       <SelectWithIcon
         iconLeftName="user"
         data={userRoleData}
         value={userRole}
         placeholder="Tipo de usuário"
-        onChange={item => { setUserRole(item.value) }}
+        onChange={item => setUserRole(item.value)}
+        error={errors.role}
       />
 
       <InputWithIcon
@@ -38,24 +45,24 @@ export function RegisterForm({setEmail, setPassword, setUserRole, setConfirmPass
         placeholder='email@email.com'
         keyboardType="email-address"
         autoCapitalize="none"
+        error={errors.email}
       />
 
       <InputWithIcon
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setPassword}
-        placeholder='senha'
+        placeholder='senha (mín. 6 caracteres)'
+        error={errors.password}
       />
 
       <InputWithIcon
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setConfirmPassword}
-        placeholder='Confirmar senha'
+        placeholder='confirmar senha'
+        error={errors.confirmPassword}
       />
-
-      {error ? <Text style={globalStyles.textError}>{error}</Text> : null}
-
     </View>
   );
 }

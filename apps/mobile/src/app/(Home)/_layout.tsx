@@ -90,6 +90,14 @@ export default function HomeLayout() {
                 }}
             />
 
+            <Tabs.Screen name="About"
+                options={{
+                    href: null,
+                    headerTitle: '',
+                    headerTransparent: true,
+                }}
+            />
+
             <Tabs.Screen name="PersonalArea"
                 options={{
                     tabBarLabel: "Meu Perfil",

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
+import { InputStyles } from '@/src/styles/Inputs';
 
 interface ItemProps { label: string; value: string; }
 
@@ -13,33 +14,37 @@ interface SelectWithIconProps {
   iconLeftName: keyof typeof Feather.glyphMap;
   value: string;
   onChange: (item: ItemProps) => void;
+  error?: string;
 }
 
-export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftName, value, onChange }: SelectWithIconProps) {
+export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftName, value, onChange, error }: SelectWithIconProps) {
   const [isFocus, setIsFocus] = useState(false);
 
   return (
-    <View style={[styles.container, isFocus && styles.focused]}>
-      <Feather name={iconLeftName} size={20} color={Colors.lilacPrimary} style={{ marginRight: 10 }} />
-      
-      <Dropdown
-        style={{ flex: 1 }}
-        containerStyle={styles.dropdownMenu}
-        placeholderStyle={[globalStyles.textSecondary, {color: Colors.purpleSecondary}]}
-        selectedTextStyle={[globalStyles.textSecondary, {color: Colors.purpleSecondary}]}
-        itemTextStyle={styles.text}
-        data={data}
-        labelField="label"
-        valueField="value"
-        placeholder={placeholder}
-        value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => { onChange(item); setIsFocus(false); }}
-        renderRightIcon={() => (
-          <Feather name={isFocus ? "chevron-up" : "chevron-down"} size={20} color={Colors.purpleSecondary} />
-        )}
-      />
+    <View>
+      <View style={[styles.container, isFocus && styles.focused, error ? styles.containerError : null]}>
+        <Feather name={iconLeftName} size={20} color={error ? Colors.status.error : Colors.lilacPrimary} style={{ marginRight: 10 }} />
+
+        <Dropdown
+          style={{ flex: 1 }}
+          containerStyle={styles.dropdownMenu}
+          placeholderStyle={[globalStyles.textSecondary, { color: Colors.purpleSecondary }]}
+          selectedTextStyle={[globalStyles.textSecondary, { color: Colors.purpleSecondary }]}
+          itemTextStyle={styles.text}
+          data={data}
+          labelField="label"
+          valueField="value"
+          placeholder={placeholder}
+          value={value}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={(item) => { onChange(item); setIsFocus(false); }}
+          renderRightIcon={() => (
+            <Feather name={isFocus ? "chevron-up" : "chevron-down"} size={20} color={Colors.purpleSecondary} />
+          )}
+        />
+      </View>
+      {error ? <Text style={InputStyles.errorText}>{error}</Text> : null}
     </View>
   );
 }
@@ -56,6 +61,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
   },
+  containerError: {
+    borderColor: Colors.status.error,
+    borderWidth: 1.5,
+  },
   focused: {
     borderColor: Colors.purplePrimary,
     borderWidth: 2,
@@ -63,7 +72,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontFamily: 'Montserrat',
-    color: Colors.text.primary, 
+    color: Colors.text.primary,
   },
   dropdownMenu: {
     borderRadius: 12,
@@ -73,5 +82,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-  }
+  },
 });

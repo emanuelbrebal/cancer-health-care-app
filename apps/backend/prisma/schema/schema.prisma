@@ -51,12 +51,13 @@ model User {
 
   name            String?      @db.VarChar(50)
   pronoun         PronounEnum? @default(NOT_INFORMED)
-  phone_number    String?      @db.VarChar(14)
+  phone_number    String?      @db.VarChar(20)
   birthday        DateTime?
   profile_picture String?
 
   lastAiAnalysis DateTime?
-  logs DailyLog[]
+  logs       DailyLog[]
+  treatments Treatment[]
 
 }
 
@@ -212,6 +213,27 @@ model PatientSupportLog {
   userId    String
   prompt    String
   response  String
-  context   Json     
+  context   Json
   createdAt DateTime @default(now())
+}
+
+// ==============================
+// MODELS: TREATMENTS
+// ==============================
+model Treatment {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  frequency     String
+  startTime     String
+  endDate       DateTime
+  doctorName    String?
+  doctorContact String?
+  hospitalName  String?
+  status        String    @default("ACTIVE")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("treatments")
 }

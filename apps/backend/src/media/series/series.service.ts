@@ -13,11 +13,7 @@ export class SeriesService {
     }
   
     async findAll() {
-      const series = await this.seriesRepository.findAll();
-      if (!series || series.length === 0) {
-        throw new NotFoundException('Nenhuma série cadastrada.');
-      }
-      return series;
+      return this.seriesRepository.findAll();
     }
   
     async findOne(id: string) {

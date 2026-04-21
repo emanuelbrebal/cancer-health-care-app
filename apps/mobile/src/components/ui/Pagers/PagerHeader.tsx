@@ -1,17 +1,22 @@
 import { Colors } from '@/src/constants/Colors';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 interface PagerHeaderProps {
-    title?: string,
-    action?: string
+    title?: string;
+    seeAllRoute?: string;
 }
 
-export default function PagerHeader({ title, action }: PagerHeaderProps) {
+export default function PagerHeader({ title, seeAllRoute }: PagerHeaderProps) {
     return (
-        <TouchableOpacity style={styles.header}>
-            <Text style={styles.text}>{title ? title : 'Recomendações'}</Text>
-            <Feather name={"chevron-right"} size={22} color={Colors.purpleSecondary} />
+        <TouchableOpacity
+            style={styles.header}
+            onPress={() => seeAllRoute && router.push(seeAllRoute as any)}
+            activeOpacity={seeAllRoute ? 0.6 : 1}
+        >
+            <Text style={styles.text}>{title ?? 'Recomendações'}</Text>
+            <Feather name="chevron-right" size={22} color={seeAllRoute ? Colors.purpleSecondary : 'transparent'} />
         </TouchableOpacity>
     );
 }

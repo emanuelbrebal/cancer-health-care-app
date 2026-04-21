@@ -1,62 +1,58 @@
 import { Colors } from '@/src/constants/Colors';
-import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { ImageContainer } from '../Images/ImageContainer';
+import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
 import PagerHeader from './PagerHeader';
 import { RecomendationType } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
-import { Href, router } from 'expo-router';
+import { router } from 'expo-router';
+import { getMediaImage } from '@/src/constants/mediaImageMap';
 
-const CARD_HEIGHT = 100;
-const CARD_WIDTH = 160;
-
-const SPACING = 8;
-
+const CARD_HEIGHT = 160;
+const CARD_WIDTH = 110;
+const SPACING = 10;
 const SNAP_INTERVAL = CARD_WIDTH + SPACING;
+const RADIUS = 12;
 
 interface RecomendationPagerProps {
-    headerTitle?: string,
-    recomendationPagerData?: RecomendationType[]
+    headerTitle?: string;
+    seeAllRoute?: string;
+    recomendationPagerData?: RecomendationType[];
 }
 
-export default function RecomendationPager({ headerTitle, recomendationPagerData }: RecomendationPagerProps) {
-
-    const handlePressCard = (item: any) => {
-        console.log("redirecionando para", item.route)
-        router.push(item.route);
+export default function RecomendationPager({ headerTitle, seeAllRoute, recomendationPagerData }: RecomendationPagerProps) {
+    const handlePressCard = (item: RecomendationType) => {
+        if (item.route) router.push(item.route as any);
     };
+
     return (
         <View style={styles.container}>
-            <PagerHeader title={headerTitle} />
+            <PagerHeader title={headerTitle} seeAllRoute={seeAllRoute} />
             <FlatList
                 data={recomendationPagerData}
                 keyExtractor={(item) => item.id.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 snapToInterval={SNAP_INTERVAL}
-                snapToAlignment="center"
+                snapToAlignment="start"
                 decelerationRate="fast"
-                contentContainerStyle={{
-                    gap: SPACING,
+                contentContainerStyle={{ gap: SPACING, paddingHorizontal: 2 }}
+                renderItem={({ item }) => {
+                    const imageSource = item.image ?? getMediaImage(item.imagePath);
+                    return (
+                        <TouchableOpacity
+                            style={styles.card}
+                            onPress={() => handlePressCard(item)}
+                            activeOpacity={0.8}
+                        >
+                            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+                            <View style={styles.titleOverlay}>
+                                <Text style={styles.titleText} numberOfLines={2}>{item.title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    );
                 }}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.card}
-                        onPress={() => handlePressCard(item)}
-                        activeOpacity={0.8}
-                    >
-                        <ImageContainer imagePath={item.image} />
-                        <View style={styles.titleOverlay}>
-                            <Text style={styles.titleText} numberOfLines={1}>
-                                {item.title}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
             />
         </View>
     );
 }
-
-const RADIUS = 16;
 
 const styles = StyleSheet.create({
     container: {
@@ -65,42 +61,33 @@ const styles = StyleSheet.create({
     card: {
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
-        backgroundColor: '#E0E0E0',
         borderRadius: RADIUS,
-        borderColor: Colors.lilacPrimary,
-        borderWidth: 0.5,
         overflow: 'hidden',
-        paddingTop: 30,
-
-        elevation: 2,
+        elevation: 3,
         shadowColor: Colors.black,
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.15,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
     },
-
-    title: {
-        opacity: 1,
-        fontSize: 12,
-        color: Colors.white,
-        textAlign: 'center'
+    image: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
     },
     titleOverlay: {
         position: 'absolute',
-        top: 0,
+        bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: Colors.lilacPrimary,
-        padding: 3,
-        alignItems: 'center',
-        borderTopRightRadius: RADIUS,
-        borderTopLeftRadius: RADIUS,
-
+        backgroundColor: 'rgba(0,0,0,0.58)',
+        paddingHorizontal: 7,
+        paddingVertical: 6,
     },
     titleText: {
-        opacity: 1,
-        color: Colors.white,
-        fontSize: 12,
+        fontFamily: 'Montserrat',
+        color: '#FFF',
+        fontSize: 10,
         fontWeight: '600',
-    }
+        lineHeight: 14,
+    },
 });

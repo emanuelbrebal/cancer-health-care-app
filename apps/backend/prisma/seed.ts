@@ -94,7 +94,7 @@ async function main() {
     { title: 'Tudo por Amor',                      year: 1991, director: 'Garry Marshall',    image: 'movies/tudo_por_amor.jpg' },
     { title: 'Um Golpe do Destino',                year: 1991, director: 'Randa Haines',      image: 'movies/golpe_destino.jpg' },
     { title: 'Lado a Lado',                        year: 1998, director: 'Chris Columbus',    image: 'movies/lado_a_lado.jpg' },
-    { title: 'Patch Adams - O Amor é Contagioso',  year: 1998, director: 'Tom Shadyac',       image: 'movies/patch_adams.jpg' },
+    { title: 'Patch Adams',                         year: 1998, director: 'Tom Shadyac',       image: 'movies/patch_adams.jpg' },
     { title: 'Um Amor Verdadeiro',                 year: 1998, director: 'Jon Avnet',         image: 'movies/amor_verdadeiro.jpg' },
     { title: 'Um Amor para Recordar',              year: 2002, director: 'Adam Shankman',     image: 'movies/amor_recordar.jpg' },
     { title: 'Antes de Partir',                    year: 2007, director: 'Rob Reiner',        image: 'movies/antes_de_partir.jpg' },
@@ -103,6 +103,10 @@ async function main() {
     { title: 'Biutiful',                           year: 2010, director: 'Alejandro González', image: 'movies/biutiful.jpg' },
     { title: 'Cartas para Deus',                   year: 2010, director: 'David Nixon',       image: 'movies/cartas_deus.jpg' },
   ];
+
+  // Remove títulos antigos antes do upsert (renomeações que quebrariam o unique)
+  await prisma.media.deleteMany({ where: { title: 'Patch Adams - O Amor é Contagioso', type: 'MOVIE' } });
+  await prisma.media.deleteMany({ where: { title: 'The Big C - Aquela Doença com C',   type: 'SERIES' } });
 
   console.log('Populando filmes...');
   for (const m of movies) {
@@ -122,7 +126,7 @@ async function main() {
   // ─── 5. SÉRIES ────────────────────────────────────────────────────────────
   const series = [
     { title: 'Alexa e Katie',                              seasons: 4, showrunner: 'Heather Wordham',   image: 'series/alexa_katie.jpg',         link: 'https://www.netflix.com' },
-    { title: 'The Big C - Aquela Doença com C',            seasons: 4, showrunner: 'Darlene Hunt',      image: 'series/the_big_c.jpg',           link: '' },
+    { title: 'The Big C / Aquela Doença com C',            seasons: 4, showrunner: 'Darlene Hunt',      image: 'series/the_big_c.jpg',           link: '' },
     { title: 'Recomeço',                                   seasons: 1, showrunner: 'A definir',         image: 'series/recomeco.jpg',            link: 'https://www.netflix.com' },
     { title: 'Graça e Coragem',                            seasons: 1, showrunner: 'A definir',         image: 'series/graca_coragem.jpg',       link: 'https://www.netflix.com' },
     { title: 'Playlist: LIVES - Histórias Reais',          seasons: 1, showrunner: 'Patricia Figueiredo', image: 'series/patricia_figueiredo.png', link: 'https://www.youtube.com' },

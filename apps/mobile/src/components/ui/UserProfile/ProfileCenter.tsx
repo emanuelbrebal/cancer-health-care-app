@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { useAuthStore } from '@/src/store/useAuthStore';
 
 export interface UserProfileCenterProps {
   name: string;
@@ -8,14 +10,19 @@ export interface UserProfileCenterProps {
 }
 
 export function UserProfileCenter({ name, email, imageUrl }: UserProfileCenterProps) {
-  const defaultImage = 'https://i.pravatar.cc/150?img=47';
+  const profilePicture = useAuthStore((s) => s.user?.profile_picture);
+  const src = imageUrl ?? profilePicture;
+
   return (
     <View style={styles.profileCenter}>
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: imageUrl || defaultImage }}
-          style={styles.profileImageLarge}
-        />
+        {src ? (
+          <Image source={{ uri: src }} style={styles.profileImageLarge} />
+        ) : (
+          <View style={[styles.profileImageLarge, styles.avatarPlaceholder]}>
+            <Feather name="user" size={40} color="#BBB" />
+          </View>
+        )}
       </View>
       <Text style={styles.profileNameLarge}>{name}</Text>
       <Text style={styles.profileEmail}>{email}</Text>
@@ -43,7 +50,14 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: '#FFF', 
+    borderColor: '#FFF',
+  },
+  avatarPlaceholder: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileNameLarge: {
     fontSize: 22,

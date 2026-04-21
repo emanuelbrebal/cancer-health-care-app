@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { MediaViewer } from './MediaViewer';
 import { Colors } from '@/src/constants/Colors';
 
 export interface AccordionMediaProps {
     title: string;
-    url: string;
+    url: string | number;
+    description?: string;
+    series?: number;
+    reps?: string;
 }
 
-export function AccordionMedia({ title, url }: AccordionMediaProps) {
+export function AccordionMedia({ title, url, description, series, reps }: AccordionMediaProps) {
     const [isExpanded, setIsExpanded] = useState(false);
-
-    const toggleAccordion = () => {
-        setIsExpanded(!isExpanded);
-    };
 
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 style={styles.header}
-                onPress={toggleAccordion}
+                onPress={() => setIsExpanded(!isExpanded)}
                 activeOpacity={0.7}
             >
                 <Text style={styles.title}>{title}</Text>
@@ -31,12 +30,36 @@ export function AccordionMedia({ title, url }: AccordionMediaProps) {
                 />
             </TouchableOpacity>
 
-            <View style={[styles.content, { display: isExpanded ? 'flex' : 'none' }]}>
-                <MediaViewer
-                    url={url}
-                    play={isExpanded}
-                />
-            </View>
+            {isExpanded && (
+                <View>
+                    <MediaViewer url={url} play={isExpanded} />
+
+                    {(description || series || reps) && (
+                        <View style={styles.infoContainer}>
+                            {description ? (
+                                <Text style={styles.description}>{description}</Text>
+                            ) : null}
+
+                            {(series || reps) ? (
+                                <View style={styles.metaRow}>
+                                    {series ? (
+                                        <View style={styles.metaBadge}>
+                                            <Feather name="repeat" size={13} color={Colors.purplePrimary} />
+                                            <Text style={styles.metaText}>{series} séries</Text>
+                                        </View>
+                                    ) : null}
+                                    {reps ? (
+                                        <View style={styles.metaBadge}>
+                                            <Feather name="activity" size={13} color={Colors.purplePrimary} />
+                                            <Text style={styles.metaText}>{reps}</Text>
+                                        </View>
+                                    ) : null}
+                                </View>
+                            ) : null}
+                        </View>
+                    )}
+                </View>
+            )}
         </View>
     );
 }
@@ -44,13 +67,13 @@ export function AccordionMedia({ title, url }: AccordionMediaProps) {
 const styles = StyleSheet.create({
     container: {
         marginBottom: 12,
-        borderRadius: 8,
+        borderRadius: 12,
         overflow: 'hidden',
         backgroundColor: '#F9F5FF',
         borderWidth: 1,
         borderColor: Colors.purplePrimary,
     },
-  header: {
+    header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -60,12 +83,40 @@ const styles = StyleSheet.create({
     title: {
         color: Colors.purpleSecondary,
         fontWeight: '600',
-        fontSize: 16,
+        fontSize: 15,
+        fontFamily: 'Montserrat',
         flex: 1,
         paddingRight: 8,
     },
-    content: {
-        backgroundColor: '#000000',
-        paddingBottom: 0,
-    }
+    infoContainer: {
+        padding: 14,
+        backgroundColor: '#FFF',
+        gap: 10,
+    },
+    description: {
+        fontFamily: 'Montserrat',
+        fontSize: 13,
+        color: '#555',
+        lineHeight: 20,
+    },
+    metaRow: {
+        flexDirection: 'row',
+        gap: 10,
+        flexWrap: 'wrap',
+    },
+    metaBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+        backgroundColor: '#F3E5F5',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 20,
+    },
+    metaText: {
+        fontFamily: 'Montserrat',
+        fontSize: 12,
+        fontWeight: '600',
+        color: Colors.purplePrimary,
+    },
 });

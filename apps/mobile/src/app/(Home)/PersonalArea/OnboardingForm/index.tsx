@@ -1,169 +1,216 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { baseText, globalStyles } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { SelectWithIcon } from '@/src/components/ui/Inputs/SelectWithIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/src/store/useAuthStore';
+import * as ImagePicker from 'expo-image-picker';
+import api from '@/src/services/api';
+import { router } from 'expo-router';
+import { DateInput } from '@/src/components/ui/Inputs/DateInput';
+import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
+import { toastService } from '@/src/services/toastService';
 
-const treatmentData = [
-    { label: 'Sr', value: '1' },
-    { label: 'Sra', value: '2' },
-    { label: 'Srta', value: '3' },
-    { label: 'Prefiro não informar', value: '4' },
+const pronounOptions = [
+  { label: 'Sr', value: 'SR' },
+  { label: 'Sra', value: 'SRA' },
+  { label: 'Srta', value: 'SRTA' },
+  { label: 'Prefiro não informar', value: 'NOT_INFORMED' },
 ];
 
+const PLACEHOLDER_AVATAR = require('@assets/images/Home/purpleMascotSunglasses.png');
+
 export default function OnboardingProfileScreen() {
-    const [treatment, setTreatment] = useState('');
+  const user = useAuthStore((s) => s.user);
+  const login = useAuthStore((s) => s.login);
+  const token = useAuthStore((s) => s.token);
 
-    return (
-        <SafeAreaView style={[globalStyles.scrollContainer, styles.paddingGeral]}>
+  const [pronoun, setPronoun] = useState(user?.pronoun ?? '');
+  const [name, setName] = useState(user?.name ?? '');
+  const [phone, setPhone] = useState(user?.phone_number ?? '');
+  const [birthday, setBirthday] = useState(user?.birthday ?? '');
+  const [avatarUri, setAvatarUri] = useState<string | null>(user?.profile_picture ?? null);
+  const [saving, setSaving] = useState(false);
 
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <Feather name="arrow-left" size={24} color="#FFFFFF" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Editar Perfil</Text>
-                <View style={{ width: 24 }} />
+  const handlePickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      toastService.error('Permita o acesso à galeria nas configurações do dispositivo.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+      base64: true,
+    });
+    if (!result.canceled && result.assets[0]) {
+      const asset = result.assets[0];
+      const base64 = asset.base64 ? `data:image/jpeg;base64,${asset.base64}` : null;
+      setAvatarUri(base64 ?? asset.uri);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user?.id || !token) return;
+    setSaving(true);
+    try {
+      const response = await api.patch(`/users/${user.id}`, {
+        name: name || undefined,
+        pronoun: pronoun || undefined,
+        phone_number: phone || undefined,
+        birthday: birthday || undefined,
+        profile_picture: avatarUri || undefined,
+      });
+      login(token, response.data);
+      toastService.success('Perfil atualizado com sucesso!');
+      router.back();
+    } catch {
+      toastService.error('Não foi possível salvar as alterações. Tente novamente.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const avatarSource = avatarUri ? { uri: avatarUri } : PLACEHOLDER_AVATAR;
+
+  return (
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <SafeAreaView style={globalStyles.startContainer}>
+        <ScrollView
+          contentContainerStyle={styles.paddingGeral}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.avatarContainer}>
+            <View style={styles.avatarWrapper}>
+              <Image source={avatarSource} style={styles.avatarImage} />
+              <TouchableOpacity style={styles.addBadge} onPress={handlePickImage}>
+                <Feather name="camera" size={14} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.avatarHint}>Toque no ícone para alterar a foto</Text>
+          </View>
+
+          <View style={globalStyles.formContainer}>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Como deseja ser tratado? <Text style={styles.optional}>(opcional)</Text></Text>
+              <SelectWithIcon
+                data={pronounOptions}
+                iconLeftName='user'
+                placeholder='Pronome de tratamento'
+                value={pronoun}
+                onChange={(item) => setPronoun(item.value)}
+              />
             </View>
 
-            <View style={styles.avatarContainer}>
-                <View style={styles.avatarWrapper}>
-                    <Image
-                        source={{ uri: 'https://i.pravatar.cc/150?img=47' }}
-                        style={styles.avatarImage}
-                    />
-                    <TouchableOpacity style={styles.addBadge}>
-                        <Feather name="plus" size={16} color="#FFFFFF" />
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nome completo:</Text>
+              <InputWithIcon
+                iconLeftName="user"
+                placeholder="Seu nome"
+                value={name}
+                onChangeText={setName}
+              />
             </View>
 
-            <View style={globalStyles.formContainer}>
-
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Como deseja ser tratado?</Text>
-                    <SelectWithIcon
-                        data={treatmentData}
-                        iconLeftName='user'
-                        placeholder='Pronome de tratamento'
-                        value={treatment}
-                        onChange={(item) => setTreatment(item.value)}
-                    />
-                </View>
-
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Digite seu nome:</Text>
-                    <InputWithIcon
-                        iconLeftName="user"
-                        placeholder="Seu nome"
-                    />
-                </View>
-
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Digite telefone:</Text>
-                    <InputWithIcon
-                        iconLeftName="phone"
-                        placeholder="(12) 9 9765-4321"
-                        keyboardType="phone-pad"
-                    />
-                </View>
-
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data de nascimento</Text>
-                    <InputWithIcon
-                        iconLeftName="calendar"
-                        placeholder="Dia/Mês/Ano"
-                    />
-                </View>
-
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Telefone: <Text style={styles.optional}>(opcional)</Text></Text>
+              <PhoneInput value={phone} onChangeText={setPhone} />
             </View>
 
-            <View style={styles.actionsContainer}>
-                <TouchableOpacity style={styles.primaryButton}>
-                    <Text style={styles.primaryButtonText}>Salvar Informações</Text>
-                </TouchableOpacity>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Data de nascimento: <Text style={styles.optional}>(opcional)</Text></Text>
+              <DateInput value={birthday} onChangeText={setBirthday} />
             </View>
 
-        </SafeAreaView>
-    );
+          </View>
+
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSave} disabled={saving}>
+              <Text style={styles.primaryButtonText}>{saving ? 'Salvando...' : 'Salvar Informações'}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({
-    paddingGeral: {
-        paddingBottom: 40,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    headerTitle: {
-        ...baseText,
-        color: '#FFFFFF',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    avatarContainer: {
-        alignItems: 'center',
-        marginBottom: 30,
-    },
-    avatarWrapper: {
-        position: 'relative',
-    },
-    avatarImage: {
-        width: 90,
-        height: 90,
-        borderRadius: 50,
-    },
-    addBadge: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        backgroundColor: '#1AD5AD',
-        width: 28,
-        height: 28,
-        borderRadius: 14,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#FFFFFF',
-    },
-    inputGroup: {
-        width: '100%',
-        marginBottom: 2,
-    },
-    label: {
-        ...baseText,
-        color: '#333333',
-        fontSize: 14,
-        marginBottom: 8,
-        fontWeight: '500',
-    },
-    actionsContainer: {
-        marginTop: 20,
-        alignItems: 'center',
-        width: '100%',
-    },
-    primaryButton: {
-        backgroundColor: '#9B51E0',
-        width: '100%',
-        paddingVertical: 16,
-        borderRadius: 25,
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    primaryButtonText: {
-        ...baseText,
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    skipButtonText: {
-        ...baseText,
-        color: '#9B51E0',
-        fontSize: 14,
-        fontWeight: '600',
-    },
+  paddingGeral: {
+    paddingBottom: 40,
+    paddingHorizontal: 30,
+    flexGrow: 1,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+    marginTop: 8,
+  },
+  avatarWrapper: {
+    position: 'relative',
+  },
+  avatarImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+  },
+  addBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#1AD5AD',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  avatarHint: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#888',
+  },
+  inputGroup: {
+    width: '100%',
+    marginBottom: 2,
+  },
+  label: {
+    ...baseText,
+    color: '#333333',
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  optional: {
+    fontSize: 12,
+    color: '#999',
+    fontWeight: '400',
+  },
+  actionsContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+    width: '100%',
+    paddingBottom: 40,
+  },
+  primaryButton: {
+    backgroundColor: '#9B51E0',
+    width: '100%',
+    paddingVertical: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    ...baseText,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

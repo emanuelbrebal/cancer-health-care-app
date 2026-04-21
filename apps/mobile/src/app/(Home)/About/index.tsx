@@ -1,10 +1,12 @@
 import { globalStyles } from '@/src/styles/global';
 import { Colors } from '@/src/constants/Colors';
-import { ScrollView, View, Text, Image, StyleSheet, Linking } from 'react-native';
+import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 
 const TEAM = [
-    { role: 'Orientador', name: 'Prof. Dr. [Nome do Orientador]' },
-    { role: 'Desenvolvimento', name: 'Emanuel Brebal' },
+    { role: 'Orientador', name: 'Prof. Dr. Kristiana Cerqueira Mousinho', subtitle: undefined },
+    { role: 'Estudante', name: 'Matheus Victor dos Santos', subtitle: 'Estudante de Farmácia — CESMAC' },
+    { role: 'Estudante', name: 'Elayne Lúcia Silva de Oliveira', subtitle: 'Estudante de Farmácia — CESMAC' },
+    { role: 'Desenvolvimento da plataforma', name: 'Emanuel Victor de Melo Brebal', subtitle: 'Estudante de Sistemas de Informação — CESMAC' },
 ];
 
 export default function AboutScreen() {
@@ -32,8 +34,20 @@ export default function AboutScreen() {
             </View>
 
             <View style={styles.card}>
+                <Text style={styles.sectionTitle}>Público-alvo</Text>
+                <Text style={styles.body}>
+                    Pacientes diagnosticados com câncer (qualquer tipo, gravidade ou idade) e seus cuidadores — acompanhantes e profissionais responsáveis pelo paciente.
+                </Text>
+            </View>
+
+            <View style={styles.card}>
                 <Text style={styles.sectionTitle}>Instituição</Text>
                 <View style={styles.institutionRow}>
+                    <Image
+                        source={require('@assets/images/logos/cesmac-logo.png')}
+                        style={styles.cesmacLogo}
+                        resizeMode="contain"
+                    />
                     <View style={styles.institutionTextBlock}>
                         <Text style={styles.institutionName}>CESMAC</Text>
                         <Text style={styles.institutionSubtitle}>
@@ -41,9 +55,6 @@ export default function AboutScreen() {
                         </Text>
                     </View>
                 </View>
-                <Text style={styles.notice}>
-                    * Adicionar logomarca CESMAC em assets/images/logos/cesmac-logo.png
-                </Text>
             </View>
 
             <View style={styles.card}>
@@ -52,16 +63,12 @@ export default function AboutScreen() {
                     <View key={i} style={styles.teamRow}>
                         <Text style={styles.teamRole}>{member.role}</Text>
                         <Text style={styles.teamName}>{member.name}</Text>
+                        {member.subtitle ? <Text style={styles.teamSubtitle}>{member.subtitle}</Text> : null}
                     </View>
                 ))}
             </View>
 
-            <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Público-alvo</Text>
-                <Text style={styles.body}>
-                    Pacientes diagnosticados com câncer (qualquer tipo, gravidade ou idade) e seus cuidadores — acompanhantes e profissionais responsáveis pelo paciente.
-                </Text>
-            </View>
+
 
             <Text style={styles.footer}>
                 © 2026 OncoMente · Todos os direitos reservados
@@ -143,11 +150,9 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: 'Montserrat',
     },
-    notice: {
-        fontSize: 11,
-        color: '#AAA',
-        marginTop: 10,
-        fontStyle: 'italic',
+    cesmacLogo: {
+        width: 60,
+        height: 60,
     },
     teamRow: {
         paddingVertical: 8,
@@ -166,6 +171,12 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#333',
         fontWeight: '500',
+        marginTop: 2,
+        fontFamily: 'Montserrat',
+    },
+    teamSubtitle: {
+        fontSize: 12,
+        color: '#999',
         marginTop: 2,
         fontFamily: 'Montserrat',
     },

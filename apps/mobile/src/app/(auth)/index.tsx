@@ -3,10 +3,22 @@ import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { ImageContainer } from '@/src/components/ui/Images/ImageContainer';
 import { globalStyles } from '@/src/styles/global';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 import { View } from 'react-native';
+import { useAuthStore } from '@/src/store/useAuthStore';
 
 export default function WelcomeScreen() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthenticated) {
+        router.replace('/(Home)');
+      }
+    }, [isAuthenticated])
+  );
+
   const redirectLogin = () => {
     router.push('/LoginScreen');
   }
@@ -14,6 +26,7 @@ export default function WelcomeScreen() {
   const redirectRegister = () => {
     router.push('/RegisterScreen');
   }
+
   return (
     <AuthLayout
       textPrimary="Bem-vindo(a)"
@@ -23,9 +36,7 @@ export default function WelcomeScreen() {
 
       <View style={globalStyles.buttonContainer}>
         <ButtonOutline title='Cadastrar' action={redirectRegister} />
-
         <ButtonPrimary title='Entrar' action={redirectLogin} />
-
       </View>
     </AuthLayout>
   );

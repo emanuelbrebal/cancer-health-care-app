@@ -1,193 +1,182 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { globalStyles } from '@/src/styles/global';
 import { AccordionCard } from '@/src/components/ui/Accordion/AccordionCard';
 
-const LEGAL_INFO = {
-  description: 'Você não está sozinho. O descaso, a negligência e a discriminação por conta da sua condição de saúde são inaceitáveis. Você tem direito a um tratamento digno e humanizado.',
-  laws: [
-    { id: '1', title: 'Estatuto da Pessoa com Câncer (Lei Nº 14.238/2021)', desc: 'Garante o atendimento integral, proibindo qualquer forma de negligência ou discriminação.' },
-    { id: '2', title: 'Negligência e Descaso (Código Civil e CDC)', desc: 'Falhas no atendimento hospitalar, como ser ignorado ou ter o tratamento adiado sem justificativa.' },
-    { id: '3', title: 'Discriminação no Trabalho (Súmula 443, TST)', desc: 'Protege o paciente oncológico contra demissões discriminatórias ou tratamento hostil.' },
-  ]
-};
+const DISCRIMINATION_TYPES = [
+  { id: '1', title: 'No trabalho', description: 'Demissão, rebaixamento, recusa de promoção ou assédio moral motivados pelo diagnóstico de câncer. A Súmula 443 do TST presume discriminatória qualquer dispensa de portador de doença grave.' },
+  { id: '2', title: 'No plano de saúde', description: 'Negativa de cobertura de quimioterapia, radioterapia, cirurgia ou medicamentos. A ANS proíbe exclusões arbitrárias para doenças oncológicas.' },
+  { id: '3', title: 'No atendimento de saúde', description: 'Tratamento desumano, descaso, ignorar queixas ou atrasar procedimentos sem justificativa clínica. O Estatuto da Pessoa com Câncer (Lei 14.238/2021) garante atendimento integral e humanizado.' },
+  { id: '4', title: 'Social e familiar', description: 'Isolamento, constrangimento ou julgamento por conta do diagnóstico, da aparência (perda de cabelo, cicatrizes) ou das limitações físicas causadas pelo tratamento.' },
+];
+
+const PREVENTION_TIPS = [
+  { id: '1', title: 'Documente tudo', description: 'Guarde laudos, receitas, conversas por escrito (e-mail, WhatsApp), protocolos de atendimento e qualquer negativa recebida. Registros são sua maior proteção.' },
+  { id: '2', title: 'Conheça seus direitos', description: 'Leia a aba "Benefícios Legais" neste aplicativo. Saber o que a lei garante é o primeiro passo para defender seus direitos.' },
+  { id: '3', title: 'Não aceite negativas verbais', description: 'Exija sempre respostas por escrito — de planos de saúde, empregadores e hospitais. Negativas verbais são difíceis de contestar.' },
+  { id: '4', title: 'Busque apoio', description: 'Grupos de pacientes, assistentes sociais e o CAVIDA em Maceió podem orientar e apoiar antes mesmo de uma denúncia formal.' },
+];
 
 const REPORT_CHANNELS = [
-  {
-    id: '1',
-    name: 'Ouvidoria do SUS',
-    description: 'Canal oficial para denunciar falta de medicamentos, demora abusiva para exames/cirurgias oncológicas ou mau atendimento na rede pública.',
-    actionText: 'Disque 136',
-    icon: 'phone-call',
-    type: 'phone',
-    value: '136',
-  },
-  {
-    id: '2',
-    name: 'Defensoria Pública (DPE-AL)',
-    description: 'Assistência jurídica gratuita para garantir na Justiça o acesso a cirurgias, tratamentos e medicamentos oncológicos negados pelo Estado.',
-    actionText: 'Disque 129',
-    icon: 'phone-call',
-    type: 'phone',
-    value: '129',
-  },
-  {
-    id: '3',
-    name: 'CREMAL (Conselho Regional)',
-    description: 'Órgão responsável por apurar denúncias formais contra médicos em Alagoas por erro, descaso ou omissão de socorro.',
-    actionText: 'Acessar Ouvidoria',
-    icon: 'external-link',
-    type: 'link',
-    value: 'https://cremal.org.br/ouvidoria/',
-  },
-  {
-    id: '4',
-    name: 'ANS (Planos Privados)',
-    description: 'Sofreu discriminação ou negativa de cobertura de quimioterapia/radioterapia pelo seu convênio médico? Denuncie na Agência Nacional de Saúde.',
-    actionText: 'Ligue 0800 701 9656',
-    icon: 'phone-call',
-    type: 'phone',
-    value: '08007019656',
-  }
+  { id: '1', title: 'Ouvidoria do SUS — Disque 136', description: 'Denúncie falta de medicamentos, demora abusiva para exames e cirurgias oncológicas ou mau atendimento na rede pública de saúde.', type: 'phone', value: '136', action: 'Ligar para 136' },
+  { id: '2', title: 'ANS — Planos de Saúde Privados', description: 'Sofreu negativa de cobertura pelo seu convênio? A Agência Nacional de Saúde Suplementar recebe e investiga sua reclamação.', type: 'phone', value: '08007019656', action: 'Ligue 0800 701 9656' },
+  { id: '3', title: 'Defensoria Pública — Disque 129', description: 'Assistência jurídica gratuita para garantir na Justiça o acesso a cirurgias, tratamentos e medicamentos negados.', type: 'phone', value: '129', action: 'Ligar para 129' },
+  { id: '4', title: 'CREMAL — Conselho Regional de Medicina', description: 'Denúncias formais contra médicos por erro, descaso ou omissão de socorro no Estado de Alagoas.', type: 'link', value: 'https://cremal.org.br/ouvidoria/', action: 'Acessar ouvidoria online' },
+  { id: '5', title: 'Procon Alagoas', description: 'Problemas com planos de saúde, cobranças indevidas ou descumprimento de contrato. Atende presencialmente e pelo site.', type: 'link', value: 'https://www.procon.al.gov.br', action: 'Acessar site do Procon' },
 ];
 
 export default function ReportsAreaScreen() {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  
+  const headerHeight = useHeaderHeight();
+  const [expandedAwareness, setExpandedAwareness] = useState<string | null>(null);
+  const [expandedPrevention, setExpandedPrevention] = useState<string | null>(null);
+  const [expandedChannel, setExpandedChannel] = useState<string | null>(null);
+
   const handleAction = async (type: string, value: string) => {
     try {
-      const url = type === 'phone' ? `tel:${value}` : value;
+      const url = type === 'phone' ? `tel:${value.replace(/\D/g, '')}` : value;
       const supported = await Linking.canOpenURL(url);
-      
       if (supported) {
         await Linking.openURL(url);
       } else {
-        Alert.alert('Atenção', 'Não foi possível abrir este link ou realizar a chamada no seu dispositivo.');
+        Alert.alert('Atenção', 'Não foi possível abrir este link ou realizar a chamada.');
       }
-    } catch (error) {
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar acessar o canal de denúncia.');
+    } catch {
+      Alert.alert('Erro', 'Ocorreu um erro ao tentar acessar o canal.');
     }
   };
 
-  const toggleExpand = (id: string) => {
-    setExpandedId(prevId => (prevId === id ? null : id));
-  };
-
   return (
-    <View style={globalStyles.scrollContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Feather name="book-open" size={24} color="#D32F2F" />
-            <Text style={styles.sectionTitle}>Seus Direitos</Text>
-          </View>
-          
-          <View style={styles.infoCard}>
-            <Text style={styles.infoDescription}>{LEGAL_INFO.description}</Text>
-            
-            <View style={styles.divider} />
-            
-            {LEGAL_INFO.laws.map((law) => (
-              <View key={law.id} style={styles.lawItem}>
-                <Text style={styles.lawTitle}>{law.title}</Text>
-                <Text style={styles.lawDesc}>{law.desc}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Feather name="shield" size={24} color="#D32F2F" />
-            <Text style={styles.sectionTitle}>Onde Denunciar</Text>
-          </View>
-          
-          <Text style={styles.sectionSubtitle}>
-            Toque em uma das opções abaixo para ver mais detalhes e acessar o canal de forma segura.
+        <View style={styles.heroBanner}>
+          <Feather name="shield" size={28} color="#7C3AED" />
+          <Text style={styles.heroTitle}>Você não merece passar por isso.</Text>
+          <Text style={styles.heroSubtitle}>
+            Discriminação por causa do câncer é inaceitável e punível por lei. Aqui você encontra informação e os canais certos para agir.
           </Text>
-
-          <View style={styles.channelsList}>
-            {REPORT_CHANNELS.map((channel) => (
-              <AccordionCard
-                key={channel.id}
-                title={channel.name}
-                description={channel.description}
-                isExpanded={expandedId === channel.id}
-                onToggle={() => toggleExpand(channel.id)}
-                actionText={channel.actionText}
-                actionIcon={channel.icon}
-                onAction={() => handleAction(channel.type, channel.value)}
-              />
-            ))}
-          </View>
         </View>
+
+        <Section icon="help-circle" label="O que é discriminação?" color="#7C3AED">
+          <Text style={styles.bodyText}>
+            É qualquer tratamento injusto, humilhante ou prejudicial motivado pelo diagnóstico de câncer — seja no trabalho, no sistema de saúde, nos planos de saúde ou nas relações sociais e familiares.
+          </Text>
+          <Text style={[styles.bodyText, { marginTop: 10 }]}>
+            Não se resume a atos explícitos. Ignorar, atrasar, negligenciar ou isolar também são formas de discriminação.
+          </Text>
+        </Section>
+
+        <Section icon="list" label="Tipos mais comuns" color="#0284C7">
+          {DISCRIMINATION_TYPES.map(item => (
+            <AccordionCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              isExpanded={expandedAwareness === item.id}
+              onToggle={() => setExpandedAwareness(p => p === item.id ? null : item.id)}
+              chevronColor="#0284C7"
+              expandedBorderColor="#BFDBFE"
+            />
+          ))}
+        </Section>
+
+        <Section icon="lock" label="Como se prevenir" color="#059669">
+          {PREVENTION_TIPS.map(item => (
+            <AccordionCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              isExpanded={expandedPrevention === item.id}
+              onToggle={() => setExpandedPrevention(p => p === item.id ? null : item.id)}
+              chevronColor="#059669"
+              expandedBorderColor="#A7F3D0"
+            />
+          ))}
+        </Section>
+
+        <Section icon="phone-call" label="Como denunciar" color="#DC2626">
+          {REPORT_CHANNELS.map(item => (
+            <AccordionCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              isExpanded={expandedChannel === item.id}
+              onToggle={() => setExpandedChannel(p => p === item.id ? null : item.id)}
+              actionText={item.action}
+              actionIcon={item.type === 'phone' ? 'phone-call' : 'external-link'}
+              onAction={() => handleAction(item.type, item.value)}
+              actionButtonColor="#DC2626"
+              chevronColor="#DC2626"
+              expandedBorderColor="#FECACA"
+            />
+          ))}
+        </Section>
 
       </ScrollView>
     </View>
   );
 }
 
+function Section({ icon, label, color, children }: { icon: string; label: string; color: string; children: React.ReactNode }) {
+  return (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Feather name={icon as any} size={20} color={color} />
+        <Text style={[styles.sectionTitle, { color }]}>{label}</Text>
+      </View>
+      <View style={styles.sectionBody}>{children}</View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 24,
-    paddingTop: 32,
+  content: {
+    padding: 20,
+    paddingTop: 24,
     paddingBottom: 60,
+    gap: 28,
+  },
+  heroBanner: {
+    backgroundColor: '#F5F3FF',
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 1,
+    borderColor: '#DDD6FE',
+  },
+  heroTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#4C1D95',
+    textAlign: 'center',
+  },
+  heroSubtitle: {
+    fontSize: 15,
+    color: '#5B21B6',
+    textAlign: 'center',
+    lineHeight: 22,
   },
   section: {
-    marginBottom: 40,
+    gap: 14,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    gap: 10,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#111827',
-    marginLeft: 12,
-  },
-  sectionSubtitle: {
-    fontSize: 16,
-    color: '#4B5563',
-    marginBottom: 20,
-    lineHeight: 24,
-  },
-  infoCard: {
-    backgroundColor: '#FEF2F2',
-    borderRadius: 16,
-    padding: 24,
-    borderWidth: 1,
-    borderColor: '#F8B4B4',
-  },
-  infoDescription: {
     fontSize: 18,
-    color: '#991B1B',
-    lineHeight: 28,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#F8B4B4',
-    marginVertical: 20,
-    opacity: 0.6,
-  },
-  lawItem: {
-    marginBottom: 16,
-  },
-  lawTitle: {
-    fontSize: 16,
     fontWeight: '700',
-    color: '#991B1B',
-    marginBottom: 6,
   },
-  lawDesc: {
+  sectionBody: {
+    gap: 10,
+  },
+  bodyText: {
     fontSize: 15,
-    color: '#B91C1C',
-    lineHeight: 22,
-  },
-  channelsList: {
-    gap: 16,
+    color: '#374151',
+    lineHeight: 24,
   },
 });

@@ -1,7 +1,10 @@
 export interface MediaItem {
-    id: string | number ;
+    id: string | number;
     title: string;
-    url: string;
+    url: string | number;
+    description?: string;
+    series?: number;
+    reps?: string;
 }
 
 export const sleepMusicMock: MediaItem[] = [
@@ -33,209 +36,169 @@ export const sleepMusicMock: MediaItem[] = [
 ];
 
 
-export const warmingUpMockData = [
+export const warmingUpMockData: MediaItem[] = [
     {
         id: 1,
         title: "Alongamento de Tríceps",
-        description: "Alongamento do braço atrás da cabeça com auxílio do braço oposto.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.42 (4).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-001.mp4'),
+        description: "Eleve o braço acima da cabeça e dobre o cotovelo, puxando suavemente com a outra mão.",
+        series: 2,
+        reps: "30s cada lado",
     },
     {
         id: 2,
         title: "Elevação de Joelhos (Marcha)",
-        description: "Movimento dinâmico de elevar os joelhos alternadamente em posição ortostática.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.42.mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-002.mp4'),
+        description: "Marche no lugar elevando os joelhos até a altura do quadril alternadamente.",
+        series: 2,
+        reps: "20 repetições",
     },
     {
         id: 3,
         title: "Alongamento de Ombro",
-        description: "Extensão do braço à frente do corpo para alongamento da região deltoide.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.43 (3).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-003.mp4'),
+        description: "Puxe o braço estendido horizontalmente em frente ao peito com o auxílio do outro braço.",
+        series: 2,
+        reps: "30s cada lado",
     },
     {
         id: 4,
         title: "Alongamento de Peitoral",
-        description: "Uso de batente ou parede para abertura da cintura escapular e peitoral.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.43 (5).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-004.mp4'),
+        description: "Entrelace os dedos atrás das costas e abra o peito elevando levemente os braços.",
+        series: 2,
+        reps: "30s",
     },
     {
         id: 5,
         title: "Alongamento de Quadríceps (Direito)",
-        description: "Flexão de joelho com apoio manual no pé e suporte na parede para equilíbrio.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.44 (7).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-005.mp4'),
+        description: "Em pé, segure o tornozelo direito e puxe o calcanhar em direção ao glúteo. Apoie-se se necessário.",
+        series: 2,
+        reps: "30s cada lado",
     },
     {
         id: 6,
         title: "Rotação e Extensão de Ombro",
-        description: "Movimento de rotação lateral do tronco com apoio fixo na parede.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.43 (4).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-006.mp4'),
+        description: "Gire os ombros lentamente para frente e para trás, depois faça extensões suaves.",
+        series: 2,
+        reps: "10 rotações",
     },
     {
         id: 7,
         title: "Alongamento Posterior (Pés Afastados)",
-        description: "Flexão de tronco à frente com pernas em abdução visando o solo.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.45 (1).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-007.mp4'),
+        description: "Com os pés afastados na largura dos ombros, incline o tronco à frente mantendo as costas retas.",
+        series: 2,
+        reps: "30s",
     },
     {
         id: 8,
         title: "Alongamento Posterior (Pernas Cruzadas)",
-        description: "Flexão de tronco à frente com cruzamento de pernas para alongamento de cadeia posterior.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.45 (4).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-008.mp4'),
+        description: "Cruze uma perna na frente da outra e incline o tronco suavemente para sentir o alongamento posterior.",
+        series: 2,
+        reps: "30s cada lado",
     },
     {
         id: 9,
         title: "Agachamento Isométrico na Parede",
-        description: "Manutenção de posição de agachamento com as costas totalmente apoiadas na parede.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.45 (5).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-009.mp4'),
+        description: "Apoie as costas na parede e desça até 90° nos joelhos. Mantenha a posição.",
+        series: 3,
+        reps: "30s",
     },
     {
         id: 10,
         title: "Flexão Plantar (Panturrilha)",
-        description: "Elevação rítmica dos calcanhares com apoio frontal das mãos.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.45 (6).mp4",
-        onAction: () => { }
+        url: require('@assets/videos/warmups/warmup-010.mp4'),
+        description: "Em pé, eleve-se nas pontas dos pés lentamente e desça com controle.",
+        series: 3,
+        reps: "15 repetições",
     },
     {
         id: 11,
         title: "Alongamento de Quadríceps (Esquerdo)",
-        description: "Flexão de joelho com apoio lateral na parede e tração manual do pé.",
-        isExpanded: false,
-        onToggle: () => { },
-        actionText: "Ver Vídeo",
-        url: "WhatsApp Video 2026-04-09 at 15.00.45.mp4",
-        onAction: () => { }
-    }
+        url: require('@assets/videos/warmups/warmup-011.mp4'),
+        description: "Segure o tornozelo esquerdo e puxe o calcanhar em direção ao glúteo. Mantenha o equilíbrio.",
+        series: 2,
+        reps: "30s",
+    },
 ];
 
 
-export const strengthExercisesData = [
-  {
-    id: 1,
-    title: "Elevação de Perna Sentada",
-    description: "Exercício para fortalecimento de quadríceps e flexores de quadril, mantendo o tronco apoiado.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.39 (4).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 2,
-    title: "Flexão de Joelho em Pé (Posterior)",
-    description: "Trabalho de isquiotibiais utilizando a parede como apoio para estabilidade do tronco.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.19 (1).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 3,
-    title: "Remada Unilateral com Halter",
-    description: "Fortalecimento de costas e braços com apoio na parede para correção postural.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.38 (1).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 4,
-    title: "Ponte Pélvica (Elevação de Quadril)",
-    description: "Fortalecimento de glúteos e região lombar com os pés apoiados no solo.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.38 (2).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 5,
-    title: "Ponte Unilateral",
-    description: "Variação avançada da ponte pélvica para fortalecimento assimétrico de glúteos.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.38 (4).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 6,
-    title: "Supino Reto com Halteres",
-    description: "Fortalecimento de peitoral e tríceps realizado em decúbito dorsal (deitado).",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.38 (3).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 7,
-    title: "Elevação Frontal com Halteres",
-    description: "Exercício focado na porção anterior dos ombros (deltoide).",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.39 (1).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 8,
-    title: "Elevação Lateral com Halteres",
-    description: "Trabalho para a porção medial dos ombros, melhorando a estabilidade escapular.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.39 (2).mp4",
-    onAction: () => {}
-  },
-  {
-    id: 9,
-    title: "Extensão de Perna Sentada (Alternada)",
-    description: "Exercício de mobilidade e força para membros inferiores em posição sentada.",
-    isExpanded: false,
-    onToggle: () => {},
-    actionText: "Ver Exercício",
-    url: "WhatsApp Video 2026-04-09 at 15.00.39 (3).mp4",
-    onAction: () => {}
-  }
+export const strengthExercisesData: MediaItem[] = [
+    {
+        id: 1,
+        title: "Elevação de Perna Sentada",
+        url: require('@assets/videos/exercises/exercise-001.mp4'),
+        description: "Sentado, estenda uma perna e eleve-a lentamente até a altura do quadril. Controle a descida.",
+        series: 3,
+        reps: "12 repetições cada lado",
+    },
+    {
+        id: 2,
+        title: "Flexão de Joelho em Pé (Posterior)",
+        url: require('@assets/videos/exercises/exercise-002.mp4'),
+        description: "Em pé, dobre o joelho trazendo o calcanhar em direção ao glúteo. Controle o movimento.",
+        series: 3,
+        reps: "12 repetições cada lado",
+    },
+    {
+        id: 3,
+        title: "Remada Unilateral com Halter",
+        url: require('@assets/videos/exercises/exercise-003.mp4'),
+        description: "Apoie um joelho e uma mão no banco. Com o outro braço, puxe o halter em direção ao quadril.",
+        series: 3,
+        reps: "12 repetições cada lado",
+    },
+    {
+        id: 4,
+        title: "Ponte Pélvica (Elevação de Quadril)",
+        url: require('@assets/videos/exercises/exercise-004.mp4'),
+        description: "Deitado de costas, pés apoiados no chão. Eleve o quadril contraindo o glúteo e segure por 2s.",
+        series: 3,
+        reps: "15 repetições",
+    },
+    {
+        id: 5,
+        title: "Ponte Unilateral",
+        url: require('@assets/videos/exercises/exercise-005.mp4'),
+        description: "Igual à ponte pélvica, mas com uma perna estendida para o ar durante a elevação.",
+        series: 3,
+        reps: "10 repetições cada lado",
+    },
+    {
+        id: 6,
+        title: "Supino Reto com Halteres",
+        url: require('@assets/videos/exercises/exercise-006.mp4'),
+        description: "Deitado, segure os halteres na altura do peito e empurre para cima até estender os braços.",
+        series: 3,
+        reps: "12 repetições",
+    },
+    {
+        id: 7,
+        title: "Elevação Frontal com Halteres",
+        url: require('@assets/videos/exercises/exercise-007.mp4'),
+        description: "Em pé, eleve os braços estendidos à frente até a altura dos ombros e desça com controle.",
+        series: 3,
+        reps: "12 repetições",
+    },
+    {
+        id: 8,
+        title: "Elevação Lateral com Halteres",
+        url: require('@assets/videos/exercises/exercise-008.mp4'),
+        description: "Eleve os braços lateralmente até a altura dos ombros, mantendo o cotovelo levemente dobrado.",
+        series: 3,
+        reps: "12 repetições",
+    },
+    {
+        id: 9,
+        title: "Extensão de Perna Sentada (Alternada)",
+        url: require('@assets/videos/exercises/exercise-009.mp4'),
+        description: "Sentado na cadeira, estenda uma perna por vez e segure por 2 segundos antes de descer.",
+        series: 3,
+        reps: "12 repetições cada lado",
+    },
 ];

@@ -10,17 +10,15 @@ export class DailyLogsService {
   constructor(private readonly repository: DailyLogsRepository) { }
 
   async create(userId: string, dto: CreateDailyLogDto) {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    const localDate = dto.date ?? new Date().toISOString().slice(0, 10);
+    const date = new Date(localDate + 'T12:00:00.000Z');
 
-    const exists = await this.repository.findExistingByDate(userId, startOfDay, endOfDay);
+    const exists = await this.repository.findExistingByDate(userId, date);
     if (exists) {
       throw new BadRequestException('Você já realizou a entrada de hoje. Só é permitida uma por dia.');
     }
 
-    const data = { ...dto, userId: userId };
+    const data = { ...dto, userId, date };
 
     return this.repository.createWithAudit(data);
   }

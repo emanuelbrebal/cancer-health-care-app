@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function PhysicalExercises() {
-    // Alterado de 'warmup' para null para iniciar fechado
     const [expandedSection, setExpandedSection] = useState<'warmup' | 'strength' | null>(null);
 
     return (

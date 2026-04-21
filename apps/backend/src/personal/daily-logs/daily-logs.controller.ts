@@ -26,7 +26,7 @@ export class DailyLogsController {
 
   @Get()
   async findAll(@Req() req: any) {
-    return this.service.findAllByUser(req.userId);
+    return this.service.findAllByUser(req.user.userId);
   }
 
   @Get('search')
@@ -36,7 +36,7 @@ export class DailyLogsController {
     @Query('date') date?: string,
     @Query('emote') emote?: string,
   ) {
-    return this.service.search(req.userId, {
+    return this.service.search(req.user.userId, {
       term,
       date: date ? new Date(date) : undefined,
       emote,

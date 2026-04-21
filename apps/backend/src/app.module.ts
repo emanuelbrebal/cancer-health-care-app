@@ -9,6 +9,7 @@ import { MoviesModule } from './media/movies/movies.module';
 import { SeriesModule } from './media/series/series.module';
 import { AppService } from './app.service';
 import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
+import { TreatmentsModule } from './personal/treatments/treatments.module';
 import { MascotModule } from './mascot/mascot.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -25,6 +26,7 @@ import { APP_GUARD } from '@nestjs/core';
     LeisuresModule,
     //Personal Modules,
     DailyLogsModule,
+    TreatmentsModule,
     MascotModule,
     //Rate limit
     ThrottlerModule.forRoot([{

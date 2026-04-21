@@ -15,8 +15,8 @@ const screensConfig: ScreenConfig[] = [
     { name: "ReportsArea/index", title: "Espaço de denúncias" },
     { name: "Treatment/index", title: "Gerenciar tratamentos" },
     { name: "AccountConfigurations/index", title: "Configurações" },
+    { name: "AccountConfigurations/ChangePassword/index", title: "Mudar Senha" },
     { name: "OnboardingForm/index", title: "Editar Perfil" },
-    { name: "About/index", title: "Sobre o Projeto" },
 ];
 
 export default function SocialStackLayout() {

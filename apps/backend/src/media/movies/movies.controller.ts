@@ -23,9 +23,6 @@ export class MoviesController {
   @Get()
   async findAll() {
     const movies = await this.moviesService.findAll();
-    if (!movies) {
-      throw new NotFoundException('Não há filmes cadastrados no momento.');
-    }
     return movies.map(movie => MovieMapper.toDto(movie));
   }
 

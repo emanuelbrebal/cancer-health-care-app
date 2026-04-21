@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Linking from 'expo-linking';
+import { Feather } from '@expo/vector-icons';
 import { EmergencyContact } from '@/src/interfaces/EmergencyContact';
 import { AccordionCard } from '../../../Accordion/AccordionCard';
+
+const ACCENT_COLORS = ['#0284C7', '#DC2626', '#7C3AED', '#059669'];
+const BG_COLORS    = ['#EFF6FF', '#FEF2F2', '#F5F3FF', '#ECFDF5'];
 
 interface EmergencyContactsListProps {
     data: EmergencyContact[];
@@ -29,23 +33,27 @@ export default function EmergencyContacts({ data }: EmergencyContactsListProps) 
         });
     };
 
-    const renderCard = ({ item }: { item: EmergencyContact }) => {
-        const isExpanded = expandedId === item.id;
+    const renderCard = ({ item, index }: { item: EmergencyContact; index: number }) => {
+        const isExpanded = expandedId === String(item.id);
+        const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
+        const bg = BG_COLORS[index % BG_COLORS.length];
+        const cleanNumber = item.phoneNumber.replace(/\D/g, '');
 
         return (
-            <View style={styles.cardWrapper}>
+            <View style={[styles.cardWrapper, { borderLeftColor: accent, backgroundColor: bg }]}>
                 <AccordionCard
                     title={item.title}
-                    description={item.description || "Nenhuma descrição disponível."}
+                    description={item.description || 'Nenhuma descrição disponível.'}
                     isExpanded={isExpanded}
                     onToggle={() => toggleExpand(String(item.id))}
-                    actionText="Ligar"
+                    actionText={`Ligar — ${item.phoneNumber}`}
                     actionIcon="phone"
-                    onAction={() => openDialer(item.phoneNumber)}
-                    actionButtonColor="#0284C7"
-                    expandedBorderColor="#0284C7" 
-                    chevronColor="#9CA3AF"       
+                    onAction={() => openDialer(cleanNumber)}
+                    actionButtonColor={accent}
+                    expandedBorderColor={accent}
+                    chevronColor={accent}
                 />
+               
             </View>
         );
     };
@@ -74,11 +82,25 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     cardWrapper: {
-        marginBottom: 12,
+        marginBottom: 14,
+        borderLeftWidth: 4,
+        borderRadius: 16,
+        overflow: 'hidden',
+    },
+    phoneBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingHorizontal: 20,
+        paddingBottom: 14,
+    },
+    phoneBadgeText: {
+        fontSize: 13,
+        fontWeight: '600',
     },
     emptyText: {
         textAlign: 'center',
         color: '#666',
         marginTop: 20,
-    }
+    },
 });
