@@ -3,9 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import { AccordionMedia } from './MediaAccordion';
 
 export interface MediaItem {
-  id: string; 
+  id: string;
   title: string;
   url: any;
+  description?: string;
+  series?: number;
+  reps?: string;
 }
 
 export interface MediaListProps {
@@ -18,10 +21,13 @@ export function MediaList({ items }: MediaListProps) {
   return (
     <View style={styles.container}>
       {items.map((item) => (
-        <AccordionMedia 
-          key={item.id} 
-          title={item.title} 
-          url={item.url} 
+        <AccordionMedia
+          key={item.id}
+          title={item.title}
+          url={item.url}
+          description={item.description}
+          series={item.series}
+          reps={item.reps}
         />
       ))}
     </View>

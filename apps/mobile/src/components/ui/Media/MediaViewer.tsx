@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Image } from 'expo-image';
-import { useVideoPlayer, VideoView } from 'expo-video'; 
+import { useVideoPlayer, VideoView } from 'expo-video';
 import YoutubeIframe from 'react-native-youtube-iframe';
 
 const extractYoutubeId = (url: any) => {
@@ -24,7 +24,7 @@ export const MediaViewer = ({ url, width = '100%', height = 200, play = false }:
   if (!url) return null;
 
   const isGif = typeof url === 'string' && url.toLowerCase().endsWith('.gif');
-  
+
   const isLocalVideo = typeof url === 'number';
   const isRemoteVideo = typeof url === 'string' && url.toLowerCase().endsWith('.mp4');
 
@@ -46,20 +46,20 @@ export const MediaViewer = ({ url, width = '100%', height = 200, play = false }:
 
   if (isGif) {
     return (
-      <View style={[styles.container, { width, height }]}>
-        <Image source={url} style={styles.media} contentFit="contain" />
+      <View style={[styles.container, { width, height: 300 }]}>
+        <Image source={url} style={styles.media} contentFit="cover" />
       </View>
     );
   }
 
   if (isLocalVideo || isRemoteVideo) {
     return (
-      <View style={[styles.container, { width, height }]}>
+      <View style={styles.portraitContainer}>
         <VideoView
           player={player}
-          style={styles.media}
-          contentFit="contain"
-          nativeControls={false}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          nativeControls={true}
         />
       </View>
     );
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    borderRadius: 8,
   },
   media: {
     flex: 1,
@@ -110,6 +109,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  portraitContainer: {
+    width: '100%',
+    aspectRatio: 9 / 16,
+    backgroundColor: '#000',
+    overflow: 'hidden',
   },
   errorContainer: { backgroundColor: '#2a0000' },
   errorText: { color: '#ff6b6b', fontSize: 14 }

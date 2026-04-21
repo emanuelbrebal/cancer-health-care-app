@@ -1,11 +1,14 @@
 import { authService } from '@/src/services/auth';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Image, KeyboardAvoidingView,
+  ActivityIndicator, Dimensions, Image, KeyboardAvoidingView,
   Modal, Platform, Pressable, StyleSheet, Text,
   TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { router } from 'expo-router';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface Props {
   visible: boolean;
@@ -14,10 +17,15 @@ interface Props {
 
 export default function SoftLoginModal({ visible, onDismiss }: Props) {
   const storeLogin = useAuthStore((s) => s.login);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated && visible) onDismiss();
+  }, [isAuthenticated, visible]);
 
   async function handleLogin() {
     if (!email || !password) { setError('Preencha e-mail e senha.'); return; }
@@ -34,11 +42,18 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
     }
   }
 
+  function handleRegister() {
+    onDismiss();
+    router.push('/(auth)/RegisterScreen');
+  }
+
   return (
     <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
       <View style={styles.overlay}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.sheet}>
-
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.sheet}
+        >
           <Image
             source={require('@assets/images/Home/blueMascotPlaceholder.png')}
             style={styles.mascot}
@@ -75,10 +90,16 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
             }
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.btnRegister} onPress={handleRegister}>
+            <Text style={styles.btnRegisterText}>
+              Não tem conta?{' '}
+              <Text style={styles.btnRegisterHighlight}>Cadastre-se</Text>
+            </Text>
+          </TouchableOpacity>
+
           <Pressable onPress={onDismiss} style={styles.btnSkip}>
             <Text style={styles.btnSkipText}>Continuar sem login</Text>
           </Pressable>
-
         </KeyboardAvoidingView>
       </View>
     </Modal>
@@ -99,22 +120,24 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 36,
     alignItems: 'center',
+    minHeight: SCREEN_HEIGHT * 0.7,
+    justifyContent: 'center',
   },
   mascot: {
-    width: 90,
-    height: 90,
-    marginBottom: 8,
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#1A1A1A',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 20,
+    marginBottom: 24,
     textAlign: 'center',
   },
   input: {
@@ -147,13 +170,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  btnRegister: {
+    marginTop: 14,
+    paddingVertical: 6,
+  },
+  btnRegisterText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  btnRegisterHighlight: {
+    color: '#9B5DE0',
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
   btnSkip: {
-    marginTop: 16,
+    marginTop: 10,
     paddingVertical: 8,
   },
   btnSkipText: {
-    color: '#9B5DE0',
-    fontSize: 14,
-    textDecorationLine: 'underline',
+    color: '#AAA',
+    fontSize: 13,
   },
 });

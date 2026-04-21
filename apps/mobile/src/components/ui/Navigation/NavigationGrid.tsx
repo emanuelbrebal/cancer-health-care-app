@@ -20,8 +20,10 @@ export default function NavigationGrid({
     }
   };
 
+  const isSingleItem = singleElement && data.length === 1;
+
   const renderCard = ({ item }: { item: CardItem }) => (
-    <TouchableOpacity style={styles.card} onPress={() => handleAction(item.route)}>
+    <TouchableOpacity style={[styles.card, isSingleItem && styles.cardFullWidth]} onPress={() => handleAction(item.route)}>
       <View style={styles.iconContainer}>
         <Image
           source={item.icon ? item.icon : undefined}
@@ -105,6 +107,8 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     color: Colors.black,
     flex: 1,
-
+  },
+  cardFullWidth: {
+    width: '100%',
   },
 });
