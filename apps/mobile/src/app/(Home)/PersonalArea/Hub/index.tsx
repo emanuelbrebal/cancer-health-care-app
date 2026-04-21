@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { globalStyles } from '@/src/styles/global';
 import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
+import { NavCard } from '@/src/components/ui/Cards/NavCard';
+import { useAuthStore } from '@/src/store/useAuthStore';
 
 const NAV_BUTTONS = [
   {
@@ -60,7 +62,7 @@ const NAV_BUTTONS = [
     subtitle: 'Equipe, versão e créditos',
     icon: 'info',
     lib: 'Feather',
-    route: '/PersonalArea/About',
+    route: '/About',
     bgColor: '#F5F0FA',
     iconBg: '#E9DEFA',
     borderColor: '#d2aef0',
@@ -69,14 +71,16 @@ const NAV_BUTTONS = [
 ];
 
 export default function HubPersonalAreaScreen() {
+  const user = useAuthStore((s) => s.user);
+
   return (
     <View style={globalStyles.startContainer}>
       <View style={styles.mainCard}>
         <View style={styles.staticContent}>
 
           <UserProfileRow
-            name="Barbara da Silva"
-            email="B.daSilva@mail.com"
+            name={user?.name ?? 'Usuário'}
+            email={user?.email ?? ''}
           />
 
           <TouchableOpacity
@@ -95,30 +99,18 @@ export default function HubPersonalAreaScreen() {
 
           <View style={styles.listContainer}>
             {NAV_BUTTONS.map((button) => (
-              <TouchableOpacity
+              <NavCard
                 key={button.id}
-                style={[
-                  styles.navCard,
-                  { backgroundColor: button.bgColor, borderColor: button.borderColor }
-                ]}
+                title={button.title}
+                subtitle={button.subtitle}
+                icon={button.icon}
+                iconLib={button.lib === 'Material' ? 'MaterialCommunityIcons' : 'Feather'}
+                color={button.color}
+                bgColor={button.bgColor}
+                iconBg={button.iconBg}
+                borderColor={button.borderColor}
                 onPress={() => router.push(button.route as any)}
-              >
-                <View style={styles.navContent}>
-                  <View style={[styles.iconWrapper, { backgroundColor: button.iconBg }]}>
-                    {button.lib === 'Material' ? (
-                      <MaterialCommunityIcons name={button.icon as any} size={24} color={button.color} />
-                    ) : (
-                      <Feather name={button.icon as any} size={22} color={button.color} />
-                    )}
-                  </View>
-
-                  <View style={styles.textGroup}>
-                    <Text style={[styles.cardTitle, { color: button.color }]}>{button.title}</Text>
-                    <Text style={[styles.cardSubText, { color: button.color, opacity: 0.8 }]}>{button.subtitle}</Text>
-                  </View>
-                </View>
-                <Feather name="chevron-right" size={20} color={button.color} style={{ opacity: 0.3 }} />
-              </TouchableOpacity>
+              />
             ))}
           </View>
 
@@ -174,38 +166,5 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 12,
     justifyContent: 'flex-start',
-  },
-  navCard: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 18,
-    padding: 14,
-    borderWidth: 1,
-  },
-  navContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconWrapper: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textGroup: {
-    marginLeft: 14,
-    flex: 1,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  cardSubText: {
-    fontSize: 13,
-    marginTop: 2,
   },
 });

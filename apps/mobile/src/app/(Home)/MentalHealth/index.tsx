@@ -4,35 +4,13 @@ import { CardItem } from '@/src/interfaces/CardItem';
 import { globalStyles } from '@/src/styles/global';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { createAuthStore } from '../../../../../../packages/shared/store/useAuthStore';
+import { useAuthStore } from '@/src/store/useAuthStore';
+import { UserRole } from '../../../../../../packages/shared/types/user';
 import { PanicButton } from '@/src/components/ui/Buttons/Overlay/PanicButton/PanicButton';
 
-export enum UserRole {
-  PATIENT = 'PATIENT',
-  CAREGIVER = 'CAREGIVER'
-}
-
-type MotivationalCardItem = CardItem & {
-  allowedRole: UserRole;
-};
-
 export default function HomeMentalHealth() {
-  const motivationalNavigationItems: MotivationalCardItem[] = [
-    {
-      id: '1',
-      title: 'Pacientes',
-      icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'),
-      route: '/MentalHealth/Motivational/Patient',
-      allowedRole: UserRole.PATIENT
-    },
-    {
-      id: '2',
-      title: 'Cuidadores',
-      icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaregiver.png'),
-      route: '/MentalHealth/Motivational/CaringTheCaregiver',
-      allowedRole: UserRole.CAREGIVER
-    },
-  ];
+  const { user } = useAuthStore();
+
   const mentalHealthAreaNavigationItems: CardItem[] = [
     { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/MentalHealth/Meditation' },
     {
@@ -49,18 +27,34 @@ export default function HomeMentalHealth() {
     },
   ];
 
-  const { user } = createAuthStore();
-
-  const userSpecificNavigationItems = motivationalNavigationItems.filter(
-    item => item.allowedRole === user?.role
-  );
-
-  <NavigationGrid
-    data={userSpecificNavigationItems}
-  />
+  const motivationalNavigationItems: CardItem[] = user === null
+    ? [
+        {
+          id: '1',
+          title: 'Motivação Diária',
+          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'),
+          route: '/MentalHealth/Motivational/Patient',
+        },
+      ]
+    : user.role === UserRole.CAREGIVER
+    ? [
+        {
+          id: '2',
+          title: 'Cuidadores',
+          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaregiver.png'),
+          route: '/MentalHealth/Motivational/CaringTheCaregiver',
+        },
+      ]
+    : [
+        {
+          id: '1',
+          title: 'Motivação Diária',
+          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'),
+          route: '/MentalHealth/Motivational/Patient',
+        },
+      ];
 
   return (
-
     <SafeAreaView style={globalStyles.startContainer}>
       <HorizontalBanner
         imagePath={require('@assets/images/Banners/mentalHealthAreaBanner.png')}
@@ -72,6 +66,7 @@ export default function HomeMentalHealth() {
 
         <NavigationGrid
           data={motivationalNavigationItems}
+          singleElement
         />
       </View>
 

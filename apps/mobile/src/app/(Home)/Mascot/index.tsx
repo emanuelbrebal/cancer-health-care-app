@@ -1,17 +1,28 @@
+import { useCallback } from 'react';
 import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
 import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
 import { ImageContainer } from '@/src/components/ui/Images/ImageContainer';
 import { globalStyles } from '@/src/styles/global';
-import { router } from 'expo-router';
+import { useAuthStore } from '@/src/store/useAuthStore';
+import { router, useFocusEffect } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeMascot() {
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (isAuthenticated) router.replace('/(Home)/Mascot/Chat');
+        }, [isAuthenticated])
+    );
+
+    function handleLogin() {
+        router.push('/(auth)/LoginScreen');
+    }
+
     function redirectRegister() {
         router.push('/(auth)/RegisterScreen');
-    }
-    function handleLogin() {
-        router.push('/(Home)/Mascot/Chat');
     }
 
     return (
@@ -69,7 +80,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10
     },
-
     footerText: {
         fontSize: 14,
         color: '#666',

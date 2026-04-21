@@ -15,6 +15,7 @@ import { Colors } from '@/src/constants/Colors';
 import api from '@/src/services/api';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { globalStyles } from '@/src/styles/global';
+import { toastService } from '@/src/services/toastService';
 
 interface IMessage {
   id: string;
@@ -80,6 +81,7 @@ export default function MascotChat() {
       }, 100);
 
     } catch (error) {
+      toastService.error('Serviço indisponível. Tente novamente.');
       const errorMsg: IMessage = {
         id: Date.now().toString(),
         text: 'Sinto muito, tive um probleminha técnico. Pode tentar me perguntar de novo? 💜',
