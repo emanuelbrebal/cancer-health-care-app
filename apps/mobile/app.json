@@ -36,7 +36,13 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-notifications",
+        {
+          "color": "#9B5DE0"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

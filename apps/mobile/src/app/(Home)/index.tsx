@@ -5,7 +5,11 @@ import HomeNavigationGrid from '@/src/components/ui/Navigation/HomeNavigationGri
 import { CardItem } from '@/src/interfaces/CardItem';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { globalStyles } from '@/src/styles/global';
+import { Colors } from '@/src/constants/Colors';
 import { useState } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomePage() {
@@ -25,10 +29,46 @@ export default function HomePage() {
       <HomeNavigationGrid data={homeNavigationItems} />
       <DailyMessage />
 
-      <SoftLoginModal
-        visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
-      />
+      <View style={styles.bottomArea}>
+        <TouchableOpacity onPress={() => router.push('/About')} style={styles.aboutBtn} activeOpacity={0.7}>
+          <Feather name="info" size={14} color={Colors.purplePrimary} />
+          <Text style={styles.aboutText}>Sobre o OncoMente</Text>
+        </TouchableOpacity>
+      </View>
+
+      {!isAuthenticated && (
+        <SoftLoginModal
+          visible={modalVisible}
+          onDismiss={() => setModalVisible(false)}
+        />
+      )}
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  bottomArea: {
+    position: 'absolute',
+    bottom: 14,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  aboutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#F3E8FF',
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#DDD0F5',
+  },
+  aboutText: {
+    fontFamily: 'Montserrat',
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.purplePrimary,
+  },
+});
