@@ -13,4 +13,9 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
+config.resolver.blockList = [
+  new RegExp(`${path.resolve(workspaceRoot, 'apps/backend').replace(/\\/g, '\\\\')}.*`),
+  new RegExp(`${path.resolve(workspaceRoot, 'apps/web').replace(/\\/g, '\\\\')}.*`),
+];
+
 module.exports = config;

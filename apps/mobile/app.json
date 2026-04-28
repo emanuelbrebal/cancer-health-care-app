@@ -15,12 +15,14 @@
     },
     "ios": {
       "icon": "./assets/images/icon.jpg",
+      "bundleIdentifier": "com.oncomente.app",
       "supportsTablet": true,
       "infoPlist": {
         "UIDesignRequiresCompatibility": true
       }
     },
     "android": {
+      "package": "com.oncomente.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -42,7 +44,8 @@
         {
           "color": "#9B5DE0"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
