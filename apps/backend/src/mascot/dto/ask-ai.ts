@@ -1,17 +1,16 @@
-import { IsString, IsNotEmpty, IsObject, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, IsOptional, MaxLength } from 'class-validator';
 
 export class AskAiDto {
-  @IsString() @IsNotEmpty()
-  userId: string;
-
-  @IsString() @IsNotEmpty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(1000)
   userQuestion: string;
 
-  @IsObject()
+  @IsArray()
   @IsOptional()
-  calendarData: any; 
+  calendarData: any[];
 
-  @IsObject()
+  @IsArray()
   @IsOptional()
-  treatmentData: any; 
+  treatmentData: any[];
 }

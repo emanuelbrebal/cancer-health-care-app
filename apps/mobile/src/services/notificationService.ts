@@ -56,20 +56,34 @@ export async function scheduleTreatmentNotifications(
   const m = parts[1] ?? 0;
   if (isNaN(h)) return [];
 
+  const mascotMessages = [
+    `Oi! Eu sou o Onco e vim lembrar você de tomar ${nome}! 💜`,
+    `Psiu! Tá na hora do ${nome}. Você consegue! 🌟`,
+    `Olá! Seu mascote aqui — não esquece do ${nome} agora! 💊`,
+    `Você é incrível! E por isso toma o ${nome} certinho. Vai lá! 💪`,
+  ];
+
   const ids: string[] = [];
   for (const offset of intervalOffsets(frequencia)) {
     const hour = (h + offset) % 24;
-    const label =
+    const msgIdx = offset % mascotMessages.length;
+    const body =
       offset === 0
-        ? `Hora de tomar ${nome}!`
-        : `Dose de ${nome}: ${String(hour).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        ? mascotMessages[msgIdx]
+        : `Onco aqui! Dose de ${nome} às ${String(hour).padStart(2, '0')}:${String(m).padStart(2, '0')}. Cuide-se! 💜`;
 
     const id = await Notifications.scheduleNotificationAsync({
       content: {
-        title: `💊 ${nome}`,
-        body: label,
+        title: `💊 OncoMente — ${nome}`,
+        body,
         data: { treatmentId },
         sound: true,
+        ...(Platform.OS === 'android' && {
+          android: {
+            channelId: 'oncomente',
+            smallIcon: 'ic_launcher',
+          },
+        }),
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DAILY,
@@ -98,9 +112,15 @@ export async function scheduleEndOfTreatmentNotification(
 
     return await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🗓️ Tratamento encerrando amanhã',
-        body: `O ciclo de ${nome} termina amanhã. Lembre-se de consultar seu médico!`,
+        title: '🗓️ OncoMente — Quase lá!',
+        body: `Oi! Seu ciclo de ${nome} termina amanhã. Lembre de conversar com seu médico! Estou torcendo por você 💜`,
         sound: true,
+        ...(Platform.OS === 'android' && {
+          android: {
+            channelId: 'oncomente',
+            smallIcon: 'ic_launcher',
+          },
+        }),
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,

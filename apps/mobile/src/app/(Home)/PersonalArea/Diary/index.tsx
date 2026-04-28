@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,11 @@ import {
   Alert,
   ActivityIndicator,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,8 +23,10 @@ import { toastService } from '@/src/services/toastService';
 export default function DiaryIndex() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
+  const isFocused = useIsFocused();
   const [entries, setEntries] = useState<DailyLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [contentMap, setContentMap] = useState<Record<string, string>>({});
   const [streak, setStreak] = useState(0);
@@ -42,22 +45,32 @@ export default function DiaryIndex() {
     return s;
   };
 
-  const loadEntries = useCallback(async () => {
+  const loadEntries = useCallback(async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const data = await diaryService.getAll();
       setEntries(data);
+      setContentMap({});
       const today = new Date().toISOString().slice(0, 10);
       setTodayEntry(data.find(e => e.date?.slice(0, 10) === today) ?? null);
       setStreak(calcStreak(data));
-    } catch {
-      toastService.error('Não foi possível carregar o diário.');
+    } catch (e: any) {
+      if (e?.response?.status === 404) {
+        setEntries([]);
+        setContentMap({});
+      } else {
+        toastService.error('Não foi possível carregar o diário.');
+      }
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, []);
 
-  useFocusEffect(useCallback(() => { loadEntries(); }, [loadEntries]));
+  // recarrega toda vez que a tela ganha foco (volta de create/update)
+  useEffect(() => {
+    if (isFocused) loadEntries(entries.length > 0);
+  }, [isFocused]);
 
   const handleExpand = async (id: string) => {
     const isExpanded = expandedId === id;
@@ -171,6 +184,14 @@ export default function DiaryIndex() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listPadding}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true); loadEntries(true); }}
+            colors={[Colors.purplePrimary]}
+            tintColor={Colors.purplePrimary}
+          />
+        }
         ListEmptyComponent={
           <View style={{ alignItems: 'center', marginTop: 60 }}>
             <Text style={{ fontFamily: 'Montserrat', color: Colors.text.secondary, fontSize: 14 }}>

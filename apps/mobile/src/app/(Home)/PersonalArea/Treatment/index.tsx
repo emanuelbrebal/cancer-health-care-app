@@ -6,7 +6,7 @@ import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import { Ionicons } from '@expo/vector-icons';
-import treatmentStorage, { Treatment, getDaysRemaining, getProgress } from '@/src/services/treatmentStorage';
+import treatmentService, { Treatment, getDaysRemaining, getProgress } from '@/src/services/treatmentService';
 import { cancelTreatmentNotifications, removeHistoryByTreatmentId } from '@/src/services/notificationService';
 import { toastService } from '@/src/services/toastService';
 
@@ -17,7 +17,15 @@ export default function TreatmentIndex() {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
 
   useFocusEffect(useCallback(() => {
-    treatmentStorage.getAll().then(setTreatments);
+    treatmentService.getAll()
+      .then(setTreatments)
+      .catch((e: any) => {
+        if (e?.response?.status === 404) {
+          setTreatments([]);
+        } else {
+          toastService.error('Não foi possível carregar os tratamentos.');
+        }
+      });
   }, []));
 
   const handleDelete = (item: Treatment) => {
@@ -35,7 +43,7 @@ export default function TreatmentIndex() {
                 await cancelTreatmentNotifications(item.notificationIds);
               }
               await removeHistoryByTreatmentId(item.id);
-              await treatmentStorage.remove(item.id);
+              await treatmentService.remove(item.id);
               setTreatments((prev) => prev.filter((t) => t.id !== item.id));
               toastService.success('Tratamento removido com sucesso.');
             } catch {

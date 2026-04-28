@@ -6,6 +6,7 @@ export interface Book {
   author: string;
   imagePath: string;
   genre: string;
+  synopsis?: string | null;
   releaseYear?: number;
   whereToFind?: string[];
   eduCapesLink?: string;
@@ -19,6 +20,7 @@ export interface Movie {
   duration?: string;
   imagePath: string;
   genre: string;
+  synopsis?: string | null;
   releaseYear?: number;
   whereToFind?: string[];
   externalLink?: string;
@@ -32,6 +34,7 @@ export interface Series {
   episodes?: number;
   imagePath: string;
   genre: string;
+  synopsis?: string | null;
   releaseYear?: number;
   whereToFind?: string[];
   externalLink?: string;
@@ -40,6 +43,7 @@ export interface Series {
 export interface LeisureActivity {
   id: string;
   name: string;
+  synopsis?: string | null;
   description?: string;
   imagePath?: string;
   type?: string;

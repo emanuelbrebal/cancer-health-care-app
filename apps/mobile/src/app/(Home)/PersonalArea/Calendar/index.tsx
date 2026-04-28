@@ -5,7 +5,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
-import treatmentStorage, { Treatment, getTreatmentDates, getDaysRemaining, getProgress } from '@/src/services/treatmentStorage';
+import treatmentService, { Treatment, getTreatmentDates, getDaysRemaining, getProgress } from '@/src/services/treatmentService';
 import { Ionicons } from '@expo/vector-icons';
 
 LocaleConfig.locales['pt-br'] = {
@@ -68,7 +68,7 @@ export default function CalendarioInterativo() {
   const campaign = CAMPAIGNS[currentMonth];
 
   useFocusEffect(useCallback(() => {
-    treatmentStorage.getAll().then((all) => {
+    treatmentService.getAll().then((all) => {
       setTreatments(all);
 
       const marks: MarkedDates = {};

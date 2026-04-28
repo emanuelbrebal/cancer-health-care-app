@@ -1,89 +1,112 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
+import { ResetPasswordForm } from '@/src/components/auth/ResetPasswordForm';
+import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
+import { CancelButton } from '@/src/components/ui/Buttons/CancelButton';
+import { globalStyles } from '@/src/styles/global';
+import { authService } from '@/src/services/auth';
+import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import { Text, TextInput, View, StyleSheet } from 'react-native';
+import { Colors } from '@/src/constants/Colors';
 
 export default function RecoverPassword() {
+  const { email } = useLocalSearchParams<{ email?: string }>();
+
+  const [token, setToken] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | false>(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleReset = async () => {
+    if (!token.trim()) {
+      setError('Informe o código recebido por e-mail.');
+      return;
+    }
+    if (!password) {
+      setError('Informe a nova senha.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('A senha deve ter no mínimo 6 caracteres.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.');
+      return;
+    }
+
+    setError(false);
+    setLoading(true);
+    try {
+      await authService.resetPassword(token.trim(), password);
+      router.replace('/(auth)/LoginScreen');
+    } catch (err: any) {
+      const status = err.response?.status;
+      if (status === 400) {
+        setError('Código inválido ou expirado. Solicite um novo.');
+      } else if (!err.response) {
+        setError('Sem conexão. Verifique sua internet.');
+      } else {
+        setError('Não foi possível redefinir a senha. Tente novamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-
-      <View style={styles.card}>
-        <View style={styles.iconWrapper}>
-          <Feather name="mail" size={40} color="#9B5DE0" />
-        </View>
-
-        <Text style={styles.title}>Recuperação de senha</Text>
-
-        <Text style={styles.body}>
-          A recuperação de senha por e-mail ainda não está disponível nesta versão do aplicativo.
-        </Text>
-        <Text style={styles.body}>
-          Para redefinir sua senha, entre em contato com o suporte do OncoMente pelo e-mail:
-        </Text>
-        <Text style={styles.email}>suporte@oncomente.com</Text>
+    <AuthLayout
+      textPrimary="Redefinir senha"
+      textSecondary={
+        email
+          ? `Insira o código enviado para ${email} e escolha uma nova senha.`
+          : 'Insira o código recebido por e-mail e escolha uma nova senha.'
+      }
+    >
+      <View style={styles.tokenWrapper}>
+        <TextInput
+          style={styles.tokenInput}
+          placeholder="Código recebido por e-mail"
+          placeholderTextColor="#999"
+          autoCapitalize="none"
+          autoCorrect={false}
+          value={token}
+          onChangeText={(v) => { setToken(v); setError(false); }}
+        />
       </View>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Feather name="arrow-left" size={16} color="#9B5DE0" />
-        <Text style={styles.backText}>Voltar</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+      <ResetPasswordForm
+        setPassword={(v) => { setPassword(v); setError(false); }}
+        setConfirmPassword={(v) => { setConfirmPassword(v); setError(false); }}
+        error={error}
+      />
+
+      <View style={globalStyles.buttonContainer}>
+        <CancelButton />
+        <ButtonPrimary title="Redefinir" action={handleReset} loading={loading} />
+      </View>
+
+      <StatusBar style="auto" />
+    </AuthLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F3FF',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 24,
+  tokenWrapper: {
+    width: '100%',
+    marginBottom: 4,
   },
-  card: {
+  tokenInput: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#1A1A1A',
     backgroundColor: '#FFF',
-    borderRadius: 20,
-    padding: 28,
-    alignItems: 'center',
-    gap: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  iconWrapper: {
-    backgroundColor: '#EDE9FE',
-    borderRadius: 50,
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#4C1D95',
-    textAlign: 'center',
-  },
-  body: {
-    fontSize: 15,
-    color: '#374151',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  email: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#9B5DE0',
-    textAlign: 'center',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-  },
-  backText: {
-    fontSize: 15,
-    color: '#9B5DE0',
-    fontWeight: '600',
   },
 });

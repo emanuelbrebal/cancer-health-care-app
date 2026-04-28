@@ -5,7 +5,7 @@ import { UpdateTreatmentDto } from './dto/update-treatment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@Controller('treatments')
+@Controller('personal/treatments')
 export class TreatmentsController {
   constructor(private readonly service: TreatmentsService) {}
 

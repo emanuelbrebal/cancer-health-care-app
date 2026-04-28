@@ -43,6 +43,7 @@ function EmoteButton({ emote, isSelected, onPress }: { emote: typeof EMOTES[0]; 
 
 export default function DiaryCreateScreen() {
     const router = useRouter();
+    const scrollRef = useRef<ScrollView>(null);
     const [title, setTitle] = useState('');
     const [diaryEntry, setDiaryEntry] = useState('');
     const [selectedEmote, setSelectedEmote] = useState('neutral');
@@ -81,7 +82,12 @@ export default function DiaryCreateScreen() {
             <SafeAreaView style={localStyles.safeArea} edges={['top', 'left', 'right']}>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
 
-                    <ScrollView contentContainerStyle={globalStyles.startContainer} keyboardShouldPersistTaps="handled">
+                    <ScrollView
+                        ref={scrollRef}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
                         <View style={globalStyles.titleContainer}>
                             <TextInput
                                 style={[globalStyles.textPrimary, localStyles.mainInput, errors.title ? localStyles.inputError : null]}
@@ -110,7 +116,7 @@ export default function DiaryCreateScreen() {
 
                         <View style={localStyles.inputSection}>
                             <Text style={[globalStyles.textSecondary, localStyles.sectionTitle]}>
-                                Deixe aqui seus pensamentos:
+                                Digite aqui seu diário:
                             </Text>
                             <View style={[localStyles.textAreaWrapper, errors.content ? localStyles.textAreaError : null]}>
                                 <TextInput
@@ -120,6 +126,7 @@ export default function DiaryCreateScreen() {
                                     textAlignVertical="top"
                                     value={diaryEntry}
                                     onChangeText={(v) => { setDiaryEntry(v); setErrors((e) => ({ ...e, content: undefined })); }}
+                                    onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 300)}
                                     maxLength={2000}
                                     placeholderTextColor="#ADB5BD"
                                 />

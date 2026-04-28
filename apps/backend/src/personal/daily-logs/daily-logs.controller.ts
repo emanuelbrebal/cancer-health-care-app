@@ -19,16 +19,6 @@ export class DailyLogsController {
     return this.service.create(userId, dto);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: any) {
-    return this.service.findOne(id, req.user.userId);
-  }
-
-  @Get()
-  async findAll(@Req() req: any) {
-    return this.service.findAllByUser(req.user.userId);
-  }
-
   @Get('search')
   async search(
     @Req() req: any,
@@ -43,6 +33,39 @@ export class DailyLogsController {
     });
   }
 
+  @Throttle({ default: { limit: 2, ttl: 60000 } })
+  @Get('report/pdf')
+  async exportPdf(
+    @Req() req: any,
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Res() res: Response
+  ) {
+    const buffer = await this.reportService.generateEmotionsPdf(
+      req.user.userId,
+      new Date(start),
+      new Date(end)
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=relatorio-emocional-${req.user.userId}.pdf`,
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Req() req: any) {
+    return this.service.findOne(id, req.user.userId);
+  }
+
+  @Get()
+  async findAll(@Req() req: any) {
+    return this.service.findAllByUser(req.user.userId);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: string, @Req() req: any, @Body() dto: UpdateDailyLogDto) {
     const userId = req.user.userId;
@@ -54,28 +77,5 @@ export class DailyLogsController {
     const userId = req.user.userId;
     await this.service.remove(id, userId);
     return { message: 'Entrada apagada permanentemente. Você pode realizar uma nova entrada hoje.' };
-  }
-
-  @Throttle({ default: { limit: 2, ttl: 60000 } })
-  @Get('report/pdf')
-  async exportPdf(
-    @Req() req: any,
-    @Query('start') start: string,
-    @Query('end') end: string,
-    @Res() res: Response
-  ) {
-    const buffer = await this.reportService.generateEmotionsPdf(
-      req.userId,
-      new Date(start),
-      new Date(end)
-    );
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=relatorio-emocional-${req.userId}.pdf`,
-      'Content-Length': buffer.length,
-    });
-
-    res.end(buffer);
   }
 }

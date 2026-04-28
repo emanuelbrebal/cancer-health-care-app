@@ -14,10 +14,9 @@ export default function SpiritualArea() {
             <View style={styles.container}>
                 <HorizontalBanner imagePath={require('@assets/images/Banners/spiritualityBanner.png')} />
 
-                <View style={globalStyles.startContainer}>
-
-                    <View style={styles.introCard}>
-                        <Text style={styles.introEmoji}>🕊️</Text>
+                <View style={styles.introCard}>
+                    <Text style={styles.introEmoji}>🕊️</Text>
+                    <View style={styles.introTextBlock}>
                         <Text style={styles.introTitle}>
                             A espiritualidade pode ser uma fonte de força, esperança e conforto durante o tratamento.
                         </Text>
@@ -25,25 +24,24 @@ export default function SpiritualArea() {
                             Em momentos difíceis, encontrar um significado e se conectar com aquilo que te traz paz pode ajudar a aliviar a ansiedade e fortalecer o emocional.
                         </Text>
                     </View>
+                </View>
 
-                    <View style={styles.sectionDivider}>
-                        <View style={styles.dividerLine} />
-                        <Text style={styles.sectionLabel}>✨ Reflexão</Text>
-                        <View style={styles.dividerLine} />
-                    </View>
+                <View style={styles.sectionDivider}>
+                    <View style={styles.dividerLine} />
+                    <Text style={styles.sectionLabel}>✨ Reflexão</Text>
+                    <View style={styles.dividerLine} />
+                </View>
 
-                    <View style={styles.reflectionCard}>
-                        <View style={styles.quoteAccent} />
-                        <Text style={styles.reflectionText}>
-                            Permita-se desacelerar. Mesmo em meio às dificuldades, existem pequenos momentos de luz, cuidado e esperança ao seu redor.
-                        </Text>
-                    </View>
+                <View style={styles.reflectionCard}>
+                    <View style={styles.quoteAccent} />
+                    <Text style={styles.reflectionText}>
+                        Permita-se desacelerar. Mesmo em meio às dificuldades, existem pequenos momentos de luz, cuidado e esperança ao seu redor.
+                    </Text>
+                </View>
 
-                    <View style={styles.messagesWrapper}>
-                        <DailyMessage title='Versículo do dia:' message={BibleVersicles} key='id' noImg />
-                        <DailyMessage title='Dica:' message='Você não precisa ter todas as respostas hoje. Apenas siga com fé e coragem.' />
-                    </View>
-
+                <View style={styles.messagesWrapper}>
+                    <DailyMessage title='Versículo do dia:' message={BibleVersicles} key='id' noImg />
+                    <DailyMessage title='Dica:' message='Você não precisa ter todas as respostas hoje. Apenas siga com fé e coragem.' />
                 </View>
             </View>
         </ScrollView>
@@ -54,41 +52,43 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'transparent',
+        gap: 16,
     },
     introCard: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
         backgroundColor: '#FFF9FE',
         borderRadius: 16,
-        padding: 20,
+        padding: 18,
         borderWidth: 1,
         borderColor: '#EDD9FA',
-        marginBottom: 20,
-        alignItems: 'center',
-        gap: 10,
+        gap: 14,
     },
     introEmoji: {
-        fontSize: 36,
-        marginBottom: 4,
+        fontSize: 34,
+        marginTop: 2,
+    },
+    introTextBlock: {
+        flex: 1,
+        gap: 8,
     },
     introTitle: {
         fontFamily: 'Montserrat',
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: '700',
         color: Colors.purplePrimary,
-        textAlign: 'center',
-        lineHeight: 22,
+        lineHeight: 21,
     },
     introText: {
         fontFamily: 'Montserrat',
         fontSize: 13,
         color: '#555',
-        textAlign: 'center',
         lineHeight: 20,
     },
     sectionDivider: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
-        marginBottom: 16,
     },
     dividerLine: {
         flex: 1,
@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F3E5F5',
         borderRadius: 14,
         padding: 18,
-        marginBottom: 20,
         gap: 14,
         alignItems: 'flex-start',
     },

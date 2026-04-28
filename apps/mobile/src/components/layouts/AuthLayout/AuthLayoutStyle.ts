@@ -9,6 +9,9 @@ export const authLayoutStyles = StyleSheet.create({
     borderTopRightRadius: 50,
     borderTopLeftRadius: 50,
     width: '100%',
-    justifyContent: 'flex-start',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 24,
   },
 });

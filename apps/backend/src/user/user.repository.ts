@@ -10,8 +10,8 @@ export class UsersRepository {
     return this.prisma.user.create({ data });
   }
 
-  async findAll() {
-    return this.prisma.user.findMany();
+  async findAll(take = 100) {
+    return this.prisma.user.findMany({ take, orderBy: { createdAt: 'desc' } });
   }
 
   async findById(id: string): Promise<User | null> {

@@ -55,6 +55,7 @@ export class DailyLogsService {
   async update(id: string, userId: string, dto: UpdateDailyLogDto) {
     const log = await this.repository.findOne(id);
     if (!log) throw new NotFoundException('Diário não encontrado.');
+    if (log.userId !== userId) throw new ForbiddenException('Acesso negado.');
 
     return this.repository.updateWithAudit(id, userId, dto);
   }

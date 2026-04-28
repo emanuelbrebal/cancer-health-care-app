@@ -8,4 +8,5 @@ export class MediaResponseDto {
   whereToFind: string[];
   imagePath: string;
   genre: string;
+  synopsis: string | null;
 }

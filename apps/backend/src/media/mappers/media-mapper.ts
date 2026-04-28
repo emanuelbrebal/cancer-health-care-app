@@ -10,8 +10,9 @@ export class MediaMapper {
       status: media.status,
       isFree: media.isFree,
       whereToFind: media.whereToFind,
-      imagePath: media.image_path || '', 
+      imagePath: media.image_path || '',
       genre: media.genre?.name || 'Sem gênero',
+      synopsis: media.synopsis ?? null,
     };
   }
 }

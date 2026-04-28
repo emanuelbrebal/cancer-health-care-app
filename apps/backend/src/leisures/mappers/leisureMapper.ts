@@ -10,6 +10,7 @@ export class LeisureMapper {
       type: leisure.type as LeisureType,
       frequency: leisure.frequency as FrequencyType,
       imagePath: leisure.image_path || '',
+      synopsis: leisure.synopsis ?? null,
       status: leisure.status as StatusEnum,
     };
   }

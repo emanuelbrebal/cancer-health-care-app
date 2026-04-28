@@ -1,12 +1,13 @@
 import { authService } from '@/src/services/auth';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { Feather } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator, Dimensions, Image, KeyboardAvoidingView,
   Modal, Platform, Pressable, StyleSheet, Text,
   TextInput, TouchableOpacity, View,
 } from 'react-native';
-import { router } from 'expo-router';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -18,10 +19,11 @@ interface Props {
 export default function SoftLoginModal({ visible, onDismiss }: Props) {
   const storeLogin = useAuthStore((s) => s.login);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [email, setEmail]       = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState('');
+  const [email, setEmail]               = useState('');
+  const [password, setPassword]         = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState('');
 
   useEffect(() => {
     if (isAuthenticated && visible) onDismiss();
@@ -35,8 +37,15 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
       const data = await authService.login(email.trim().toLowerCase(), password);
       storeLogin(data.access_token, data.user);
       onDismiss();
-    } catch {
-      setError('E-mail ou senha incorretos.');
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 401 || status === 404) {
+        setError('E-mail ou senha incorretos.');
+      } else if (!err?.response) {
+        setError('Sem conexão. Verifique sua internet.');
+      } else {
+        setError('Erro ao entrar. Tente novamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -72,14 +81,20 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
             value={email}
             onChangeText={setEmail}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#999"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <Pressable onPress={() => setShowPassword(v => !v)} style={styles.eyeButton}>
+              <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color="#999" />
+            </Pressable>
+          </View>
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -150,6 +165,26 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 12,
     color: '#1A1A1A',
+  },
+  passwordContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: '#1A1A1A',
+  },
+  eyeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 12,
   },
   error: {
     color: '#e53935',

@@ -1,45 +1,71 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Linking, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
+import leisureService, { Book } from '@/src/services/leisureService';
 
 export default function BookDetailScreen() {
-  const params = useLocalSearchParams<{
-    title: string; author: string; imagePath: string;
-    genre: string; pageCount: string; whereToFind: string; eduCapesLink: string;
-  }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const whereToFind: string[] = params.whereToFind ? JSON.parse(params.whereToFind) : [];
+  useEffect(() => {
+    if (id) {
+      leisureService.getBook(id)
+        .then(setBook)
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      </View>
+    );
+  }
+
+  if (!book) return null;
+
+  const whereToFind = book.whereToFind ?? [];
   const hasMeaningfulWhere = whereToFind.some(w => w && w !== 'A definir');
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Image source={getMediaImage(params.imagePath)} style={styles.cover} resizeMode="cover" />
+      <Image source={getMediaImage(book.imagePath)} style={styles.cover} resizeMode="cover" />
 
       <View style={styles.content}>
-        <Text style={styles.title}>{params.title}</Text>
-        {!!params.author && <Text style={styles.author}>por {params.author}</Text>}
+        <Text style={styles.title}>{book.title}</Text>
+        {!!book.author && <Text style={styles.author}>por {book.author}</Text>}
 
         <View style={styles.divider} />
 
         <View style={styles.metaSection}>
-          {!!params.genre && <MetaRow icon="tag" label="Gênero" value={params.genre} />}
-          {!!params.pageCount && params.pageCount !== '0' && (
-            <MetaRow icon="book-open" label="Páginas" value={params.pageCount} />
+          {!!book.genre && <MetaRow icon="tag" label="Gênero" value={book.genre} />}
+          {!!book.pageCount && book.pageCount !== 0 && (
+            <MetaRow icon="book-open" label="Páginas" value={String(book.pageCount)} />
           )}
           {hasMeaningfulWhere && (
             <MetaRow icon="map-pin" label="Onde encontrar" value={whereToFind.filter(w => w && w !== 'A definir').join(', ')} />
           )}
         </View>
 
-        {!!params.eduCapesLink && (
+        {!!book.synopsis && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.synopsisLabel}>Sinopse</Text>
+            <Text style={styles.synopsisText}>{book.synopsis}</Text>
+          </>
+        )}
+
+        {!!book.eduCapesLink && (
           <>
             <View style={styles.divider} />
             <TouchableOpacity
               style={styles.linkButton}
-              onPress={() => Linking.openURL(params.eduCapesLink)}
+              onPress={() => Linking.openURL(book.eduCapesLink!)}
               activeOpacity={0.8}
             >
               <Feather name="external-link" size={18} color="#FFF" />
@@ -63,6 +89,7 @@ function MetaRow({ icon, label, value }: { icon: any; label: string; value: stri
 }
 
 const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { paddingBottom: 40 },
   cover: { width: '100%', height: 320 },
   content: { padding: 20 },
@@ -84,6 +111,19 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
   metaLabel: { fontFamily: 'Montserrat', fontSize: 13, fontWeight: '600', color: '#555', marginLeft: 8 },
   metaValue: { fontFamily: 'Montserrat', fontSize: 13, color: '#555', flex: 1 },
+  synopsisLabel: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.purplePrimary,
+    marginBottom: 8,
+  },
+  synopsisText: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    color: '#444',
+    lineHeight: 22,
+  },
   linkButton: {
     flexDirection: 'row',
     alignItems: 'center',

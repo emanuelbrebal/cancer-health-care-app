@@ -8,8 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import * as ImagePicker from 'expo-image-picker';
 import api from '@/src/services/api';
-import { router } from 'expo-router';
-import { DateInput } from '@/src/components/ui/Inputs/DateInput';
+import { router, useLocalSearchParams } from 'expo-router';
+import { BirthdayDateInput } from '@/src/components/ui/Inputs/BirthdayDateInput';
 import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
 import { toastService } from '@/src/services/toastService';
 
@@ -22,7 +22,20 @@ const pronounOptions = [
 
 const PLACEHOLDER_AVATAR = require('@assets/images/Home/purpleMascotSunglasses.png');
 
+function normalizeBirthday(raw: string | null | undefined): string {
+  if (!raw) return '';
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw)) return raw;
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return '';
+  return [
+    String(d.getUTCDate()).padStart(2, '0'),
+    String(d.getUTCMonth() + 1).padStart(2, '0'),
+    d.getUTCFullYear(),
+  ].join('/');
+}
+
 export default function OnboardingProfileScreen() {
+  const { firstTime } = useLocalSearchParams<{ firstTime?: string }>();
   const user = useAuthStore((s) => s.user);
   const login = useAuthStore((s) => s.login);
   const token = useAuthStore((s) => s.token);
@@ -30,7 +43,7 @@ export default function OnboardingProfileScreen() {
   const [pronoun, setPronoun] = useState(user?.pronoun ?? '');
   const [name, setName] = useState(user?.name ?? '');
   const [phone, setPhone] = useState(user?.phone_number ?? '');
-  const [birthday, setBirthday] = useState(user?.birthday ?? '');
+  const [birthday, setBirthday] = useState(() => normalizeBirthday(user?.birthday));
   const [avatarUri, setAvatarUri] = useState<string | null>(user?.profile_picture ?? null);
   const [saving, setSaving] = useState(false);
 
@@ -56,18 +69,34 @@ export default function OnboardingProfileScreen() {
 
   const handleSave = async () => {
     if (!user?.id || !token) return;
+
+    let birthdayISO: string | undefined;
+    if (birthday) {
+      const [d, m, y] = birthday.split('/').map(Number);
+      const parsed = new Date(y, m - 1, d);
+      if (isNaN(parsed.getTime()) || parsed >= new Date()) {
+        toastService.error('Data de nascimento inválida. Informe uma data no passado.');
+        return;
+      }
+      birthdayISO = parsed.toISOString();
+    }
+
     setSaving(true);
     try {
       const response = await api.patch(`/users/${user.id}`, {
         name: name || undefined,
         pronoun: pronoun || undefined,
         phone_number: phone || undefined,
-        birthday: birthday || undefined,
+        birthday: birthdayISO,
         profile_picture: avatarUri || undefined,
       });
       login(token, response.data);
       toastService.success('Perfil atualizado com sucesso!');
-      router.back();
+      if (firstTime === '1') {
+        router.replace('/(Home)/PersonalArea/Hub');
+      } else {
+        router.back();
+      }
     } catch {
       toastService.error('Não foi possível salvar as alterações. Tente novamente.');
     } finally {
@@ -125,7 +154,7 @@ export default function OnboardingProfileScreen() {
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Data de nascimento: <Text style={styles.optional}>(opcional)</Text></Text>
-              <DateInput value={birthday} onChangeText={setBirthday} />
+              <BirthdayDateInput value={birthday} onChangeText={setBirthday} />
             </View>
 
           </View>

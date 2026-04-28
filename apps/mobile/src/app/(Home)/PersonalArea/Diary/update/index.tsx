@@ -43,6 +43,7 @@ function EmoteButton({ emote, isSelected, onPress }: { emote: typeof EMOTES[0]; 
 
 export default function DiaryUpdateScreen() {
     const router = useRouter();
+    const scrollRef = useRef<ScrollView>(null);
     const { id } = useLocalSearchParams<{ id: string }>();
 
     const [title, setTitle] = useState('');
@@ -109,7 +110,12 @@ export default function DiaryUpdateScreen() {
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={{ flex: 1 }}
                 >
-                    <ScrollView contentContainerStyle={globalStyles.startContainer} keyboardShouldPersistTaps="handled">
+                    <ScrollView
+                        ref={scrollRef}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
                         <View style={globalStyles.titleContainer}>
                             <TextInput
                                 style={[globalStyles.textPrimary, localStyles.mainInput, errors.title ? localStyles.inputError : null]}
@@ -140,7 +146,7 @@ export default function DiaryUpdateScreen() {
 
                         <View style={localStyles.inputSection}>
                             <Text style={[globalStyles.textSecondary, localStyles.sectionTitle]}>
-                                Editar seus pensamentos
+                                Digite aqui seu diário:
                             </Text>
                             <View style={[localStyles.textAreaWrapper, errors.content ? localStyles.textAreaError : null]}>
                                 <TextInput
@@ -150,6 +156,7 @@ export default function DiaryUpdateScreen() {
                                     textAlignVertical="top"
                                     value={diaryEntry}
                                     onChangeText={(v) => { setDiaryEntry(v); setErrors((e) => ({ ...e, content: undefined })); }}
+                                    onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 300)}
                                     maxLength={2000}
                                     placeholderTextColor="#ADB5BD"
                                 />

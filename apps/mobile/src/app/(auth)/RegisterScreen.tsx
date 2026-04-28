@@ -13,6 +13,7 @@ import { useAuthStore } from '@/src/store/useAuthStore';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function RegisterScreen() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userRole, setUserRole] = useState('');
@@ -23,6 +24,8 @@ export default function RegisterScreen() {
   const validate = (): boolean => {
     const next: RegisterFormErrors = {};
     if (!userRole) next.role = 'Selecione o tipo de conta.';
+    if (!name.trim()) next.name = 'O nome é obrigatório.';
+    else if (name.trim().length < 2) next.name = 'Informe um nome válido.';
     if (!email.trim()) next.email = 'O e-mail é obrigatório.';
     else if (!EMAIL_REGEX.test(email)) next.email = 'Formato de e-mail inválido.';
     if (!password) next.password = 'A senha é obrigatória.';
@@ -37,10 +40,10 @@ export default function RegisterScreen() {
     if (!validate()) return;
     setIsLoading(true);
     try {
-      await authService.register({ email, password, role: userRole });
+      await authService.register({ name: name.trim(), email, password, role: userRole });
       const data = await authService.login(email, password);
       useAuthStore.getState().login(data.access_token, data.user);
-      router.replace('/(Home)');
+      router.replace({ pathname: '/PersonalArea/OnboardingForm', params: { firstTime: '1' } });
     } catch (err: any) {
       const status = err.response?.status;
       if (status === 409) setErrors({ email: 'Este e-mail já está em uso.' });
@@ -67,6 +70,7 @@ export default function RegisterScreen() {
       <RegisterForm
         userRole={userRole}
         setUserRole={(v) => { setUserRole(v); clearError('role'); }}
+        setName={(v) => { setName(v); clearError('name'); }}
         setEmail={(v) => { setEmail(v); clearError('email'); }}
         setPassword={(v) => { setPassword(v); clearError('password'); }}
         setConfirmPassword={(v) => { setConfirmPassword(v); clearError('confirmPassword'); }}
@@ -78,7 +82,7 @@ export default function RegisterScreen() {
         <ButtonPrimary title='Cadastrar' action={handleRegister} loading={isLoading} />
       </View>
 
-      <Link href="/(auth)/RecoverPassword">
+      <Link href="/(auth)/ResetPassword">
         <Text style={[globalStyles.textHyperlink, { marginTop: 40 }]}>Esqueci minha senha</Text>
       </Link>
 
