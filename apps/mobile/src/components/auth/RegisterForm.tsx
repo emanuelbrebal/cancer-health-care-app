@@ -5,6 +5,7 @@ import { SelectWithIcon } from "../ui/Inputs/SelectWithIcon";
 
 export interface RegisterFormErrors {
   role?: string;
+  name?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -15,6 +16,7 @@ export interface FormProps {
   setUserRole: (text: string) => void;
   setPassword: (text: string) => void;
   setConfirmPassword: (text: string) => void;
+  setName: (text: string) => void;
   userRole: string;
   errors?: RegisterFormErrors;
   /** @deprecated use errors */
@@ -24,10 +26,9 @@ export interface FormProps {
 const userRoleData = [
   { label: 'Paciente', value: 'PATIENT' },
   { label: 'Cuidador', value: 'CAREGIVER' },
-  { label: 'Admin', value: 'ADMIN' },
 ];
 
-export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPassword, userRole, errors = {} }: FormProps) {
+export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPassword, setName, userRole, errors = {} }: FormProps) {
   return (
     <View style={globalStyles.formContainer}>
       <SelectWithIcon
@@ -37,6 +38,14 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
         placeholder="Tipo de usuário"
         onChange={item => setUserRole(item.value)}
         error={errors.role}
+      />
+
+      <InputWithIcon
+        iconLeftName="user"
+        onChangeText={setName}
+        placeholder="Nome completo"
+        autoCapitalize="words"
+        error={errors.name}
       />
 
       <InputWithIcon

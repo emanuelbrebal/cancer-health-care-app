@@ -66,7 +66,7 @@ export default function LoginScreen() {
         <ButtonPrimary title='Entrar' action={handleLogin} loading={isLoading} />
       </View>
 
-      <Link href="/(auth)/RecoverPassword">
+      <Link href="/(auth)/ResetPassword">
         <Text style={[globalStyles.textHyperlink, { marginTop: 40 }]}>Esqueci minha senha</Text>
       </Link>
 
