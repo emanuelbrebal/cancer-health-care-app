@@ -31,9 +31,9 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - [x]  **Botão do Pânico:** Disponível em todas as telas da área de saúde mental, o botão do pânico é disposto acima de todos os elementos e fornece números relevantes à saúde mental (SAMU, CVV, CAVIDA) e discagem automática nativa.
 
 - [x]  **Mascote:** O sistema conta com uma integração a um agente de IA que gera mensagens de apoio baseada na personalidade do Mascote escolhido.
-- [ ]  **Notificações:** O sistema conta com um sistema de notificações personalizadas e cadastráveis (com os protocolos de tratamento/medicamentos).
+- [x]  **Notificações:** O sistema conta com um sistema de notificações personalizadas e cadastráveis (com os protocolos de tratamento/medicamentos).
 - [x]  **Diário Virtual:** O usuário pode cadastrar um diário escolhendo um emote (para definir "como estou me sentindo hoje") e o relato. O sistema guarda em segredo e pode gerar um relatório de emoções baseada em um filtro de tempo.
-- [ ]  **Cadastro de protocolos e medicamentos:** O usuário pode cadastrar protocolos de sessões de terapias e horários para tomar remédios e receber nas notificações.
+- [x]  **Cadastro de protocolos e medicamentos:** O usuário pode cadastrar protocolos de sessões de terapias e horários para tomar remédios e receber nas notificações.
 - [x]  **Informar canais de denúncia ao usuário:** Área responsável para mostrar canais de denúncia como ouvidorias para combate ao estigma, denúncia de maus-tratos e etc.
 
 
