@@ -5,8 +5,6 @@ export enum UserRole {
 }
 
 export enum PronounEnum {
-    HE_HIM = 'ELE/DELE',
-    SHE_HER = 'ELA/DELA',
     SR = 'SR',
     SRA = 'SRA',
     SRTA = 'SRTA',
