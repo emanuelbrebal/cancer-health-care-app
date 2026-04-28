@@ -1,38 +1,56 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Linking, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
+import leisureService, { Series } from '@/src/services/leisureService';
 
 export default function SeriesDetailScreen() {
-  const params = useLocalSearchParams<{
-    title: string; showrunner: string; seasons: string; episodes: string;
-    imagePath: string; genre: string; whereToFind: string; externalLink: string;
-  }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [series, setSeries] = useState<Series | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const whereToFind: string[] = params.whereToFind ? JSON.parse(params.whereToFind) : [];
+  useEffect(() => {
+    if (id) {
+      leisureService.getSeriesById(id)
+        .then(setSeries)
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      </View>
+    );
+  }
+
+  if (!series) return null;
+
+  const whereToFind = series.whereToFind ?? [];
   const hasMeaningfulWhere = whereToFind.some(w => w && w !== 'A definir');
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Image source={getMediaImage(params.imagePath)} style={styles.poster} resizeMode="cover" />
+      <Image source={getMediaImage(series.imagePath)} style={styles.poster} resizeMode="cover" />
 
       <View style={styles.content}>
-        <Text style={styles.title}>{params.title}</Text>
+        <Text style={styles.title}>{series.title}</Text>
 
         <View style={styles.divider} />
 
         <View style={styles.metaSection}>
-          {!!params.genre && <MetaRow icon="tv" label="Gênero" value={params.genre} />}
-          {!!params.showrunner && params.showrunner !== 'A definir' && (
-            <MetaRow icon="user" label="Criador" value={params.showrunner} />
+          {!!series.genre && <MetaRow icon="tv" label="Gênero" value={series.genre} />}
+          {!!series.showrunner && series.showrunner !== 'A definir' && (
+            <MetaRow icon="user" label="Criador" value={series.showrunner} />
           )}
-          {!!params.seasons && params.seasons !== '0' && (
+          {!!series.seasons && series.seasons !== 0 && (
             <MetaRow
               icon="layers"
               label="Temporadas"
-              value={`${params.seasons}${params.episodes && params.episodes !== '0' ? ` · ${params.episodes} episódios` : ''}`}
+              value={`${series.seasons}${series.episodes && series.episodes !== 0 ? ` · ${series.episodes} episódios` : ''}`}
             />
           )}
           {hasMeaningfulWhere && (
@@ -40,12 +58,20 @@ export default function SeriesDetailScreen() {
           )}
         </View>
 
-        {!!params.externalLink && (
+        {!!series.synopsis && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.synopsisLabel}>Sinopse</Text>
+            <Text style={styles.synopsisText}>{series.synopsis}</Text>
+          </>
+        )}
+
+        {!!series.externalLink && (
           <>
             <View style={styles.divider} />
             <TouchableOpacity
               style={styles.linkButton}
-              onPress={() => Linking.openURL(params.externalLink)}
+              onPress={() => Linking.openURL(series.externalLink!)}
               activeOpacity={0.8}
             >
               <Feather name="play-circle" size={18} color="#FFF" />
@@ -69,6 +95,7 @@ function MetaRow({ icon, label, value }: { icon: any; label: string; value: stri
 }
 
 const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { paddingBottom: 40 },
   poster: { width: '100%', height: 280 },
   content: { padding: 20 },
@@ -84,6 +111,19 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
   metaLabel: { fontFamily: 'Montserrat', fontSize: 13, fontWeight: '600', color: '#555', marginLeft: 8 },
   metaValue: { fontFamily: 'Montserrat', fontSize: 13, color: '#555', flex: 1 },
+  synopsisLabel: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.purplePrimary,
+    marginBottom: 8,
+  },
+  synopsisText: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    color: '#444',
+    lineHeight: 22,
+  },
   linkButton: {
     flexDirection: 'row',
     alignItems: 'center',

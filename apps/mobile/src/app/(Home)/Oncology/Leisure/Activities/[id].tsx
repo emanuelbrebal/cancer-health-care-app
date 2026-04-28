@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
+import leisureService, { LeisureActivity } from '@/src/services/leisureService';
 
 const TYPE_LABEL: Record<string, string> = {
   THERAPY:      'Terapêutica',
@@ -20,19 +21,37 @@ const FREQ_LABEL: Record<string, string> = {
 };
 
 export default function ActivityDetailScreen() {
-  const params = useLocalSearchParams<{
-    name: string; imagePath: string; type: string; frequency: string;
-  }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [activity, setActivity] = useState<LeisureActivity | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const typeLabel = TYPE_LABEL[params.type] ?? params.type;
-  const freqLabel = FREQ_LABEL[params.frequency] ?? params.frequency;
+  useEffect(() => {
+    if (id) {
+      leisureService.getActivity(id)
+        .then(setActivity)
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      </View>
+    );
+  }
+
+  if (!activity) return null;
+
+  const typeLabel = TYPE_LABEL[activity.type ?? ''] ?? activity.type;
+  const freqLabel = FREQ_LABEL[activity.frequency ?? ''] ?? activity.frequency;
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Image source={getMediaImage(params.imagePath)} style={styles.image} resizeMode="cover" />
+      <Image source={getMediaImage(activity.imagePath)} style={styles.image} resizeMode="cover" />
 
       <View style={styles.content}>
-        <Text style={styles.title}>{params.name}</Text>
+        <Text style={styles.title}>{activity.name}</Text>
 
         <View style={styles.divider} />
 
@@ -53,6 +72,14 @@ export default function ActivityDetailScreen() {
           )}
         </View>
 
+        {!!activity.synopsis && (
+          <>
+            <View style={styles.divider} />
+            <Text style={styles.synopsisLabel}>Sobre esta atividade</Text>
+            <Text style={styles.synopsisText}>{activity.synopsis}</Text>
+          </>
+        )}
+
         <View style={styles.tipCard}>
           <Feather name="info" size={16} color={Colors.purpleSecondary} style={{ marginBottom: 6 }} />
           <Text style={styles.tipText}>
@@ -65,6 +92,7 @@ export default function ActivityDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { paddingBottom: 40 },
   image: { width: '100%', height: 260 },
   content: { padding: 20 },
@@ -80,6 +108,19 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
   metaLabel: { fontFamily: 'Montserrat', fontSize: 13, fontWeight: '600', color: '#555', marginLeft: 8 },
   metaValue: { fontFamily: 'Montserrat', fontSize: 13, color: '#555', flex: 1 },
+  synopsisLabel: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.purplePrimary,
+    marginBottom: 8,
+  },
+  synopsisText: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    color: '#444',
+    lineHeight: 22,
+  },
   tipCard: {
     marginTop: 20,
     backgroundColor: Colors.purplePrimary + '10',

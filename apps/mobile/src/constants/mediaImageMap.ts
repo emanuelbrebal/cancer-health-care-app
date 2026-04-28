@@ -39,14 +39,11 @@ const IMAGE_MAP: Record<string, ImageSourcePropType> = {
   'series/hospital_amor.png':         require('@assets/images/Series/hospital_amor.png'),
 
   // ── ATIVIDADES ─────────────────────────────────────────────────────────────
-  'activities/yoga.jpg':              require('@assets/images/Placeholders/Mocks/yoga.jpg'),
-  'activities/jardinagem.jpg':        require('@assets/images/Placeholders/Mocks/jardinagem.jpg'),
-  'activities/pintura.jpg':           require('@assets/images/Placeholders/Mocks/pintura.jpg'),
-  'activities/diario.jpg':            require('@assets/images/Placeholders/Mocks/diario.jpg'),
-  'activities/meditacao-guiada.jpg':  require('@assets/images/Placeholders/Mocks/meditacao-guiada.jpg'),
-  'activities/caminhada.jpg':         require('@assets/images/Placeholders/Mocks/yoga.jpg'),
-  'activities/clube_artes.jpg':       require('@assets/images/Placeholders/Mocks/pintura.jpg'),
-  'activities/reuniao_apoio.jpg':     require('@assets/images/Placeholders/Mocks/meditacao-guiada.jpg'),
+  'activities/yoga.jpg':             require('@assets/images/Placeholders/Mocks/yoga.jpg'),
+  'activities/jardinagem.jpg':       require('@assets/images/Placeholders/Mocks/jardinagem.jpg'),
+  'activities/pintura.jpg':          require('@assets/images/Placeholders/Mocks/pintura.jpg'),
+  'activities/diario.jpg':           require('@assets/images/Placeholders/Mocks/diario.jpg'),
+  'activities/meditacao-guiada.jpg': require('@assets/images/Placeholders/Mocks/meditacao-guiada.jpg'),
 };
 
 export function getMediaImage(imagePath?: string | null): ImageSourcePropType {

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { globalStyles, baseText } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { router } from 'expo-router';
-import api from '@/src/services/api';
+import { authService } from '@/src/services/auth';
 import { toastService } from '@/src/services/toastService';
 
 interface ChangePasswordErrors {
@@ -38,7 +38,7 @@ export default function ChangePasswordScreen() {
     if (!validate()) return;
     setSaving(true);
     try {
-      await api.patch('/auth/change-password', { currentPassword, newPassword });
+      await authService.changePassword(currentPassword, newPassword);
       toastService.success('Senha alterada com sucesso!');
       router.back();
     } catch (error: any) {

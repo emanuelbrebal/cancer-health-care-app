@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View, Text, Modal } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 
-interface TimeInputProps {
+interface BirthdayDateInputProps {
   value: string;
   onChangeText: (text: string) => void;
   label?: string;
@@ -12,37 +12,51 @@ interface TimeInputProps {
   error?: string;
 }
 
-function hhmmToDate(str: string): Date {
-  const date = new Date();
-  const [h, m] = str.split(':').map(Number);
-  date.setHours(isNaN(h) ? 8 : h, isNaN(m) ? 0 : m, 0, 0);
-  return date;
+function ddmmyyyyToDate(str: string): Date {
+  const [d, m, y] = str.split('/').map(Number);
+  if (d && m && y) return new Date(y, m - 1, d);
+  return new Date(1990, 0, 1);
 }
 
-function dateToHHMM(date: Date): string {
-  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+function dateToDDMMYYYY(date: Date): string {
+  return [
+    String(date.getDate()).padStart(2, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    date.getFullYear(),
+  ].join('/');
 }
 
-export function TimeInput({ value, onChangeText, label, placeholder = 'HH:MM', error }: TimeInputProps) {
+const MAX_DATE = new Date();
+
+export function BirthdayDateInput({
+  value,
+  onChangeText,
+  label,
+  placeholder = 'DD/MM/AAAA',
+  error,
+}: BirthdayDateInputProps) {
   const [show, setShow] = useState(false);
-  const [tempTime, setTempTime] = useState<Date>(new Date());
+  const [pickerDate, setPickerDate] = useState<Date>(new Date(1990, 0, 1));
+  const selectedDateRef = useRef<Date>(new Date(1990, 0, 1));
 
   const openPicker = () => {
-    setTempTime(value ? hhmmToDate(value) : new Date());
+    const initial = value ? ddmmyyyyToDate(value) : new Date(1990, 0, 1);
+    selectedDateRef.current = initial;
+    setPickerDate(initial);
     setShow(true);
   };
 
   const handleChange = (_event: DateTimePickerEvent, selected?: Date) => {
     if (Platform.OS === 'android') {
       setShow(false);
-      if (selected) onChangeText(dateToHHMM(selected));
+      if (selected) onChangeText(dateToDDMMYYYY(selected));
     } else {
-      if (selected) setTempTime(selected);
+      if (selected) selectedDateRef.current = selected;
     }
   };
 
   const confirmIOS = () => {
-    onChangeText(dateToHHMM(tempTime));
+    onChangeText(dateToDDMMYYYY(selectedDateRef.current));
     setShow(false);
   };
 
@@ -55,7 +69,7 @@ export function TimeInput({ value, onChangeText, label, placeholder = 'HH:MM', e
         onPress={openPicker}
         activeOpacity={0.7}
       >
-        <Feather name="clock" size={18} color={error ? '#FF4C4C' : Colors.purplePrimary} style={styles.icon} />
+        <Feather name="calendar" size={18} color={error ? '#FF4C4C' : Colors.purplePrimary} style={styles.icon} />
         <Text style={[styles.valueText, !value && styles.placeholder]}>
           {value || placeholder}
         </Text>
@@ -66,11 +80,11 @@ export function TimeInput({ value, onChangeText, label, placeholder = 'HH:MM', e
 
       {Platform.OS === 'android' && show && (
         <DateTimePicker
-          value={tempTime}
-          mode="time"
-          is24Hour
+          value={pickerDate}
+          mode="date"
           display="default"
           onChange={handleChange}
+          maximumDate={MAX_DATE}
         />
       )}
 
@@ -82,18 +96,19 @@ export function TimeInput({ value, onChangeText, label, placeholder = 'HH:MM', e
               <TouchableOpacity onPress={() => setShow(false)}>
                 <Text style={styles.cancelText}>Cancelar</Text>
               </TouchableOpacity>
-              <Text style={styles.sheetTitle}>Hora Início</Text>
+              <Text style={styles.sheetTitle}>Data de Nascimento</Text>
               <TouchableOpacity onPress={confirmIOS}>
                 <Text style={styles.confirmText}>Confirmar</Text>
               </TouchableOpacity>
             </View>
             <DateTimePicker
-              value={tempTime}
-              mode="time"
-              is24Hour
+              value={pickerDate}
+              mode="date"
               display="spinner"
               onChange={handleChange}
+              maximumDate={MAX_DATE}
               style={styles.picker}
+              locale="pt-BR"
               textColor="#333333"
             />
           </View>

@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
-import treatmentStorage from '@/src/services/treatmentStorage';
+import treatmentService from '@/src/services/treatmentService';
 import * as ExpoCalendar from 'expo-calendar';
 import {
   scheduleTreatmentNotifications,
@@ -84,7 +84,7 @@ export default function CreateTreatment() {
     setSaving(true);
     try {
       const calendarEventId = await createCalendarEvent(nome, horaInicio, dataFim);
-      const treatment = await treatmentStorage.save({
+      const treatment = await treatmentService.save({
         nome,
         frequencia,
         horaInicio,
@@ -99,7 +99,7 @@ export default function CreateTreatment() {
       const endId = await scheduleEndOfTreatmentNotification(nome, dataFim);
       const notificationIds = [...doseIds, ...(endId ? [endId] : [])];
       if (notificationIds.length > 0) {
-        await treatmentStorage.setNotificationIds(treatment.id, notificationIds);
+        await treatmentService.setNotificationIds(treatment.id, notificationIds);
       }
 
       toastService.success('Tratamento salvo com sucesso!');

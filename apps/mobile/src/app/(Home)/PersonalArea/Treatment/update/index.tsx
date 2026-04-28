@@ -8,7 +8,7 @@ import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
-import treatmentStorage from '@/src/services/treatmentStorage';
+import treatmentService from '@/src/services/treatmentService';
 
 const FREQUENCIAS = [
   '8 em 8 horas (3x ao dia)',
@@ -58,17 +58,21 @@ export default function EditTreatment() {
         {
           text: 'Salvar Alterações',
           onPress: async () => {
-            await treatmentStorage.update(id, {
-              nome,
-              frequencia,
-              horaInicio,
-              dataFim,
-              nomeMedico: nomeMedico || undefined,
-              contatoMedico: contatoMedico || undefined,
-              nomeHospital: nomeHospital || undefined,
-            });
-            toastService.success('Ciclo de tratamento atualizado!');
-            router.back();
+            try {
+              await treatmentService.update(id, {
+                nome,
+                frequencia,
+                horaInicio,
+                dataFim,
+                nomeMedico: nomeMedico || undefined,
+                contatoMedico: contatoMedico || undefined,
+                nomeHospital: nomeHospital || undefined,
+              });
+              toastService.success('Ciclo de tratamento atualizado!');
+              router.back();
+            } catch {
+              toastService.error('Não foi possível atualizar o tratamento.');
+            }
           },
         },
       ],
