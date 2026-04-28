@@ -5,16 +5,20 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private mailerService: MailerService,
   ) { }
 
   async register(registerDto: RegisterDto) {
-    const { email, password, role } = registerDto;
+    const { email, password, role, name } = registerDto;
     const userExists = await this.prisma.user.findUnique({ where: { email } });
     if (userExists) throw new ConflictException('E-mail já cadastrado');
 
@@ -22,7 +26,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     return this.prisma.user.create({
-      data: { email, password: hashedPassword, role },
+      data: { email, password: hashedPassword, role, ...(name && { name }) },
     });
   }
 
@@ -65,5 +69,48 @@ export class AuthService {
     const hashed = await bcrypt.hash(dto.newPassword, 10);
     await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });
     return { message: 'Senha alterada com sucesso' };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+
+    // Resposta genérica — não revelar se o e-mail existe ou não
+    if (!user) {
+      return { message: 'Se o e-mail estiver cadastrado, você receberá as instruções em breve.' };
+    }
+
+    const token = this.jwtService.sign(
+      { sub: user.id, purpose: 'reset-password' },
+      { expiresIn: '15m' },
+    );
+
+    await this.mailerService.sendResetPasswordEmail(user.email, token);
+
+    return {
+      message: 'Se o e-mail estiver cadastrado, você receberá as instruções em breve.',
+      // token exposto apenas em ambiente de desenvolvimento para facilitar testes
+      ...(process.env.NODE_ENV !== 'production' && { debug_token: token }),
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    let payload: any;
+    try {
+      payload = this.jwtService.verify(dto.token);
+    } catch {
+      throw new BadRequestException('Token inválido ou expirado.');
+    }
+
+    if (payload.purpose !== 'reset-password') {
+      throw new BadRequestException('Token inválido.');
+    }
+
+    const hashed = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: payload.sub },
+      data: { password: hashed },
+    });
+
+    return { message: 'Senha redefinida com sucesso.' };
   }
 }
