@@ -56,7 +56,6 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 - [ ]  Melhorar a cobertura de testes unitários.
 - [ ]  Implementar Dark Mode.
 - [ ]  Otimizar as queries do banco de dados para relatórios grandes.
-- [ ]  Moderação da comunidade por administradores.
 
 ---
 
