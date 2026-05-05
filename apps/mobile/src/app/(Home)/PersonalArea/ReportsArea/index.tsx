@@ -23,8 +23,7 @@ const REPORT_CHANNELS = [
   { id: '1', title: 'Ouvidoria do SUS — Disque 136', description: 'Denúncie falta de medicamentos, demora abusiva para exames e cirurgias oncológicas ou mau atendimento na rede pública de saúde.', type: 'phone', value: '136', action: 'Ligar para 136' },
   { id: '2', title: 'ANS — Planos de Saúde Privados', description: 'Sofreu negativa de cobertura pelo seu convênio? A Agência Nacional de Saúde Suplementar recebe e investiga sua reclamação.', type: 'phone', value: '08007019656', action: 'Ligue 0800 701 9656' },
   { id: '3', title: 'Defensoria Pública — Disque 129', description: 'Assistência jurídica gratuita para garantir na Justiça o acesso a cirurgias, tratamentos e medicamentos negados.', type: 'phone', value: '129', action: 'Ligar para 129' },
-  { id: '4', title: 'CREMAL — Conselho Regional de Medicina', description: 'Denúncias formais contra médicos por erro, descaso ou omissão de socorro no Estado de Alagoas.', type: 'link', value: 'https://cremal.org.br/ouvidoria/', action: 'Acessar ouvidoria online' },
-  { id: '5', title: 'Procon Alagoas', description: 'Problemas com planos de saúde, cobranças indevidas ou descumprimento de contrato. Atende presencialmente e pelo site.', type: 'link', value: 'https://www.procon.al.gov.br', action: 'Acessar site do Procon' },
+  { id: '4', title: 'Procon Alagoas', description: 'Problemas com planos de saúde, cobranças indevidas ou descumprimento de contrato. Atende presencialmente e pelo site.', type: 'link', value: 'https://www.procon.al.gov.br', action: 'Acessar site do Procon' },
 ];
 
 export default function ReportsAreaScreen() {
