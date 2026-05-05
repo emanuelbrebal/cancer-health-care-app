@@ -1,13 +1,6 @@
-import { globalStyles } from '@/src/styles/global';
 import { Colors } from '@/src/constants/Colors';
 import { ScrollView, View, Text, Image, StyleSheet } from 'react-native';
 
-const TEAM = [
-    { role: 'Orientador', name: 'Prof. Dr. Kristiana Cerqueira Mousinho', subtitle: undefined },
-    { role: 'Estudante', name: 'Matheus Victor dos Santos', subtitle: 'Estudante de Farmácia — CESMAC' },
-    { role: 'Estudante', name: 'Elayne Lúcia Silva de Oliveira', subtitle: 'Estudante de Farmácia — CESMAC' },
-    { role: 'Desenvolvimento da plataforma', name: 'Emanuel Victor de Melo Brebal', subtitle: 'Estudante de Sistemas de Informação — CESMAC' },
-];
 
 export default function AboutScreen() {
     return (
@@ -56,19 +49,6 @@ export default function AboutScreen() {
                     </View>
                 </View>
             </View>
-
-            <View style={styles.card}>
-                <Text style={styles.sectionTitle}>Equipe</Text>
-                {TEAM.map((member, i) => (
-                    <View key={i} style={styles.teamRow}>
-                        <Text style={styles.teamRole}>{member.role}</Text>
-                        <Text style={styles.teamName}>{member.name}</Text>
-                        {member.subtitle ? <Text style={styles.teamSubtitle}>{member.subtitle}</Text> : null}
-                    </View>
-                ))}
-            </View>
-
-
 
             <Text style={styles.footer}>
                 © 2026 OncoMente · Todos os direitos reservados
