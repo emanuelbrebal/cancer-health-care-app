@@ -48,15 +48,7 @@ Durante o desenvolvimento deste projeto, pude aprimorar meus conhecimentos em:
 5. **[Consumo e criação de APIs RESTful]**: Este sistema me permitiu aprender melhores práticas e a integrar um aplicativo móvel a um gerenciador WEB, via APIs RESTful.
 6. **[Utilização de Design Patterns]**: Strategies, Mappers e Dtos foram bem utilizados. 
 7. **[Docker]**: Esse sistema me permitiu aprender a configuração de um arquivo docker-compose e a conteinerização do projeto.
-
----
-
-### 🚀 O que pode ser melhorado
-
-- [ ]  Melhorar a cobertura de testes unitários.
-- [ ]  Implementar Dark Mode.
-- [ ]  Otimizar as queries do banco de dados para relatórios grandes.
-
+   
 ---
 
 ### 📦 Como rodar o projeto
