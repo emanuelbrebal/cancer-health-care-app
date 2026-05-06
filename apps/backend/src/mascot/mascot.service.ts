@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AskAiDto } from './dto/ask-ai';
 import OpenAI from 'openai';
@@ -13,14 +18,22 @@ interface UserProfile {
 @Injectable()
 export class MascotService {
   private readonly logger = new Logger(MascotService.name);
-  private openai: OpenAI;
+  private readonly openai: OpenAI | null;
   private readonly SYSTEM_PROMPT_TEMPLATE: string;
 
   constructor(private prisma: PrismaService) {
-    this.openai = new OpenAI({
-      apiKey: process.env.GROQ_API_KEY,
-      baseURL: 'https://api.groq.com/openai/v1',
-    });
+    const apiKey = process.env.GROQ_API_KEY?.trim();
+    if (apiKey) {
+      this.openai = new OpenAI({
+        apiKey,
+        baseURL: 'https://api.groq.com/openai/v1',
+      });
+    } else {
+      this.openai = null;
+      this.logger.warn(
+        'GROQ_API_KEY não definida — o mascote IA não responderá até você configurar a chave no .env.',
+      );
+    }
     this.SYSTEM_PROMPT_TEMPLATE = process.env.AI_MASTER_PROMPT ?? this.FALLBACK_PROMPT;
     this.logger.log(`Prompt carregado do .env: ${!!process.env.AI_MASTER_PROMPT}`);
   }
@@ -50,6 +63,12 @@ export class MascotService {
     if (this.isEmergency(data.userQuestion)) {
       await this.logInteraction(userId, data, this.EMERGENCY_RESPONSE);
       return { response: this.EMERGENCY_RESPONSE };
+    }
+
+    if (!this.openai) {
+      throw new ServiceUnavailableException(
+        'O serviço de IA do mascote não está configurado. Defina GROQ_API_KEY no ambiente (ex.: chave em https://console.groq.com/keys).',
+      );
     }
 
     try {
