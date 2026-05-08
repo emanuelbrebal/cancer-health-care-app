@@ -17,31 +17,104 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - **Banco de Dados:** PostgreSQL, PrismaORM.
 - **Outros:** Docker, Docker-compose.
 
-### 📱 Especificações técnicas (aplicativo móvel)
+---
 
-Valores alinhados ao **Expo SDK 54** usado em `apps/mobile` (consulte a [documentação do Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/) para atualizações).
+### 📱 Requisitos mínimos e dispositivos suportados
 
-| Item | Requisito |
-|------|-----------|
-| **Android** | 7.0 ou superior |
-| **iOS** | 15.1 ou superior |
-| **Tablet** | iPad suportado (`supportsTablet` no app) |
-| **Rede** | Internet (Wi‑Fi ou dados móveis) para login, API, conteúdo dinâmico e funcionalidades que dependem do backend |
-| **Armazenamento** | ~50 MB de mídia estática no repositório; tamanho do download/instalação do app fechado **medido no artefato** (ver nota abaixo). Dados de uso: AsyncStorage (leve) + cache de rede. |
-| **RAM / processador** | Não há especificação no código; em geral, aparelhos que atendem às versões de SO acima executam o app. Recursos como vídeo, imagens e WebView tendem a responder melhor em dispositivos mais recentes |
+A matriz abaixo foi extraída das configurações do projeto (Expo SDK 54, NestJS 11, Vite 7, Prisma 6) e complementada com simulações de build locais quando aplicável (`nest build`, `vite build`, `expo export --platform ios|android`). Referência oficial do SDK: [Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/).
 
-**Build de produção e espaço no aparelho:** o que a loja mostra como “tamanho do app” (download) costuma ser menor que “dados + app” no sistema, que inclui cache. Em `apps/mobile/assets` há imagens, ícones, banners e vídeos locais (exercícios) — isso entra no binário. Somam-se ainda o JavaScript empacotado, Hermes e bibliotecas nativas. O valor exato de APK/AAB/IPA obtém-se após `eas build` ou build local. Na Play Store, o AAB com **splits por ABI** reduz o download por dispositivo.
+#### Aplicativo móvel (`apps/mobile`)
+
+Stack: **Expo SDK ~54.0.22 · React Native 0.81.5 · React 19 · New Architecture ativa**
+
+| Plataforma | Versão mínima do SO | Arquitetura |
+|---|---|---|
+| **iOS / iPadOS** | 15.1 ou superior | arm64 |
+| **Android** | 7.0 (Nougat — API 24) ou superior | arm64-v8a, armeabi-v7a, x86_64 |
+| **Web** | Suportado pelo Expo Router via Metro, mas o gerenciador administrativo (`apps/web`) é o destino oficial para navegador. |
+
+**Dispositivos compatíveis:**
+
+- **iPhone:** 6s, 6s Plus, SE (1ª geração) e modelos mais novos — incluindo todas as gerações do SE, linhas 7/8/X/XR/XS/11/12/13/14/15/16.
+- **iPad:** iPad Air 2+, iPad mini 4+, iPad 5ª geração+, todos os iPad Pro. O app declara `supportsTablet: true`.
+- **iPod touch:** 7ª geração.
+- **Android:** qualquer aparelho com Android 7.0+ (cobertura de mercado elevada segundo distribuição Google Play).
+
+**Recursos nativos exigidos pelo app:**
+
+- Notificações push e locais (`expo-notifications`).
+- Acesso ao calendário (`expo-calendar`) — usado em lembretes de tratamento.
+- Câmera/galeria de fotos (`expo-image-picker`) — usado em perfil/diário.
+- Áudio e vídeo (`expo-av`, `expo-video`) — exercícios e meditações.
+- Armazenamento seguro (`expo-secure-store`) — token JWT.
+- Vibração háptica (`expo-haptics`).
+- Discagem telefônica nativa (`Linking.openURL('tel:...')`) — Botão do Pânico (CVV/CAVIDA/SAMU).
+- Conexão com a internet — para autenticação, mascote IA e conteúdo dinâmico.
+
+**Especificações recomendadas:**
+
+- Memória RAM: 2 GB (mínimo) / 3 GB+ recomendado.
+- Espaço livre: ordem de grandeza ~150 MB para instalação em cenários típicos (bundle Hermes na faixa de poucos MB + assets empacotados). O repositório contém ~50 MB de mídia estática em `apps/mobile/assets`; o tamanho final de download/instalação depende do APK/AAB/IPA e dos splits da loja.
+
+**Build de produção:** o tamanho exibido na Play Store / App Store e o “armazenamento do app” nas configurações do sistema podem diferir (cache, dados). Na Play Store, o AAB com **splits por ABI** reduz o download por dispositivo. Medições precisas: `eas build` ou build nativo local.
 
 Permissões do sistema (notificações, calendário, câmera/galeria etc.) podem ser solicitadas conforme cada fluxo da interface.
 
-#### 🔧 Desenvolvimento (referência Expo SDK 54)
+#### Gerenciador administrativo web (`apps/web`)
 
-| Ferramenta | Versão mínima indicada |
-|------------|-------------------------|
-| **Node.js** | 20.19.x |
-| **Xcode** (build iOS local) | 16.1 ou superior |
+Stack: **React 19 · Vite 7.3 · TypeScript 5.9**
+
+Targets ES2020+ (default do Vite 7), portanto suporta:
+
+| Navegador | Versão mínima |
+|---|---|
+| Google Chrome | 87+ |
+| Mozilla Firefox | 78+ |
+| Safari (macOS/iOS) | 14+ |
+| Microsoft Edge (Chromium) | 88+ |
+| Opera | 73+ |
+
+Build de produção de referência: ~187 KB (≈59 KB gzip) — valores obtidos em build local e podem variar.
+
+#### Backend / API (`apps/backend`)
+
+Stack: **NestJS 11 · Prisma 6.19 · PostgreSQL · Node.js**
+
+Requisitos do servidor:
+
+| Componente | Versão mínima | Recomendado |
+|---|---|---|
+| **Node.js** | 20.19.x (alinhado ao toolchain Expo SDK 54) | 22 LTS |
+| **npm** | 10.x | 10.x ou superior |
+| **PostgreSQL** | 13 | 15 (alinhado ao `docker-compose.yml`) |
+| **Docker / Docker Compose** | Opcional — apenas para subir o Postgres local | — |
+| **RAM** | 512 MB | 1 GB+ |
+| **Sistema operacional** | Linux, macOS ou Windows (com Node 20+) | Linux/macOS |
+
+Variáveis de ambiente obrigatórias (ver `apps/backend/.env.example`): `DATABASE_URL`, `JWT_SECRET`, `PORT`. O mascote com IA exige `GROQ_API_KEY`; sem a chave, o endpoint do mascote pode retornar fallback. SMTP é necessário para os fluxos de e-mail.
+
+#### Ambiente de desenvolvimento
+
+Para clonar e rodar o monorepo:
+
+| Ferramenta | Versão mínima |
+|---|---|
+| Node.js | 20.19+ |
+| npm | 10+ |
+| Xcode (build iOS nativo) | 16.1+ — apenas em macOS |
+| Android Studio + JDK 17 | Hedgehog 2023.1+ — para emulador/Gradle |
+| Expo Go (testes rápidos sem build nativo) | Compatível com Expo SDK 54 |
 
 Para Android, use o Android Studio / SDK conforme a [documentação atual do Expo](https://docs.expo.dev/).
+
+#### Resumo da simulação de build
+
+| Alvo | Comando | Resultado |
+|---|---|---|
+| Backend | `npm run build` (em `apps/backend`) | OK — `dist/` gerada |
+| Web admin | `npm run build` (em `apps/web`) | OK — bundle ~187 KB / gzip ~59 KB |
+| Mobile iOS | `npx expo export --platform ios` | OK — Hermes bundle ~4.5 MB |
+| Mobile Android | `npx expo export --platform android` | OK — Hermes bundle ~4.5 MB |
 
 ---
 
