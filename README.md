@@ -15,7 +15,33 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - **Front-end (Gerenciador):** React. 
 - **Aplicativo móvel:** React Native.
 - **Banco de Dados:** PostgreSQL, PrismaORM.
-- **Outros:** Docker, Docker-compose. 
+- **Outros:** Docker, Docker-compose.
+
+### 📱 Especificações técnicas (aplicativo móvel)
+
+Valores alinhados ao **Expo SDK 54** usado em `apps/mobile` (consulte a [documentação do Expo SDK 54](https://docs.expo.dev/versions/v54.0.0/) para atualizações).
+
+| Item | Requisito |
+|------|-----------|
+| **Android** | 7.0 ou superior |
+| **iOS** | 15.1 ou superior |
+| **Tablet** | iPad suportado (`supportsTablet` no app) |
+| **Rede** | Internet (Wi‑Fi ou dados móveis) para login, API, conteúdo dinâmico e funcionalidades que dependem do backend |
+| **Armazenamento** | ~50 MB de mídia estática no repositório; tamanho do download/instalação do app fechado **medido no artefato** (ver nota abaixo). Dados de uso: AsyncStorage (leve) + cache de rede. |
+| **RAM / processador** | Não há especificação no código; em geral, aparelhos que atendem às versões de SO acima executam o app. Recursos como vídeo, imagens e WebView tendem a responder melhor em dispositivos mais recentes |
+
+**Build de produção e espaço no aparelho:** o que a loja mostra como “tamanho do app” (download) costuma ser menor que “dados + app” no sistema, que inclui cache. Em `apps/mobile/assets` há imagens, ícones, banners e vídeos locais (exercícios) — isso entra no binário. Somam-se ainda o JavaScript empacotado, Hermes e bibliotecas nativas. O valor exato de APK/AAB/IPA obtém-se após `eas build` ou build local. Na Play Store, o AAB com **splits por ABI** reduz o download por dispositivo.
+
+Permissões do sistema (notificações, calendário, câmera/galeria etc.) podem ser solicitadas conforme cada fluxo da interface.
+
+#### 🔧 Desenvolvimento (referência Expo SDK 54)
+
+| Ferramenta | Versão mínima indicada |
+|------------|-------------------------|
+| **Node.js** | 20.19.x |
+| **Xcode** (build iOS local) | 16.1 ou superior |
+
+Para Android, use o Android Studio / SDK conforme a [documentação atual do Expo](https://docs.expo.dev/).
 
 ---
 

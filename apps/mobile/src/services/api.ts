@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useAuthStore } from '../store/useAuthStore';
+import { resolveApiBaseUrl } from './resolveApiBaseUrl';
 
 const api = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000',
+  baseURL: resolveApiBaseUrl(),
 });
 
 api.interceptors.request.use((config) => {
