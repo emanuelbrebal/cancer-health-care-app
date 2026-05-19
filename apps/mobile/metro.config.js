@@ -7,7 +7,8 @@ const workspaceRoot = path.resolve(projectRoot, '../..');
 
 const config = getDefaultConfig(projectRoot);
 
-config.watchFolders = [workspaceRoot];
+// Preserve Expo's default watchFolders and add the monorepo root.
+config.watchFolders = [...(config.watchFolders ?? []), workspaceRoot];
 
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
@@ -40,6 +41,7 @@ config.resolver.extraNodeModules = {
 config.resolver.blockList = [
   new RegExp(`${path.resolve(workspaceRoot, 'apps/backend').replace(/\\/g, '\\\\')}.*`),
   new RegExp(`${path.resolve(workspaceRoot, 'apps/web').replace(/\\/g, '\\\\')}.*`),
+  new RegExp(`${path.resolve(workspaceRoot, 'packages/shared/node_modules').replace(/\\/g, '\\\\')}.*`),
 ];
 
 module.exports = config;
