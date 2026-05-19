@@ -13,6 +13,6 @@ export class DailyLogMapper {
   }
 
   static toResponseList(logs: DailyLog[]): DailyLogResponseDto[] {
-    return logs.map(log => this.toResponse(log));
+    return logs.map((log) => this.toResponse(log));
   }
 }

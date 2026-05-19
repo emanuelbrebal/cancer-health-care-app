@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, UseGuards, Request, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  UseGuards,
+  Request,
+  Req,
+} from '@nestjs/common';
 import { AskAiDto } from './dto/ask-ai';
 import { MascotService } from './mascot.service';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';

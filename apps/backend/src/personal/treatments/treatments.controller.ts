@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Req, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Req,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { TreatmentsService } from './treatments.service';
 import { CreateTreatmentDto } from './dto/create-treatment.dto';
 import { UpdateTreatmentDto } from './dto/update-treatment.dto';
@@ -25,7 +37,11 @@ export class TreatmentsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Req() req: any, @Body() dto: UpdateTreatmentDto) {
+  async update(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() dto: UpdateTreatmentDto,
+  ) {
     return this.service.update(id, req.user.userId, dto);
   }
 

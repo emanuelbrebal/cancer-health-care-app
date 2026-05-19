@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { DailyLogsRepository } from './daily-logs.repository';
@@ -7,7 +12,7 @@ import { DailyLogMapper } from './daily-logs.mapper';
 
 @Injectable()
 export class DailyLogsService {
-  constructor(private readonly repository: DailyLogsRepository) { }
+  constructor(private readonly repository: DailyLogsRepository) {}
 
   async create(userId: string, dto: CreateDailyLogDto) {
     const localDate = dto.date ?? new Date().toISOString().slice(0, 10);
@@ -15,7 +20,9 @@ export class DailyLogsService {
 
     const exists = await this.repository.findExistingByDate(userId, date);
     if (exists) {
-      throw new BadRequestException('Você já realizou a entrada de hoje. Só é permitida uma por dia.');
+      throw new BadRequestException(
+        'Você já realizou a entrada de hoje. Só é permitida uma por dia.',
+      );
     }
 
     const data = { ...dto, userId, date };
@@ -35,8 +42,8 @@ export class DailyLogsService {
     const isOwner = logOwnerId === currentUserId;
 
     if (!isOwner) {
-    throw new ForbiddenException('Acesso negado.');
-  }
+      throw new ForbiddenException('Acesso negado.');
+    }
 
     return log;
   }

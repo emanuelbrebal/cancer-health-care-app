@@ -1,5 +1,5 @@
-import { StatusEnum } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { StatusEnum } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export abstract class BaseMediaRepository {
   constructor(protected readonly prisma: PrismaService) {}

@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -15,7 +20,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private mailerService: MailerService,
-  ) { }
+  ) {}
 
   async register(registerDto: RegisterDto) {
     const { email, password, role, name } = registerDto;
@@ -38,7 +43,7 @@ export class AuthService {
     }
 
     const user = await this.prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
@@ -67,16 +72,24 @@ export class AuthService {
     if (!isValid) throw new UnauthorizedException('Senha atual incorreta');
 
     const hashed = await bcrypt.hash(dto.newPassword, 10);
-    await this.prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed },
+    });
     return { message: 'Senha alterada com sucesso' };
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
 
     // Resposta genérica — não revelar se o e-mail existe ou não
     if (!user) {
-      return { message: 'Se o e-mail estiver cadastrado, você receberá as instruções em breve.' };
+      return {
+        message:
+          'Se o e-mail estiver cadastrado, você receberá as instruções em breve.',
+      };
     }
 
     const token = this.jwtService.sign(
@@ -87,7 +100,8 @@ export class AuthService {
     await this.mailerService.sendResetPasswordEmail(user.email, token);
 
     return {
-      message: 'Se o e-mail estiver cadastrado, você receberá as instruções em breve.',
+      message:
+        'Se o e-mail estiver cadastrado, você receberá as instruções em breve.',
       // token exposto apenas em ambiente de desenvolvimento para facilitar testes
       ...(process.env.NODE_ENV !== 'production' && { debug_token: token }),
     };

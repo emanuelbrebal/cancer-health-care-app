@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -23,7 +27,9 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findOne(id);
     if (updateUserDto.email) {
-      const existing = await this.prisma.user.findUnique({ where: { email: updateUserDto.email } });
+      const existing = await this.prisma.user.findUnique({
+        where: { email: updateUserDto.email },
+      });
       if (existing && existing.id !== id) {
         throw new ConflictException('Este e-mail já está em uso.');
       }

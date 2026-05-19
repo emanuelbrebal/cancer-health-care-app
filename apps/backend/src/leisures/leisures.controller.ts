@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
+} from '@nestjs/common';
 import { LeisuresService } from './leisures.service';
 import { CreateLeisureDto } from './dto/create-leisure.dto';
 import { UpdateLeisureDto } from './dto/update-leisure.dto';
@@ -13,14 +22,14 @@ export class LeisuresController {
     const leisure = await this.leisuresService.create(createLeisureDto);
     return {
       message: 'Atividade de lazer criada com sucesso!',
-      data: LeisureMapper.toDto(leisure)
+      data: LeisureMapper.toDto(leisure),
     };
   }
 
   @Get()
   async findAll() {
     const leisures = await this.leisuresService.findAll();
-    return leisures.map(leisure => LeisureMapper.toDto(leisure));
+    return leisures.map((leisure) => LeisureMapper.toDto(leisure));
   }
 
   @Get(':id')
@@ -30,11 +39,19 @@ export class LeisuresController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateLeisureDto: UpdateLeisureDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateLeisureDto: UpdateLeisureDto,
+  ) {
     if (!updateLeisureDto || Object.keys(updateLeisureDto).length === 0) {
-      throw new BadRequestException('Nenhum dado válido fornecido para atualização');
+      throw new BadRequestException(
+        'Nenhum dado válido fornecido para atualização',
+      );
     }
-    const updatedLeisure = await this.leisuresService.update(id, updateLeisureDto);
+    const updatedLeisure = await this.leisuresService.update(
+      id,
+      updateLeisureDto,
+    );
     return LeisureMapper.toDto(updatedLeisure);
   }
 

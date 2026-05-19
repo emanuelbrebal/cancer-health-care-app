@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { TreatmentsRepository } from './treatments.repository';
 import { TreatmentMapper } from './mappers/treatment.mapper';
 import { CreateTreatmentDto } from './dto/create-treatment.dto';
@@ -21,7 +25,8 @@ export class TreatmentsService {
   async findOne(id: string, userId: string) {
     const treatment = await this.repository.findOne(id);
     if (!treatment) throw new NotFoundException('Tratamento não encontrado.');
-    if (treatment.userId !== userId) throw new ForbiddenException('Acesso negado.');
+    if (treatment.userId !== userId)
+      throw new ForbiddenException('Acesso negado.');
     return TreatmentMapper.toDto(treatment);
   }
 

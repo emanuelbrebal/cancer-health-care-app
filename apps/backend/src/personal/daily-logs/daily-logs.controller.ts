@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { DailyLogsService } from './daily-logs.service';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
@@ -11,7 +22,10 @@ import { Throttle } from '@nestjs/throttler';
 @UseGuards(JwtAuthGuard)
 @Controller('daily-logs')
 export class DailyLogsController {
-  constructor(private readonly service: DailyLogsService, private readonly reportService: DailyLogsReportService) { }
+  constructor(
+    private readonly service: DailyLogsService,
+    private readonly reportService: DailyLogsReportService,
+  ) {}
 
   @Post()
   async create(@Req() req: any, @Body() dto: CreateDailyLogDto) {
@@ -39,12 +53,12 @@ export class DailyLogsController {
     @Req() req: any,
     @Query('start') start: string,
     @Query('end') end: string,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     const buffer = await this.reportService.generateEmotionsPdf(
       req.user.userId,
       new Date(start),
-      new Date(end)
+      new Date(end),
     );
 
     res.set({
@@ -67,7 +81,11 @@ export class DailyLogsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Req() req: any, @Body() dto: UpdateDailyLogDto) {
+  async update(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Body() dto: UpdateDailyLogDto,
+  ) {
     const userId = req.user.userId;
     return this.service.update(id, userId, dto);
   }
@@ -76,6 +94,9 @@ export class DailyLogsController {
   async remove(@Param('id') id: string, @Req() req: any) {
     const userId = req.user.userId;
     await this.service.remove(id, userId);
-    return { message: 'Entrada apagada permanentemente. Você pode realizar uma nova entrada hoje.' };
+    return {
+      message:
+        'Entrada apagada permanentemente. Você pode realizar uma nova entrada hoje.',
+    };
   }
 }

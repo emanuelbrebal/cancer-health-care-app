@@ -16,7 +16,9 @@ import { MailerModule } from '../mailer/mailer.module';
       useFactory: async () => {
         const secret = process.env.JWT_SECRET;
         if (!secret) {
-          throw new Error('JWT_SECRET não definido. Configure a variável de ambiente antes de iniciar o servidor.');
+          throw new Error(
+            'JWT_SECRET não definido. Configure a variável de ambiente antes de iniciar o servidor.',
+          );
         }
         return { secret, signOptions: { expiresIn: '7d' } };
       },

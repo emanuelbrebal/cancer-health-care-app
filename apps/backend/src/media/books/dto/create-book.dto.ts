@@ -1,4 +1,13 @@
-import { IsString, IsBoolean, IsOptional, MaxLength, IsInt, IsUUID, IsUrl, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsOptional,
+  MaxLength,
+  IsInt,
+  IsUUID,
+  IsUrl,
+  IsArray,
+} from 'class-validator';
 import { CreateMediaDto } from 'src/media/common/dto/CreateMediaDto';
 
 export class CreateBookDto extends CreateMediaDto {
@@ -12,10 +21,10 @@ export class CreateBookDto extends CreateMediaDto {
   eduCapesLink?: string;
 
   @IsOptional()
-  @IsInt({ message: "O número de visitas precisa ser um valor numérico." })
+  @IsInt({ message: 'O número de visitas precisa ser um valor numérico.' })
   visitCount?: number | 0;
 
   @IsOptional()
-  @IsInt({ message: "O número de páginas precisa ser um valor numérico." })
+  @IsInt({ message: 'O número de páginas precisa ser um valor numérico.' })
   page_count?: number;
 }

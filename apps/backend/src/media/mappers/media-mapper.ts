@@ -1,4 +1,4 @@
-import { MediaResponseDto } from "../common/dto/media-response-dto";
+import { MediaResponseDto } from '../common/dto/media-response-dto';
 
 export class MediaMapper {
   static mapCommonFields(media: any): MediaResponseDto {

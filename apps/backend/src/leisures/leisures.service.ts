@@ -24,12 +24,12 @@ export class LeisuresService {
   }
 
   async update(id: string, dto: UpdateLeisureDto) {
-    await this.findOne(id); 
+    await this.findOne(id);
     return this.repository.update(id, dto);
   }
 
   async remove(id: string) {
-    await this.findOne(id); 
+    await this.findOne(id);
     return this.repository.delete(id);
   }
 }

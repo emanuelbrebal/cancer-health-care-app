@@ -26,11 +26,11 @@ export class MoviesRepository extends BaseMediaRepository {
           create: {
             director: data.director,
             duration: data.duration,
-            externalLink: data.externalLink
-          }
-        }
+            externalLink: data.externalLink,
+          },
+        },
       },
-      include: { movieDetails: true, genre: true }
+      include: { movieDetails: true, genre: true },
     });
   }
 
@@ -38,10 +38,10 @@ export class MoviesRepository extends BaseMediaRepository {
     return this.prisma.media.findMany({
       where: {
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { movieDetails: true, genre: true },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -50,7 +50,7 @@ export class MoviesRepository extends BaseMediaRepository {
       where: {
         id: id,
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { movieDetails: true, genre: true },
     });
@@ -64,18 +64,17 @@ export class MoviesRepository extends BaseMediaRepository {
       data: {
         ...mediaData,
         ...(genreId && {
-        genre: { connect: { id: genreId } }
-      }),
+          genre: { connect: { id: genreId } },
+        }),
         movieDetails: {
           update: {
             director,
             externalLink,
-            duration: duration
-          }
-        }
+            duration: duration,
+          },
+        },
       },
-      include: { movieDetails: true, genre: true }
+      include: { movieDetails: true, genre: true },
     });
   }
-
 }
