@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, Matches } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsDateString,
+  Matches,
+} from 'class-validator';
 
 export class CreateTreatmentDto {
   @IsString()
@@ -11,7 +17,9 @@ export class CreateTreatmentDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^\d{2}:\d{2}$/, { message: 'startTime deve estar no formato HH:MM' })
+  @Matches(/^\d{2}:\d{2}$/, {
+    message: 'startTime deve estar no formato HH:MM',
+  })
   startTime: string;
 
   @IsDateString()

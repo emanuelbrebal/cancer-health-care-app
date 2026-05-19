@@ -27,11 +27,11 @@ export class BooksRepository extends BaseMediaRepository {
             author: data.author,
             eduCapesLink: data.eduCapesLink,
             visitCount: 0,
-            page_count: data.page_count
-          }
-        }
+            page_count: data.page_count,
+          },
+        },
       },
-      include: { bookDetails: true, genre: true }
+      include: { bookDetails: true, genre: true },
     });
   }
 
@@ -39,10 +39,10 @@ export class BooksRepository extends BaseMediaRepository {
     return this.prisma.media.findMany({
       where: {
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { bookDetails: true, genre: true },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -51,7 +51,7 @@ export class BooksRepository extends BaseMediaRepository {
       where: {
         id: id,
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { bookDetails: true, genre: true },
     });
@@ -66,18 +66,17 @@ export class BooksRepository extends BaseMediaRepository {
       data: {
         ...mediaData,
         ...(genreId && {
-          genre: { connect: { id: genreId } }
+          genre: { connect: { id: genreId } },
         }),
         bookDetails: {
           update: {
             author,
             eduCapesLink,
-            page_count
-          }
-        }
+            page_count,
+          },
+        },
       },
-      include: { bookDetails: true, genre: true }
+      include: { bookDetails: true, genre: true },
     });
   }
-
 }

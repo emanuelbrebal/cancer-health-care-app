@@ -1,5 +1,5 @@
-import { BookResponseDto } from "../books/dto/book-response-dto";
-import { MediaMapper } from "./media-mapper";
+import { BookResponseDto } from '../books/dto/book-response-dto';
+import { MediaMapper } from './media-mapper';
 
 export class BookMapper {
   static toDto(media: any): BookResponseDto {

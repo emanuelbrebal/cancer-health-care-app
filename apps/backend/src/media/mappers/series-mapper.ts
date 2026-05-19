@@ -1,5 +1,5 @@
-import { SeriesResponseDto } from "../books/dto/series-response-dto";
-import { MediaMapper } from "./media-mapper";
+import { SeriesResponseDto } from '../books/dto/series-response-dto';
+import { MediaMapper } from './media-mapper';
 
 export class SeriesMapper {
   static toDto(media: any): SeriesResponseDto {

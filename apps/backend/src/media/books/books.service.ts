@@ -24,12 +24,12 @@ export class BooksService {
   }
 
   async update(id: string, updateBookDto: UpdateBookDto) {
-    await this.findOne(id); 
+    await this.findOne(id);
     return this.booksRepository.update(id, updateBookDto);
   }
 
   async remove(id: string) {
-    await this.findOne(id); 
+    await this.findOne(id);
     return this.booksRepository.delete(id);
   }
 }

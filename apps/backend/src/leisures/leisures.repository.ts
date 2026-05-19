@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LeisureRepository {
@@ -9,35 +9,35 @@ export class LeisureRepository {
     return this.prisma.leisureActivity.create({
       data: {
         ...data,
-        status: 'ACTIVE'
-      }
+        status: 'ACTIVE',
+      },
     });
   }
 
   async findAll() {
     return this.prisma.leisureActivity.findMany({
       where: { status: 'ACTIVE' },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   }
 
   async findOne(id: string) {
     return this.prisma.leisureActivity.findFirst({
-      where: { id, status: 'ACTIVE' }
+      where: { id, status: 'ACTIVE' },
     });
   }
 
   async update(id: string, data: any) {
     return this.prisma.leisureActivity.update({
       where: { id },
-      data
+      data,
     });
   }
 
   async delete(id: string) {
     return this.prisma.leisureActivity.update({
       where: { id },
-      data: { status: 'INACTIVE' }
+      data: { status: 'INACTIVE' },
     });
   }
 }

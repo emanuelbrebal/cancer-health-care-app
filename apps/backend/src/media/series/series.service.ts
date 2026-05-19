@@ -8,31 +8,34 @@ import { SeriesMapper } from '../mappers/series-mapper';
 export class SeriesService {
   constructor(private readonly seriesRepository: SeriesRepository) {}
 
-   async create(createSeriesDto: CreateSeriesDto) {
-      return this.seriesRepository.create(createSeriesDto);
-    }
-  
-    async findAll() {
-      return this.seriesRepository.findAll();
-    }
-  
-    async findOne(id: string) {
-      const serie = await this.seriesRepository.findOne(id);
-      if (!serie) {
-        throw new NotFoundException('Série não encontrada.');
-      }
-      return serie;
-    }
-  
-    async update(id: string, updateSeriesDto: UpdateSeriesDto) {
-      await this.findOne(id); 
-      const updatedSerie = await this.seriesRepository.update(id, updateSeriesDto);
+  async create(createSeriesDto: CreateSeriesDto) {
+    return this.seriesRepository.create(createSeriesDto);
+  }
 
-      return SeriesMapper.toDto(updatedSerie);
+  async findAll() {
+    return this.seriesRepository.findAll();
+  }
+
+  async findOne(id: string) {
+    const serie = await this.seriesRepository.findOne(id);
+    if (!serie) {
+      throw new NotFoundException('Série não encontrada.');
     }
-  
-    async remove(id: string) {
-      await this.findOne(id); 
-      return this.seriesRepository.delete(id);
-    }
+    return serie;
+  }
+
+  async update(id: string, updateSeriesDto: UpdateSeriesDto) {
+    await this.findOne(id);
+    const updatedSerie = await this.seriesRepository.update(
+      id,
+      updateSeriesDto,
+    );
+
+    return SeriesMapper.toDto(updatedSerie);
+  }
+
+  async remove(id: string) {
+    await this.findOne(id);
+    return this.seriesRepository.delete(id);
+  }
 }

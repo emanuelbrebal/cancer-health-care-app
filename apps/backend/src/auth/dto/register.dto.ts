@@ -1,4 +1,12 @@
-import { IsEmail, IsString, MinLength, IsEnum, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsIn,
+} from 'class-validator';
 import { UserRole } from '@prisma/client';
 
 const ALLOWED_ROLES: UserRole[] = [UserRole.PATIENT, UserRole.CAREGIVER];

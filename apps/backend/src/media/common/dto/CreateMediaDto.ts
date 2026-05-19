@@ -1,4 +1,12 @@
-import { IsString, IsBoolean, IsOptional, MaxLength, IsInt, IsUUID, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsOptional,
+  MaxLength,
+  IsInt,
+  IsUUID,
+  IsArray,
+} from 'class-validator';
 
 export class CreateMediaDto {
   @IsString()

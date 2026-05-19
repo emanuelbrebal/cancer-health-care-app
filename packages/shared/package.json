@@ -1,0 +1,12 @@
+{
+  "name": "@oncomente/shared",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "zustand": "^5.0.12"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}

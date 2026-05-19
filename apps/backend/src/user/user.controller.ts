@@ -1,4 +1,15 @@
-import { Controller, Get, Body, Patch, Param, Delete, UseGuards, Req, ForbiddenException, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  ForbiddenException,
+  Query,
+} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserMapper } from './user.mapper';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -23,7 +34,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: any) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: any,
+  ) {
     if (req.user.userId !== id && req.user.role !== 'ADMIN') {
       throw new ForbiddenException('Sem permissão para editar este usuário.');
     }

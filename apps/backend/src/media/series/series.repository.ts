@@ -6,7 +6,7 @@ import { UpdateSeriesDto } from './dto/update-series.dto';
 import { BaseMediaRepository } from '../common/base-media.repository';
 
 @Injectable()
-export class SeriesRepository extends BaseMediaRepository{
+export class SeriesRepository extends BaseMediaRepository {
   readonly type = 'SERIES';
   constructor(prisma: PrismaService) {
     super(prisma);
@@ -22,17 +22,17 @@ export class SeriesRepository extends BaseMediaRepository{
         isFree: data.isFree,
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
-        whereToFind: data.whereToFind,   
+        whereToFind: data.whereToFind,
         seriesDetails: {
           create: {
             showrunner: data.showrunner,
             externalLink: data.externalLink,
             episodes: data.episodes,
-            seasons: data.seasons
-          }
-        }
+            seasons: data.seasons,
+          },
+        },
       },
-      include: { seriesDetails: true, genre: true }
+      include: { seriesDetails: true, genre: true },
     });
   }
 
@@ -40,10 +40,10 @@ export class SeriesRepository extends BaseMediaRepository{
     return this.prisma.media.findMany({
       where: {
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { seriesDetails: true, genre: true },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -52,33 +52,39 @@ export class SeriesRepository extends BaseMediaRepository{
       where: {
         id: id,
         status: StatusEnum.ACTIVE,
-        type: this.type
+        type: this.type,
       },
       include: { seriesDetails: true, genre: true },
     });
   }
 
   async update(id: string, data: UpdateSeriesDto) {
-    const { showrunner, externalLink, seasons, episodes, genreId, ...mediaData } = data;
+    const {
+      showrunner,
+      externalLink,
+      seasons,
+      episodes,
+      genreId,
+      ...mediaData
+    } = data;
 
     return this.prisma.media.update({
       where: { id: id },
       data: {
         ...mediaData,
         ...(genreId && {
-        genre: { connect: { id: genreId } }
-      }),
+          genre: { connect: { id: genreId } },
+        }),
         seriesDetails: {
           update: {
             showrunner,
             externalLink,
             seasons,
-            episodes
-          }
-        }
+            episodes,
+          },
+        },
       },
-      include: { seriesDetails: true, genre: true }
+      include: { seriesDetails: true, genre: true },
     });
   }
-
 }

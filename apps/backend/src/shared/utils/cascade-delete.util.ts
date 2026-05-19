@@ -1,6 +1,6 @@
-import { PrismaService } from "src/prisma/prisma.service";
-import { StatusEnum } from "@prisma/client";
-import { Injectable } from "@nestjs/common";
+import { PrismaService } from 'src/prisma/prisma.service';
+import { StatusEnum } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 @Injectable()
 export class CascadeManager {
   constructor(private readonly prisma: PrismaService) {}
@@ -14,7 +14,7 @@ export class CascadeManager {
   async softDeleteCascade(
     parentModel: string,
     parentId: string,
-    children: { modelName: string; foreignKey: string }[]
+    children: { modelName: string; foreignKey: string }[],
   ) {
     const operations = [
       (this.prisma[parentModel] as any).update({
@@ -28,7 +28,7 @@ export class CascadeManager {
         (this.prisma[child.modelName] as any).updateMany({
           where: { [child.foreignKey]: parentId },
           data: { status: StatusEnum.DELETED },
-        })
+        }),
       );
     });
 

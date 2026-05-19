@@ -1,4 +1,4 @@
-import { MediaResponseDto } from "./media-response-dto";
+import { MediaResponseDto } from './media-response-dto';
 
 export class MovieResponseDto extends MediaResponseDto {
   director: string;
