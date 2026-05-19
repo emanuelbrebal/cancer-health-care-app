@@ -4,17 +4,16 @@
     "slug": "cancer-health-care-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.jpg",
+    "icon": "./assets/images/icon.png",
     "scheme": "cancerhealthcareapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "icon": "./assets/images/icon.jpg",
       "bundleIdentifier": "com.oncomente.app",
       "supportsTablet": true,
       "infoPlist": {
