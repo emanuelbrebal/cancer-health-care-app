@@ -19,7 +19,7 @@ import { globalStyles } from '@/src/styles/global';
 import { toastService } from '@/src/services/toastService';
 import { useAuthStore } from '@/src/store/useAuthStore';
 
-const DAILY_LIMIT = Infinity; // standby durante testes
+const DAILY_LIMIT = 30;
 const CHAT_LIMIT_KEY = 'oncomente:chat-daily-limit';
 const CHAT_HISTORY_KEY = 'oncomente:chat-history';
 const MAX_HISTORY = 20;
