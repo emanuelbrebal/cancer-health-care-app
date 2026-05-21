@@ -17,17 +17,22 @@ import api from '@/src/services/api';
 import mascotService, { MascotContext } from '@/src/services/mascotService';
 import { globalStyles } from '@/src/styles/global';
 import { toastService } from '@/src/services/toastService';
-import { useAuthStore } from '@/src/store/useAuthStore';
 
 const DAILY_LIMIT = 30;
 const CHAT_LIMIT_KEY = 'oncomente:chat-daily-limit';
 const CHAT_HISTORY_KEY = 'oncomente:chat-history';
 const MAX_HISTORY = 20;
+const HISTORY_CONTEXT_SIZE = 8;
 
-const WELCOME_MESSAGE = {
-  id: '1',
+let _msgCounter = 0;
+function nextMsgId() {
+  return `${Date.now()}-${++_msgCounter}`;
+}
+
+const WELCOME_MESSAGE: IMessage = {
+  id: 'welcome',
   text: 'Olá! Sou o mascote virtual do OncoMente 💜 Estou aqui para tirar dúvidas sobre oncologia e saúde mental e fazer seu dia mais leve. Como posso ajudar?',
-  sender: 'bot' as const,
+  sender: 'bot',
 };
 
 interface IMessage {
@@ -57,8 +62,6 @@ async function incrementTodayCount(): Promise<number> {
 }
 
 export default function MascotChat() {
-  const user = useAuthStore((s) => s.user);
-
   const [messages, setMessages] = useState<IMessage[]>([WELCOME_MESSAGE]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
@@ -106,7 +109,7 @@ export default function MascotChat() {
     const userMessageText = inputText.trim();
 
     const userMessage: IMessage = {
-      id: Date.now().toString(),
+      id: nextMsgId(),
       text: userMessageText,
       sender: 'user',
     };
@@ -116,13 +119,18 @@ export default function MascotChat() {
     setLoading(true);
 
     try {
+      const historyForApi = messages
+        .slice(0, HISTORY_CONTEXT_SIZE)
+        .reverse()
+        .map(m => ({ role: m.sender === 'user' ? 'user' : 'assistant', content: m.text }));
+
       const response = await api.post(
         '/ai-support/ask',
         {
           userQuestion: userMessageText,
-          userId: user?.id ?? '',
           treatmentData: userContext?.treatments ?? [],
           calendarData: userContext?.emotionSummary ?? [],
+          history: historyForApi,
         },
         { timeout: 30000 }
       );
@@ -130,7 +138,7 @@ export default function MascotChat() {
       const botText = response.data?.response ?? 'Sinto muito, recebi uma resposta vazia. Pode repetir? 💜';
 
       const botResponse: IMessage = {
-        id: (Date.now() + 1).toString(),
+        id: nextMsgId(),
         text: botText,
         sender: 'bot',
       };
@@ -151,7 +159,7 @@ export default function MascotChat() {
         toastService.error('Serviço indisponível. Tente novamente.');
       }
       const errorMsg: IMessage = {
-        id: Date.now().toString(),
+        id: nextMsgId(),
         text: 'Sinto muito, tive um probleminha técnico. Pode tentar me perguntar de novo? 💜',
         sender: 'bot',
       };
