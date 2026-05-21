@@ -23,7 +23,8 @@ export class MascotController {
     return this.aiService.generateResponse(req.user.userId, askAiDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ThrottlerGuard)
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Get('context')
   async getContext(@Request() req) {
     return this.aiService.getUserContext(req.user.userId);
