@@ -33,6 +33,7 @@ export default function RootLayout() {
         contentStyle: { backgroundColor: 'transparent' },
         animation: 'simple_push',
       }}>
+        <Stack.Screen name="index" options={{ animation: 'none' }} />
         <Stack.Screen name="(Home)" />
         <Stack.Screen name="(auth)" />
       </Stack>
