@@ -2,7 +2,14 @@
   "expo": {
     "name": "Oncomente",
     "slug": "cancer-health-care-app",
+    "owner": "emanuel.brebal",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a6e4bf75-40b0-4dec-b62f-f0992a3b70f0"
+    },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "cancerhealthcareapp",
@@ -36,6 +43,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-updates",
       "expo-secure-store",
       "expo-video",
       [
@@ -48,6 +56,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a6e4bf75-40b0-4dec-b62f-f0992a3b70f0"
+      }
     }
   }
 }
