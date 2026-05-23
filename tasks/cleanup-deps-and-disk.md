@@ -1,8 +1,9 @@
 # Cleanup: Disco + Dependências npm
 
 **Branch alvo:** `chore/cleanup-deps-and-disk`
-**Status:** Aguardando execução
+**Status:** Executado ✅
 **Gate:** Livre para execução
+**Commit:** `e551477`
 
 > **Pré-requisito:** Working tree tem mudanças não commitadas (`README.md` modificado, `INSTALL.md` untracked).
 > Antes de criar a branch, faça commit ou stash desses arquivos.
@@ -205,3 +206,66 @@ Descartadas:
 5. Criar `.easignore` para builds EAS mais limpos
 
 **Risco:** Baixo — todas as mudanças são reversíveis. `package-lock.json` será regenerado. Nenhuma lógica de negócio alterada.
+
+---
+
+## Stage de Execução — Entregáveis
+
+| # | Descrição | Caminho | Status |
+|---|-----------|---------|--------|
+| 1 | Branch criada e stash/pop de mudanças pendentes | `chore/cleanup-deps-and-disk` | ✅ |
+| 2 | npm cache global limpo | `%LOCALAPPDATA%\npm-cache` | ✅ |
+| 3 | Versão `expo-navigation-bar` corrigida (`^55.0.13` → `~4.0.9`) | `apps/mobile/package.json:29` | ✅ |
+| 4 | Versão `@nestjs/swagger` corrigida (`^11.4.2` → `^11.4.4`) + `lerna` removido de `dependencies` | `apps/backend/package.json` | ✅ |
+| 5 | Override `@nestjs/swagger: ^11.4.4` adicionado no root | `package.json` | ✅ |
+| 6 | Todos os `node_modules` e `package-lock.json` deletados | root + apps/* | ✅ |
+| 7 | Reinstalação limpa (`npm install`) | root | ✅ |
+| 8 | Validação `npm ls --depth=0` sem erros | root | ✅ |
+| 9 | 25 MP4s órfãos catalogados (13.72 MB) — não deletados | `apps/mobile/assets/` | ✅ |
+| 10 | `.easignore` criado para builds EAS | `apps/mobile/.easignore` | ✅ |
+
+**Desvios do plano:** nenhum.
+
+---
+
+## Stage de Execução — Validação
+
+| Critério de aceite | Resultado | Observação |
+|---|---|---|
+| `npm install` executa sem `npm error` | ✅ | Exit code 0, apenas `warn deprecated` normais |
+| `npm ls --depth=0` sem `invalid` / `UNMET DEPENDENCY` | ✅ | Zero erros; `@nestjs/swagger@11.4.4 overridden`, `expo-navigation-bar@4.0.9` resolvidos |
+| `@expo/ngrok` e `lottie-react-native` resolvidos | ✅ | Antes UNMET, agora instalados corretamente |
+| npm cache reduzido | ✅ | 9.8 GB → 662 MB (residual de metadados, normal) |
+| Assets MP4 órfãos identificados e documentados | ✅ | 25 arquivos / 13.72 MB catalogados abaixo |
+| `.easignore` criado | ✅ | `apps/mobile/.easignore` com 8 regras |
+
+### MP4s órfãos catalogados (aguardando decisão de remoção)
+
+| Arquivo | Tamanho |
+|---------|---------|
+| exercise-020.mp4 | 0.63 MB |
+| exercise-010.mp4 | 0.62 MB |
+| exercise-004.mp4 | 0.62 MB |
+| exercise-033.mp4 | 0.62 MB |
+| exercise-021.mp4 | 0.60 MB |
+| exercise-027.mp4 | 0.60 MB |
+| warmup-013.mp4 | 0.60 MB |
+| exercise-031.mp4 | 0.60 MB |
+| exercise-026.mp4 | 0.60 MB |
+| exercise-012.mp4 | 0.60 MB |
+| exercise-015.mp4 | 0.60 MB |
+| exercise-014.mp4 | 0.60 MB |
+| exercise-022.mp4 | 0.59 MB |
+| warmup-008.mp4 | 0.57 MB |
+| exercise-011.mp4 | 0.57 MB |
+| exercise-005.mp4 | 0.56 MB |
+| exercise-024.mp4 | 0.56 MB |
+| exercise-025.mp4 | 0.56 MB |
+| exercise-016.mp4 | 0.55 MB |
+| warmup-001.mp4 | 0.51 MB |
+| exercise-032.mp4 | 0.51 MB |
+| warmup-005.mp4 | 0.45 MB |
+| warmup-009.mp4 | 0.44 MB |
+| exercise-006.mp4 | 0.28 MB |
+| exercise-013.mp4 | 0.28 MB |
+| **Total** | **13.72 MB** |
