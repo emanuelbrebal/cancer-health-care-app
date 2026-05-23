@@ -1,0 +1,8 @@
+apps/backend/
+apps/web/
+apps/postman/
+.postman/
+node_modules/
+tasks/
+.claude/
+**/*.md
