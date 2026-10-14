@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, KeyboardAvoidingView, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
