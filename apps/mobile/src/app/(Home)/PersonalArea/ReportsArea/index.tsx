@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { globalStyles } from '@/src/styles/global';
 import { AccordionCard } from '@/src/components/ui/Accordion/AccordionCard';
 

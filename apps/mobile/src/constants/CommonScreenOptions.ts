@@ -1,4 +1,4 @@
-import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { NativeStackNavigationOptions } from 'expo-router';
 
 export const commonStackOptions: NativeStackNavigationOptions = {
     headerShown: true,

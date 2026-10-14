@@ -5,7 +5,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DateInput } from '@/src/components/ui/Inputs/DateInput';
 import { TimeInput } from '@/src/components/ui/Inputs/TimeInput';
 import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';

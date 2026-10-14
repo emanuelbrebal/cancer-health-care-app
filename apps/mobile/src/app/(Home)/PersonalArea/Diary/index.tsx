@@ -11,8 +11,8 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { useIsFocused } from 'expo-router';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import { Ionicons } from '@expo/vector-icons';
