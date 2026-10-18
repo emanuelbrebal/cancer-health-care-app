@@ -5,6 +5,11 @@ import { Feather } from '@expo/vector-icons';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import { InputStyles } from '@/src/styles/Inputs';
+import { color, space, typography } from '@/src/constants/tokens';
+
+const labelStyles = StyleSheet.create({
+  label: { ...typography.smallStrong, color: color.text.primary, marginBottom: space.xs },
+});
 
 interface ItemProps { label: string; value: string; }
 
@@ -15,13 +20,16 @@ interface SelectWithIconProps {
   value: string;
   onChange: (item: ItemProps) => void;
   error?: string;
+  /** Rótulo visível acima do campo. */
+  label?: string;
 }
 
-export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftName, value, onChange, error }: SelectWithIconProps) {
+export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftName, value, onChange, error, label }: SelectWithIconProps) {
   const [isFocus, setIsFocus] = useState(false);
 
   return (
     <View>
+      {label ? <Text style={labelStyles.label}>{label}</Text> : null}
       <View style={[styles.container, isFocus && styles.focused, error ? styles.containerError : null]}>
         <Feather name={iconLeftName} size={20} color={error ? Colors.status.error : Colors.lilacPrimary} style={{ marginRight: 10 }} />
 
@@ -35,6 +43,7 @@ export function SelectWithIcon({ data, placeholder = "Selecione...", iconLeftNam
           labelField="label"
           valueField="value"
           placeholder={placeholder}
+          accessibilityLabel={label ?? placeholder}
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}

@@ -35,7 +35,8 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
         iconLeftName="user"
         data={userRoleData}
         value={userRole}
-        placeholder="Tipo de usuário"
+        label="Você é"
+        placeholder="Paciente ou cuidador(a)"
         onChange={item => setUserRole(item.value)}
         error={errors.role}
       />
@@ -43,7 +44,8 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
       <InputWithIcon
         iconLeftName="user"
         onChangeText={setName}
-        placeholder="Nome completo"
+        label="Nome completo"
+        placeholder="Como está no documento"
         autoCapitalize="words"
         error={errors.name}
       />
@@ -51,7 +53,8 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
       <InputWithIcon
         iconLeftName="mail"
         onChangeText={setEmail}
-        placeholder='email@email.com'
+        label="E-mail"
+        placeholder='seuemail@exemplo.com'
         keyboardType="email-address"
         autoCapitalize="none"
         error={errors.email}
@@ -61,7 +64,8 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setPassword}
-        placeholder='senha (mín. 6 caracteres)'
+        label="Senha"
+        placeholder='Mínimo de 6 caracteres'
         error={errors.password}
       />
 
@@ -69,7 +73,8 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setConfirmPassword}
-        placeholder='confirmar senha'
+        label="Confirmar senha"
+        placeholder='Repita a senha'
         error={errors.confirmPassword}
       />
     </View>

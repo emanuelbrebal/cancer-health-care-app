@@ -11,6 +11,26 @@ const apiUrl = process.env.CAPTURE_API_URL ?? 'http://localhost:3000';
 const email = process.env.CAPTURE_EMAIL ?? 'paciente@oncomente.com';
 const password = process.env.CAPTURE_PASSWORD ?? 'onco123'; // senha do seed de desenvolvimento
 
+// Estados forçados pelo painel de simulação (store 'oncomente:ux-debug').
+const forced = (state) => ({
+  'oncomente:ux-debug': JSON.stringify({ state: { panelVisible: false, forced: state }, version: 0 }),
+});
+
+// Telas e estados que só existem na v2.
+const V2_SHOTS = [
+  { name: '14-diario-criar', url: '/PersonalArea/Diary/create', auth: true },
+  { name: '15-design-system', url: '/design-system', auth: false },
+  { name: '16-livro-detalhe', url: '/Oncology/Leisure/Books', auth: false, steps: [{ click: 'Além da Cura', wait: 2500 }] },
+  { name: '17-estado-carregando-lazer', url: '/Oncology/Leisure', auth: false, storage: forced('loading') },
+  { name: '18-estado-erro-livros', url: '/Oncology/Leisure/Books', auth: false, storage: forced('error') },
+  { name: '19-estado-vazio-diario', url: '/PersonalArea/Diary', auth: true, storage: forced('empty') },
+  { name: '20-estado-erro-chat', url: '/Mascot/Chat', auth: true, storage: forced('error') },
+  { name: '21-login-erro-validacao', url: '/LoginScreen', auth: false, steps: [{ click: 'Entrar', wait: 800 }] },
+  { name: '22-painel-estados', url: '/Oncology/Leisure', auth: false,
+    storage: { 'oncomente:ux-debug': JSON.stringify({ state: { panelVisible: true, forced: 'auto' }, version: 0 }) },
+    steps: [{ label: 'Painel de estados: Real', wait: 800 }] },
+];
+
 const shots = [
   { name: '01-inicio-modal', url: '/', auth: false },
   { name: '02-login', url: '/LoginScreen', auth: false },
@@ -25,6 +45,7 @@ const shots = [
   { name: '11-mascote-chat', url: '/Mascot/Chat', auth: true },
   { name: '12-perfil-hub', url: '/PersonalArea/Hub', auth: true },
   { name: '13-diario', url: '/PersonalArea/Diary', auth: true },
+  ...(process.env.CAPTURE_V2 ? V2_SHOTS : []),
   ...(process.env.CAPTURE_EXTRA ? JSON.parse(process.env.CAPTURE_EXTRA) : []),
 ];
 

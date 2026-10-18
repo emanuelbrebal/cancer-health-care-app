@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
 
 export interface UserProfileProps {
   name: string;
@@ -14,17 +15,17 @@ export function UserProfileRow({ name, email, imageUrl }: UserProfileProps) {
   const src = imageUrl ?? profilePicture;
 
   return (
-    <View style={styles.profileRow}>
+    <View style={styles.profileRow} accessible accessibilityLabel={`${name}, ${email}`}>
       {src ? (
-        <Image source={{ uri: src }} style={styles.profileImageSmall} />
+        <Image source={{ uri: src }} style={styles.avatar} />
       ) : (
-        <View style={[styles.profileImageSmall, styles.avatarPlaceholder]}>
-          <Feather name="user" size={24} color="#BBB" />
+        <View style={[styles.avatar, styles.avatarPlaceholder]}>
+          <Feather name="user" size={iconSize.lg} color={color.icon.brand} />
         </View>
       )}
       <View style={styles.profileInfo}>
-        <Text style={styles.profileNameSmall}>{name}</Text>
-        <Text style={styles.profileEmail}>{email}</Text>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.email}>{email}</Text>
       </View>
     </View>
   );
@@ -34,32 +35,31 @@ const styles = StyleSheet.create({
   profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%', // Garante 100% da largura
+    width: '100%',
+    gap: space.sm,
   },
-  profileImageSmall: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  avatar: {
+    width: touch.comfortable + space.xs,
+    height: touch.comfortable + space.xs,
+    borderRadius: radius.pill,
   },
   avatarPlaceholder: {
-    backgroundColor: '#F5F5F5',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
+    backgroundColor: color.bg.brandSubtle,
+    borderWidth: layout.borderHairline,
+    borderColor: color.border.default,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileInfo: {
     flex: 1,
-    marginLeft: 16,
+    gap: space.xxs,
   },
-  profileNameSmall: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+  name: {
+    ...typography.subtitle,
+    color: color.text.primary,
   },
-  profileEmail: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 2,
+  email: {
+    ...typography.small,
+    color: color.text.secondary,
   },
 });

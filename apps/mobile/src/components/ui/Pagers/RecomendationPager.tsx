@@ -1,15 +1,13 @@
-import { Colors } from '@/src/constants/Colors';
-import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
+import { color, radius, shadow, space, typography } from '@/src/constants/tokens';
+import { Pressable, StyleSheet, View, Text, FlatList, Image } from 'react-native';
 import PagerHeader from './PagerHeader';
 import { RecomendationType } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { router } from 'expo-router';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 
-const CARD_HEIGHT = 160;
-const CARD_WIDTH = 110;
-const SPACING = 10;
-const SNAP_INTERVAL = CARD_WIDTH + SPACING;
-const RADIUS = 12;
+const CARD_WIDTH = space.xl * 2 + space.sm;
+const CARD_HEIGHT = CARD_WIDTH * 1.45;
+const SNAP_INTERVAL = CARD_WIDTH + space.xs;
 
 interface RecomendationPagerProps {
     headerTitle?: string;
@@ -33,20 +31,22 @@ export default function RecomendationPager({ headerTitle, seeAllRoute, recomenda
                 snapToInterval={SNAP_INTERVAL}
                 snapToAlignment="start"
                 decelerationRate="fast"
-                contentContainerStyle={{ gap: SPACING, paddingHorizontal: 2 }}
+                contentContainerStyle={styles.listContent}
                 renderItem={({ item }) => {
                     const imageSource = item.image ?? getMediaImage(item.imagePath);
                     return (
-                        <TouchableOpacity
-                            style={styles.card}
+                        <Pressable
+                            style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
                             onPress={() => handlePressCard(item)}
-                            activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel={item.title}
+                            accessibilityHint="Abre os detalhes"
                         >
-                            <Image source={imageSource} style={styles.image} resizeMode="cover" />
+                            <Image source={imageSource} style={styles.image} resizeMode="cover" accessible={false} />
                             <View style={styles.titleOverlay}>
                                 <Text style={styles.titleText} numberOfLines={2}>{item.title}</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                     );
                 }}
             />
@@ -56,18 +56,24 @@ export default function RecomendationPager({ headerTitle, seeAllRoute, recomenda
 
 const styles = StyleSheet.create({
     container: {
-        paddingVertical: 5,
+        gap: space.xs,
+    },
+    listContent: {
+        gap: space.xs,
+        paddingHorizontal: space.xxs,
+        paddingBottom: space.xs,
     },
     card: {
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
-        borderRadius: RADIUS,
+        borderRadius: radius.md,
         overflow: 'hidden',
-        elevation: 3,
-        shadowColor: Colors.black,
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
-        shadowOffset: { width: 0, height: 2 },
+        backgroundColor: color.bg.brandMuted,
+        ...shadow.sm,
+    },
+    cardPressed: {
+        transform: [{ scale: 0.97 }],
+        opacity: 0.9,
     },
     image: {
         width: '100%',
@@ -79,15 +85,13 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: 'rgba(0,0,0,0.58)',
-        paddingHorizontal: 7,
-        paddingVertical: 6,
+        backgroundColor: color.bg.scrim,
+        paddingHorizontal: space.xs,
+        paddingVertical: space.xs,
     },
     titleText: {
-        fontFamily: 'Montserrat',
-        color: '#FFF',
-        fontSize: 10,
-        fontWeight: '600',
-        lineHeight: 14,
+        ...typography.caption,
+        fontFamily: typography.smallStrong.fontFamily,
+        color: color.text.onAction,
     },
 });

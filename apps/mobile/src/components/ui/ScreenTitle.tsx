@@ -1,19 +1,26 @@
-import { Colors } from "@/src/constants/Colors";
+import { color, space, typography } from "@/src/constants/tokens";
 import { Text, StyleSheet } from "react-native";
 
 interface ScreenTitleProps {
     title: string;
-    color?: any
+    color?: string;
 }
 
-export function ScreenTitle({ title, color }: ScreenTitleProps) {
-    return <Text style={[styles.screenTitle, {color: color? color : Colors.white}]}>{title}</Text>;
+export function ScreenTitle({ title, color: titleColor }: ScreenTitleProps) {
+    return (
+        <Text
+            accessibilityRole="header"
+            numberOfLines={1}
+            style={[styles.screenTitle, { color: titleColor ?? color.text.brand }]}
+        >
+            {title}
+        </Text>
+    );
 }
 
 const styles = StyleSheet.create({
     screenTitle: {
-        fontWeight: '600',
-        fontSize: 16,
-        paddingHorizontal: 15,
+        ...typography.bodyStrong,
+        paddingHorizontal: space.sm,
     }
 });
