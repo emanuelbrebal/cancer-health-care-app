@@ -1,76 +1,71 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-  TextInput,
-  RefreshControl,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { useIsFocused } from 'expo-router';
+import React, { useState, useCallback, useRef } from 'react';
+import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
-import { Colors } from '@/src/constants/Colors';
-import { globalStyles } from '@/src/styles/global';
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import diaryService, { DailyLog } from '@/src/services/diaryService';
 import { EMOTE_BY_ID } from '@/src/constants/Emotes';
 import { toastService } from '@/src/services/toastService';
+import { useAsyncResource } from '@/src/hooks/useAsyncResource';
+import { Button } from '@/src/components/ds/Button';
+import { Header } from '@/src/components/ds/Header';
+import { TextField } from '@/src/components/ds/TextField';
+import { ConfirmDialog } from '@/src/components/ds/ConfirmDialog';
+import { EmptyState, ErrorState, LoadingState } from '@/src/components/ds/States';
+import { color, iconSize, layout, radius, shadow, space, touch, typography } from '@/src/constants/tokens';
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+const calcStreak = (data: DailyLog[]): number => {
+  let s = 0;
+  const cursor = new Date();
+  for (const entry of data) {
+    const entryDate = entry.date?.slice(0, 10);
+    const cursorDate = cursor.toISOString().slice(0, 10);
+    if (entryDate === cursorDate) { s++; cursor.setDate(cursor.getDate() - 1); }
+    else break;
+  }
+  return s;
+};
+
+// 404 = usuário ainda sem registros (vazio, não erro).
+async function fetchEntries(): Promise<DailyLog[]> {
+  try {
+    return await diaryService.getAll();
+  } catch (e: any) {
+    if (e?.response?.status === 404) return [];
+    throw e;
+  }
+}
+
+const formatDate = (dateString: string) =>
+  new Date(dateString).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 
 export default function DiaryIndex() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
-  const isFocused = useIsFocused();
-  const [entries, setEntries] = useState<DailyLog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const { status, data, setData, reload, refresh, revalidate, refreshing } = useAsyncResource(fetchEntries, [], {
+    emptyValue: [] as DailyLog[],
+  });
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [contentMap, setContentMap] = useState<Record<string, string>>({});
-  const [streak, setStreak] = useState(0);
-  const [todayEntry, setTodayEntry] = useState<DailyLog | null>(null);
   const [search, setSearch] = useState('');
+  const [toDelete, setToDelete] = useState<DailyLog | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const calcStreak = (data: DailyLog[]): number => {
-    let s = 0;
-    const cursor = new Date();
-    for (const entry of data) {
-      const entryDate = entry.date?.slice(0, 10);
-      const cursorDate = cursor.toISOString().slice(0, 10);
-      if (entryDate === cursorDate) { s++; cursor.setDate(cursor.getDate() - 1); }
-      else break;
-    }
-    return s;
-  };
+  // Revalida ao voltar do formulário de criação/edição (sem piscar o skeleton).
+  const firstFocus = useRef(true);
+  useFocusEffect(useCallback(() => {
+    if (firstFocus.current) { firstFocus.current = false; return; }
+    setContentMap({});
+    revalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []));
 
-  const loadEntries = useCallback(async (silent = false) => {
-    try {
-      if (!silent) setLoading(true);
-      const data = await diaryService.getAll();
-      setEntries(data);
-      setContentMap({});
-      const today = new Date().toISOString().slice(0, 10);
-      setTodayEntry(data.find(e => e.date?.slice(0, 10) === today) ?? null);
-      setStreak(calcStreak(data));
-    } catch (e: any) {
-      if (e?.response?.status === 404) {
-        setEntries([]);
-        setContentMap({});
-      } else {
-        toastService.error('Não foi possível carregar o diário.');
-      }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  // recarrega toda vez que a tela ganha foco (volta de create/update)
-  useEffect(() => {
-    if (isFocused) loadEntries(entries.length > 0);
-  }, [isFocused]);
+  const entries = data ?? [];
+  const todayEntry = entries.find((e) => e.date?.slice(0, 10) === today()) ?? null;
+  const streak = calcStreak(entries);
+  const filtered = entries.filter((e) => e.title.toLowerCase().includes(search.trim().toLowerCase()));
 
   const handleExpand = async (id: string) => {
     const isExpanded = expandedId === id;
@@ -78,126 +73,99 @@ export default function DiaryIndex() {
     if (!isExpanded && contentMap[id] === undefined) {
       try {
         const entry = await diaryService.getOne(id);
-        setContentMap(prev => ({ ...prev, [id]: entry.content ?? '' }));
+        setContentMap((prev) => ({ ...prev, [id]: entry.content ?? '' }));
       } catch {
-        setContentMap(prev => ({ ...prev, [id]: '' }));
+        setContentMap((prev) => ({ ...prev, [id]: '' }));
       }
     }
   };
 
-  const handleDelete = (item: DailyLog) => {
-    Alert.alert(
-      'Excluir Registro',
-      `Deseja apagar permanentemente a anotação: "${item.title}"?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Excluir',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await diaryService.remove(item.id);
-              const updated = entries.filter(e => e.id !== item.id);
-              setEntries(updated);
-              if (expandedId === item.id) setExpandedId(null);
-              const today = new Date().toISOString().slice(0, 10);
-              setTodayEntry(updated.find(e => e.date?.slice(0, 10) === today) ?? null);
-              setStreak(calcStreak(updated));
-              toastService.success('Entrada removida do diário.');
-            } catch {
-              toastService.error('Não foi possível excluir a entrada.');
-            }
-          },
-        },
-      ]
-    );
+  // v1: Alert.alert (sem botões no web). Agora ConfirmDialog do DS.
+  const confirmDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
+    try {
+      await diaryService.remove(toDelete.id);
+      setData(entries.filter((e) => e.id !== toDelete.id));
+      if (expandedId === toDelete.id) setExpandedId(null);
+      toastService.success('Registro removido do diário.');
+      setToDelete(null);
+    } catch {
+      toastService.error('Não foi possível excluir. Tente de novo.');
+    } finally {
+      setDeleting(false);
+    }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
+  const goCreate = () => router.push('/PersonalArea/Diary/create');
 
-  if (loading) {
+  const header = (
+    <View style={styles.header}>
+      <Header level="screen" title="Meu diário" subtitle="Acompanhe sua jornada emocional." />
+
+      {status === 'success' && (
+        <>
+          {streak > 0 && (
+            <View style={styles.streakBadge} accessible accessibilityLabel={`Sequência de ${streak} ${streak === 1 ? 'dia' : 'dias'}`}>
+              <Feather name="award" size={iconSize.sm} color={color.text.brandStrong} />
+              <Text style={styles.streakText}>{streak} {streak === 1 ? 'dia seguido' : 'dias seguidos'}</Text>
+            </View>
+          )}
+          {todayEntry ? (
+            <View style={styles.todayBanner}>
+              <Feather name="check-circle" size={iconSize.md} color={color.text.success} />
+              <Text style={styles.todayBannerText}>Você já registrou o dia de hoje. Amanhã tem um novo espaço.</Text>
+            </View>
+          ) : (
+            <Button title="Registrar meu dia" icon="edit-3" onPress={goCreate} fullWidth />
+          )}
+          <TextField label="Buscar no diário" icon="search" placeholder="Título do registro" value={search} onChangeText={setSearch} />
+        </>
+      )}
+    </View>
+  );
+
+  if (status !== 'success') {
     return (
-      <View style={[globalStyles.startContainer, { paddingTop: headerHeight, justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      <View style={[styles.screen, { paddingTop: headerHeight }]}>
+        <View style={styles.list}>
+          {header}
+          {status === 'loading' && <LoadingState variant="list" count={4} label="Carregando seu diário" />}
+          {status === 'error' && (
+            // v1: toast de erro + "Nenhuma entrada ainda" ao mesmo tempo (P10).
+            <ErrorState
+              title="Não conseguimos abrir seu diário"
+              message="Seus registros estão seguros. Verifique a conexão e tente de novo."
+              onRetry={reload}
+            />
+          )}
+          {status === 'empty' && (
+            <EmptyState
+              icon="book-open"
+              title="Seu diário está em branco"
+              message="Registrar como você se sente ajuda a perceber padrões e conversar com sua equipe de saúde."
+              actionLabel="Escrever o primeiro registro"
+              onAction={goCreate}
+            />
+          )}
+        </View>
       </View>
     );
   }
 
   return (
-    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
-
-      <View style={[globalStyles.betweenContainer, styles.headerPadding]}>
-        <View style={{ flex: 1 }}>
-          <Text style={[globalStyles.textPrimary, { color: Colors.purplePrimary }]}>Meus diários</Text>
-          <Text style={globalStyles.textSecondary}>Acompanhe sua jornada emocional</Text>
-        </View>
-
-        <View style={styles.headerRight}>
-          {streak > 0 && (
-            <View style={styles.streakBadge}>
-              <Text style={styles.streakText}>📓 {streak} {streak === 1 ? 'dia' : 'dias'}</Text>
-            </View>
-          )}
-          {!todayEntry && (
-            <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: Colors.purplePrimary }]}
-              onPress={() => router.push('/PersonalArea/Diary/create')}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="add" size={28} color="#FFF" />
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
-      {todayEntry && (
-        <View style={styles.todayBanner}>
-          <Text style={styles.todayBannerText}>🎉 Você já fez seu diário hoje! Amanhã um novo espaço estará disponível.</Text>
-        </View>
-      )}
-
-      <View style={styles.searchWrapper}>
-        <Ionicons name="search-outline" size={18} color="#AAA" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar no diário..."
-          placeholderTextColor="#BBB"
-          value={search}
-          onChangeText={setSearch}
-          returnKeyType="search"
-        />
-        {search.length > 0 && (
-          <TouchableOpacity onPress={() => setSearch('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="close-circle" size={18} color="#BBB" />
-          </TouchableOpacity>
-        )}
-      </View>
-
+    <View style={[styles.screen, { paddingTop: headerHeight }]}>
       <FlatList
-        data={entries.filter(e => e.title.toLowerCase().includes(search.toLowerCase()))}
+        data={filtered}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listPadding}
+        ListHeaderComponent={header}
+        contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => { setRefreshing(true); loadEntries(true); }}
-            colors={[Colors.purplePrimary]}
-            tintColor={Colors.purplePrimary}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} colors={[color.action.primary]} tintColor={color.action.primary} />
         }
         ListEmptyComponent={
-          <View style={{ alignItems: 'center', marginTop: 60 }}>
-            <Text style={{ fontFamily: 'Montserrat', color: Colors.text.secondary, fontSize: 14 }}>
-              Nenhuma entrada ainda. Comece registrando seu dia!
-            </Text>
-          </View>
+          <EmptyState icon="search" title="Nenhum registro encontrado" message={`Nada com "${search}" no título.`} />
         }
         renderItem={({ item }) => {
           const isExpanded = expandedId === item.id;
@@ -207,59 +175,48 @@ export default function DiaryIndex() {
 
           return (
             <View style={[styles.card, isExpanded && styles.cardActive]}>
-              <TouchableOpacity
-                style={styles.cardMainContent}
+              <Pressable
+                style={({ pressed }) => [styles.cardMain, pressed && styles.cardPressed]}
                 onPress={() => handleExpand(item.id)}
-                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: isExpanded }}
+                accessibilityLabel={`${item.title}, ${formatDate(item.date)}, humor ${emoteInfo.label}`}
               >
-                <View style={styles.rowAlign}>
-                  <View style={[styles.emojiBadge, { backgroundColor: emoteInfo.color }]}>
-                    <Text style={styles.emoteEmoji}>{emoteInfo.emoji}</Text>
-                  </View>
-
-                  <View style={styles.infoColumn}>
-                    <Text style={[globalStyles.title, { marginBottom: 2, fontSize: 16 }]} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.dateText}>
-                      {formatDate(item.date)}
-                    </Text>
-                  </View>
+                <View style={[styles.emojiBadge, { backgroundColor: emoteInfo.color }]}>
+                  <Text style={styles.emoteEmoji}>{emoteInfo.emoji}</Text>
                 </View>
-
-                <Ionicons
+                <View style={styles.infoColumn}>
+                  <Text style={styles.cardTitle} numberOfLines={1}>{item.title}</Text>
+                  <Text style={styles.dateText}>{formatDate(item.date)} · {emoteInfo.label}</Text>
+                </View>
+                <Feather
                   name={isExpanded ? 'chevron-up' : 'chevron-down'}
-                  size={20}
-                  color={isExpanded ? Colors.purplePrimary : '#CCC'}
+                  size={iconSize.md}
+                  color={isExpanded ? color.text.link : color.icon.muted}
                 />
-              </TouchableOpacity>
+              </Pressable>
 
               {isExpanded && (
                 <View style={styles.expandedArea}>
-                  <View style={styles.contentContainer}>
-                    <Text style={styles.diaryFullText}>
-                      {content === undefined ? '...' : content || '(sem conteúdo)'}
-                    </Text>
-                  </View>
-
-                  <View style={styles.actionMenu}>
-                    <TouchableOpacity
-                      style={styles.menuItem}
+                  <Text style={styles.diaryFullText}>
+                    {content === undefined ? 'Carregando…' : content || '(sem texto)'}
+                  </Text>
+                  <View style={styles.actionRow}>
+                    <Button
+                      title="Editar"
+                      icon="edit-2"
+                      variant="secondary"
                       onPress={() => router.push({ pathname: '/PersonalArea/Diary/update', params: { id: item.id } })}
-                    >
-                      <Ionicons name="create-outline" size={20} color={Colors.purplePrimary} />
-                      <Text style={styles.menuItemText}>Editar relato</Text>
-                    </TouchableOpacity>
-
-                    <View style={styles.divider} />
-
-                    <TouchableOpacity
-                      style={styles.menuItem}
-                      onPress={() => handleDelete(item)}
-                    >
-                      <Ionicons name="trash-outline" size={20} color={Colors.status.error} />
-                      <Text style={[styles.menuItemText, { color: Colors.status.error }]}>Remover do diário</Text>
-                    </TouchableOpacity>
+                      style={styles.actionButton}
+                    />
+                    <Button
+                      title="Excluir"
+                      icon="trash-2"
+                      variant="ghost"
+                      onPress={() => setToDelete(item)}
+                      accessibilityLabel={`Excluir registro ${item.title}`}
+                      style={styles.actionButton}
+                    />
                   </View>
                 </View>
               )}
@@ -267,178 +224,121 @@ export default function DiaryIndex() {
           );
         }}
       />
+
+      <ConfirmDialog
+        visible={!!toDelete}
+        title="Excluir este registro?"
+        message={toDelete ? `"${toDelete.title}" será apagado permanentemente. Essa ação não pode ser desfeita.` : ''}
+        confirmLabel="Excluir registro"
+        cancelLabel="Manter"
+        destructive
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setToDelete(null)}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerPadding: {
-    flex: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    marginBottom: 10,
-  },
-  listPadding: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-  },
-  addButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  card: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-  },
-  cardActive: {
-    borderColor: Colors.purplePrimary + '40',
-    borderWidth: 1.5,
-  },
-  cardMainContent: {
-    flexDirection: 'row',
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  rowAlign: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  screen: {
     flex: 1,
   },
+  header: {
+    gap: space.sm,
+    marginBottom: space.sm,
+  },
+  list: {
+    paddingHorizontal: space.sm,
+    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    gap: space.xs,
+  },
+  streakBadge: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xxs,
+    backgroundColor: color.bg.brandMuted,
+    borderRadius: radius.pill,
+    paddingHorizontal: space.sm,
+    paddingVertical: space.xxs,
+  },
+  streakText: {
+    ...typography.smallStrong,
+    color: color.text.brandStrong,
+  },
+  todayBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    backgroundColor: color.bg.success,
+    borderRadius: radius.md,
+    padding: space.sm,
+  },
+  todayBannerText: {
+    ...typography.small,
+    color: color.text.success,
+    flex: 1,
+  },
+  card: {
+    backgroundColor: color.bg.surface,
+    borderRadius: radius.lg,
+    borderWidth: layout.borderHairline,
+    borderColor: color.border.default,
+    overflow: 'hidden',
+    ...shadow.sm,
+  },
+  cardActive: {
+    borderColor: color.border.brand,
+  },
+  cardMain: {
+    minHeight: touch.comfortable + space.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    padding: space.sm,
+  },
+  cardPressed: {
+    backgroundColor: color.bg.brandSubtle,
+  },
   emojiBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: touch.comfortable,
+    height: touch.comfortable,
+    borderRadius: radius.md,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+  },
+  emoteEmoji: {
+    fontSize: typography.title.fontSize,
   },
   infoColumn: {
     flex: 1,
-    justifyContent: 'center',
+    gap: space.xxs,
+  },
+  cardTitle: {
+    ...typography.bodyStrong,
+    color: color.text.primary,
   },
   dateText: {
-    fontFamily: 'Montserrat',
-    fontSize: 12,
-    color: Colors.text.secondary,
-    marginTop: -4,
+    ...typography.small,
+    color: color.text.secondary,
   },
   expandedArea: {
-    backgroundColor: '#FAFAFA',
-    borderTopWidth: 1,
-    borderColor: '#F0F0F0',
-  },
-  contentContainer: {
-    padding: 16,
-    backgroundColor: '#FFF',
-    margin: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#EEE',
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.purplePrimary,
+    padding: space.sm,
+    gap: space.sm,
+    borderTopWidth: layout.borderHairline,
+    borderColor: color.border.default,
+    backgroundColor: color.bg.brandSubtle,
   },
   diaryFullText: {
-    fontFamily: 'Montserrat',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#444',
+    ...typography.body,
+    color: color.text.primary,
   },
-  actionMenu: {
-    paddingVertical: 4,
-  },
-  menuItem: {
+  actionRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    gap: space.xs,
   },
-  menuItemText: {
-    fontFamily: 'Montserrat',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 12,
-    color: '#444',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#F0F0F0',
-    marginHorizontal: 16,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  streakBadge: {
-    backgroundColor: '#EDE7F6',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: '#D1C4E9',
-  },
-  streakText: {
-    fontFamily: 'Montserrat',
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#5C4B9B',
-  },
-  todayBanner: {
-    marginHorizontal: 20,
-    marginBottom: 12,
-    backgroundColor: '#F0FFF4',
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#B2DFDB',
-  },
-  todayBannerText: {
-    fontFamily: 'Montserrat',
-    fontSize: 13,
-    color: '#2E7D32',
-    textAlign: 'center',
-  },
-  searchWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 14,
-    marginHorizontal: 20,
-    marginBottom: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: '#EEE',
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
+  actionButton: {
     flex: 1,
-    fontFamily: 'Montserrat',
-    fontSize: 14,
-    color: '#333',
-    padding: 0,
-  },
-  emoteEmoji: {
-    fontSize: 26,
   },
 });

@@ -1,12 +1,13 @@
 import AuthLayout from '@/src/components/layouts/AuthLayout/AuthLayout';
 import { LoginForm, LoginFormErrors } from '@/src/components/auth/LoginForm';
-import { ButtonOutline } from '@/src/components/ui/Buttons/ButtonOutline';
-import { ButtonPrimary } from '@/src/components/ui/Buttons/ButtonPrimary';
+import { Button } from '@/src/components/ds/Button';
+import { toastService } from '@/src/services/toastService';
+import { space, touch } from '@/src/constants/tokens';
 import { globalStyles } from '@/src/styles/global';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { authService } from '@/src/services/auth';
 import { useAuthStore } from '@/src/store/useAuthStore';
 
@@ -34,6 +35,8 @@ export default function LoginScreen() {
     try {
       const data = await authService.login(email, password);
       useAuthStore.getState().login(data.access_token, data.user);
+      const firstName = data.user?.name?.split(' ')[0];
+      toastService.success(firstName ? `Bem-vindo(a) de volta, ${firstName}!` : 'Login realizado!');
       router.replace('/(Home)');
     } catch (err: any) {
       const status = err.response?.status;
@@ -53,24 +56,43 @@ export default function LoginScreen() {
   return (
     <AuthLayout
       textPrimary="Bem-vindo(a)"
-      textSecondary="Insira suas credenciais de acesso e faça login no sistema."
+      textSecondary="Entre com seu e-mail e senha para acessar o Mascote e a sua Área Pessoal."
     >
       <LoginForm
+        onSubmit={handleLogin}
         setEmail={(v) => { setEmail(v); setErrors((e) => ({ ...e, email: undefined })); }}
         setPassword={(v) => { setPassword(v); setErrors((e) => ({ ...e, password: undefined })); }}
         errors={errors}
       />
 
-      <View style={globalStyles.buttonContainer}>
-        <ButtonOutline title='Cadastrar' action={redirectRegister} loading={isLoading} />
-        <ButtonPrimary title='Entrar' action={handleLogin} loading={isLoading} />
+      <View style={styles.actions}>
+        <Button title="Entrar" onPress={handleLogin} loading={isLoading} fullWidth />
+        <Button title="Criar conta" variant="secondary" onPress={redirectRegister} disabled={isLoading} fullWidth />
       </View>
 
-      <Link href="/(auth)/ResetPassword">
-        <Text style={[globalStyles.textHyperlink, { marginTop: 40 }]}>Esqueci minha senha</Text>
-      </Link>
+      <Pressable
+        onPress={() => router.push('/(auth)/ResetPassword')}
+        accessibilityRole="link"
+        style={styles.forgot}
+      >
+        <Text style={globalStyles.textHyperlink}>Esqueci minha senha</Text>
+      </Pressable>
 
       <StatusBar style="auto" />
     </AuthLayout>
   );
 }
+
+const styles = StyleSheet.create({
+  actions: {
+    gap: space.sm,
+    marginTop: space.md,
+    paddingHorizontal: space.xs,
+  },
+  forgot: {
+    minHeight: touch.min,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: space.sm,
+  },
+});

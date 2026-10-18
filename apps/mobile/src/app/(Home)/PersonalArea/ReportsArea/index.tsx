@@ -14,7 +14,7 @@ const DISCRIMINATION_TYPES = [
 
 const PREVENTION_TIPS = [
   { id: '1', title: 'Documente tudo', description: 'Guarde laudos, receitas, conversas por escrito (e-mail, WhatsApp), protocolos de atendimento e qualquer negativa recebida. Registros são sua maior proteção.' },
-  { id: '2', title: 'Conheça seus direitos', description: 'Leia a aba "Benefícios Legais" neste aplicativo. Saber o que a lei garante é o primeiro passo para defender seus direitos.' },
+  { id: '2', title: 'Conheça seus direitos', description: 'Leia "Direitos do paciente", na área de Oncologia. Saber o que a lei garante é o primeiro passo para defender seus direitos.' },
   { id: '3', title: 'Não aceite negativas verbais', description: 'Exija sempre respostas por escrito — de planos de saúde, empregadores e hospitais. Negativas verbais são difíceis de contestar.' },
   { id: '4', title: 'Busque apoio', description: 'Grupos de pacientes, assistentes sociais e o CAVIDA em Maceió podem orientar e apoiar antes mesmo de uma denúncia formal.' },
 ];

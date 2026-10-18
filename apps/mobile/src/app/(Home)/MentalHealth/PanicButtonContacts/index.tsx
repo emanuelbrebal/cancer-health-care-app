@@ -1,63 +1,56 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import EmergencyContacts from '@/src/components/ui/Buttons/Overlay/PanicButton/EmergencyContacts';
 import { EmergencyContactsData } from '@/src/constants/Mocks/mockEmergencyContacts';
-import { globalStyles } from '@/src/styles/global';
+import { Header } from '@/src/components/ds/Header';
+import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
 
 export default function PanicButtonContacts() {
+  const headerHeight = useHeaderHeight();
+
   return (
-    <ScrollView contentContainerStyle={globalStyles.scrollContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      showsVerticalScrollIndicator={false}
+    >
+      <Header
+        level="screen"
+        title="Você não está sozinho(a)"
+        subtitle="Toque em um serviço para ver o que ele faz e ligar na hora. Todos são gratuitos."
+      />
 
-      <Text style={styles.sectionTitle}>Canais de atendimento</Text>
-      <Text style={styles.sectionSubtitle}>
-        Toque em um contato para ver mais informações e ligar diretamente.
-      </Text>
-
-      <View style={styles.alertBanner}>
-        <Feather name="alert-triangle" size={22} color="#B45309" />
+      <View style={styles.alertBanner} accessibilityRole="alert">
+        <Feather name="alert-triangle" size={iconSize.md} color={color.text.warning} />
         <Text style={styles.alertText}>
-          Utilize estes canais apenas em situações de verdadeira urgência. Trote é crime.
+          Em risco de vida, ligue 192 (SAMU). Use estes canais em situações de urgência.
         </Text>
       </View>
+
       <EmergencyContacts data={EmergencyContactsData} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 60,
+  content: {
+    paddingHorizontal: space.sm,
+    paddingBottom: layout.tabBarHeight + space.md,
+    gap: space.sm,
   },
   alertBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
-    backgroundColor: '#FEF3C7',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#FCD34D',
-    padding: 16,
-    marginBottom: 28,
+    gap: space.xs,
+    backgroundColor: color.bg.warning,
+    borderRadius: radius.md,
+    borderWidth: layout.borderHairline,
+    borderColor: color.text.warning,
+    padding: space.sm,
   },
   alertText: {
     flex: 1,
-    fontSize: 14,
-    color: '#92400E',
-    lineHeight: 20,
-    fontWeight: '500',
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 6,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 20,
-    lineHeight: 20,
+    ...typography.smallStrong,
+    color: color.text.warning,
   },
 });

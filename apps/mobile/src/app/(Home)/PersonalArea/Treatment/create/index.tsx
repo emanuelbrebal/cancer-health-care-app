@@ -180,7 +180,7 @@ export default function CreateTreatment() {
               value={nomeMedico}
               onChangeText={setNomeMedico}
             />
-            <PhoneInput value={contatoMedico} onChangeText={setContatoMedico} />
+            <PhoneInput label="Telefone do médico" value={contatoMedico} onChangeText={setContatoMedico} />
           </View>
 
           <View style={styles.inputWrapper}>

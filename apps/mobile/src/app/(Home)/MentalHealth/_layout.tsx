@@ -1,10 +1,9 @@
 import CommonAreasLayout from "@/src/components/layouts/CommonAreasLayout/CommonAreasLayout";
-import { Stack, usePathname } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
 import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
 import { Colors } from "@/src/constants/Colors";
 import { ScreenConfig } from "@/src/types/ScreenConfig";
-import { PanicButton } from "@/src/components/ui/Buttons/Overlay/PanicButton/PanicButton";
 import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 

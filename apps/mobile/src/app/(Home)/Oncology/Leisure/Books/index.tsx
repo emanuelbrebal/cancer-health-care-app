@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View, Text, FlatList, TouchableOpacity, Image,
-  StyleSheet, ActivityIndicator, Alert,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, Pressable, Image, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
-import { Colors } from '@/src/constants/Colors';
-import { globalStyles } from '@/src/styles/global';
 import leisureService, { Book } from '@/src/services/leisureService';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 import SearchBar from '@/src/components/ui/SearchBar';
+import { useAsyncResource } from '@/src/hooks/useAsyncResource';
+import { EmptyState, ErrorState, LoadingState } from '@/src/components/ds/States';
+import { Button } from '@/src/components/ds/Button';
+import { color, layout, radius, shadow, space, typography } from '@/src/constants/tokens';
 
 export default function BooksListScreen() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    leisureService.getBooks()
-      .then(setBooks)
-      .catch(() => Alert.alert('Erro', 'Não foi possível carregar os livros.'))
-      .finally(() => setLoading(false));
-  }, []);
+  // v1: Alert bloqueante + "Nenhum livro disponível" na falha de rede (P09).
+  const { status, data, reload, refresh, refreshing } = useAsyncResource(() => leisureService.getBooks(), [], {
+    emptyValue: [] as Book[],
+  });
 
   const handlePress = (item: Book) => {
     router.push({
@@ -41,44 +35,72 @@ export default function BooksListScreen() {
     });
   };
 
-  if (loading) {
+  const books = data ?? [];
+  const q = query.trim().toLowerCase();
+  const filtered = q
+    ? books.filter((b) => b.title.toLowerCase().includes(q) || (b.author ?? '').toLowerCase().includes(q))
+    : books;
+
+  const header = (
+    <View style={styles.header}>
+      <SearchBar label="Buscar livros" value={query} onChangeText={setQuery} placeholder="Título ou autor" />
+      {status === 'success' && (
+        <Text style={styles.count} accessibilityLiveRegion="polite">
+          {q ? `${filtered.length} de ${books.length} livros` : `${books.length} livros recomendados`}
+        </Text>
+      )}
+    </View>
+  );
+
+  if (status !== 'success') {
     return (
-      <View style={[globalStyles.startContainer, { paddingTop: headerHeight, justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      <View style={[styles.screen, { paddingTop: headerHeight }]}>
+        <View style={styles.list}>
+          {header}
+          {status === 'loading' && <LoadingState variant="grid" count={4} label="Carregando livros" />}
+          {status === 'error' && <ErrorState title="Não conseguimos carregar os livros" onRetry={reload} />}
+          {status === 'empty' && (
+            <EmptyState icon="book" title="Nenhum livro por aqui ainda" message="Novas recomendações chegam em breve." />
+          )}
+        </View>
       </View>
     );
   }
 
-  const filtered = query.trim()
-    ? books.filter((b) => {
-        const q = query.toLowerCase();
-        return b.title.toLowerCase().includes(q) || (b.author ?? '').toLowerCase().includes(q);
-      })
-    : books;
-
   return (
-    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
+    <View style={[styles.screen, { paddingTop: headerHeight }]}>
       <FlatList
         data={filtered}
-        ListHeaderComponent={
-          <SearchBar value={query} onChangeText={setQuery} placeholder="Buscar por título ou autor..." />
-        }
+        ListHeaderComponent={header}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={color.action.primary} />}
         ListEmptyComponent={
-          <Text style={styles.empty}>Nenhum livro disponível no momento.</Text>
+          <View style={styles.searchEmpty}>
+            <EmptyState
+              icon="search"
+              title="Nenhum livro encontrado"
+              message={`Não achamos resultados para "${query}". Tente outro título ou autor.`}
+            />
+            <Button title="Limpar busca" variant="secondary" onPress={() => setQuery('')} />
+          </View>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => handlePress(item)} activeOpacity={0.8}>
-            <Image source={getMediaImage(item.imagePath)} style={styles.cover} resizeMode="cover" />
+          <Pressable
+            style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+            onPress={() => handlePress(item)}
+            accessibilityRole="button"
+            accessibilityLabel={item.author ? `${item.title}, de ${item.author}` : item.title}
+          >
+            <Image source={getMediaImage(item.imagePath)} style={styles.cover} resizeMode="cover" accessible={false} />
             <View style={styles.cardText}>
               <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
               {!!item.author && <Text style={styles.author} numberOfLines={1}>{item.author}</Text>}
             </View>
-          </TouchableOpacity>
+          </Pressable>
         )}
       />
     </View>
@@ -86,37 +108,56 @@ export default function BooksListScreen() {
 }
 
 const styles = StyleSheet.create({
-  list: { padding: 16, paddingBottom: 40 },
-  row: { justifyContent: 'space-between', marginBottom: 16 },
+  screen: {
+    flex: 1,
+  },
+  header: {
+    gap: space.xs,
+    marginBottom: space.sm,
+  },
+  count: {
+    ...typography.small,
+    color: color.text.secondary,
+  },
+  list: {
+    paddingHorizontal: space.sm,
+    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    gap: space.sm,
+  },
+  row: {
+    justifyContent: 'space-between',
+  },
+  searchEmpty: {
+    gap: space.sm,
+  },
   card: {
     width: '48%',
-    backgroundColor: '#FFF',
-    borderRadius: 14,
+    backgroundColor: color.bg.surface,
+    borderRadius: radius.lg,
+    borderWidth: layout.borderHairline,
+    borderColor: color.border.default,
     overflow: 'hidden',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
+    ...shadow.sm,
   },
-  cover: { width: '100%', height: 180 },
-  cardText: { padding: 10 },
+  cardPressed: {
+    borderColor: color.border.brand,
+    transform: [{ scale: 0.98 }],
+  },
+  cover: {
+    width: '100%',
+    height: layout.mascotMd * 2,
+    backgroundColor: color.bg.brandMuted,
+  },
+  cardText: {
+    padding: space.xs,
+    gap: space.xxs,
+  },
   title: {
-    fontFamily: 'Montserrat',
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#333',
-    marginBottom: 4,
+    ...typography.smallStrong,
+    color: color.text.primary,
   },
   author: {
-    fontFamily: 'Montserrat',
-    fontSize: 11,
-    color: Colors.text.secondary,
-  },
-  empty: {
-    fontFamily: 'Montserrat',
-    textAlign: 'center',
-    marginTop: 60,
-    color: Colors.text.secondary,
+    ...typography.caption,
+    color: color.text.secondary,
   },
 });

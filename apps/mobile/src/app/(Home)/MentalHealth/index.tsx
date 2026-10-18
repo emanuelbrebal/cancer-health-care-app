@@ -1,87 +1,56 @@
+import { Header } from '@/src/components/ds/Header';
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
+import { layout, space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { globalStyles } from '@/src/styles/global';
-import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { useHeaderHeight } from 'expo-router/react-navigation';
+import { ScrollView, StyleSheet } from 'react-native';
 import { UserRole } from '../../../../../../packages/shared/types/user';
-import { PanicButton } from '@/src/components/ui/Buttons/Overlay/PanicButton/PanicButton';
+
+const topicItems: CardItem[] = [
+  { id: 'breathing', title: 'Exercícios de respiração', subtitle: 'Acalme a ansiedade em poucos minutos', featherIcon: 'wind', route: '/MentalHealth/BreathingExercises' },
+  { id: 'meditation', title: 'Meditação guiada', subtitle: 'Vídeos curtos para relaxar', featherIcon: 'headphones', route: '/MentalHealth/Meditation' },
+  { id: 'support', title: 'Apoio psicológico', subtitle: 'Onde buscar atendimento gratuito', featherIcon: 'users', route: '/MentalHealth/PsychologicalSupport' },
+];
+
+const patientItem: CardItem = {
+  id: 'patient', title: 'Para pacientes', subtitle: 'Mensagens de força para o seu dia', featherIcon: 'heart', route: '/MentalHealth/Motivational/Patient',
+};
+const caregiverItem: CardItem = {
+  id: 'caregiver', title: 'Para cuidadores', subtitle: 'Cuidar de quem cuida', featherIcon: 'user-check', route: '/MentalHealth/Motivational/CaringTheCaregiver',
+};
 
 export default function HomeMentalHealth() {
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const headerHeight = useHeaderHeight();
 
-  const mentalHealthAreaNavigationItems: CardItem[] = [
-    { id: '1', title: 'Meditação guiada', icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'), route: '/MentalHealth/Meditation' },
-    {
-      id: '2',
-      title: 'Exercícios de respiração',
-      icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
-      route: '/MentalHealth/BreathingExercises'
-    },
-    {
-      id: '3',
-      title: 'Apoio psicológico',
-      icon: require('@assets/images/Icons/OncologyIcons/Navigation/GuidedMeditation.png'),
-      route: '/MentalHealth/PsychologicalSupport'
-    },
-  ];
-
-  const motivationalNavigationItems: CardItem[] = user === null
-    ? [
-        {
-          id: '1',
-          title: 'Motivação Diária',
-          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'),
-          route: '/MentalHealth/Motivational/Patient',
-        },
-      ]
-    : user.role === UserRole.CAREGIVER
-    ? [
-        {
-          id: '2',
-          title: 'Cuidadores',
-          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringTheCaregiver.png'),
-          route: '/MentalHealth/Motivational/CaringTheCaregiver',
-        },
-      ]
-    : [
-        {
-          id: '1',
-          title: 'Motivação Diária',
-          icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'),
-          route: '/MentalHealth/Motivational/Patient',
-        },
-      ];
+  // v1 escondia o conteúdo de cuidadores de quem não tinha login (P13).
+  // Agora os dois ficam visíveis; o do papel do usuário aparece primeiro.
+  const motivationalItems = user?.role === UserRole.CAREGIVER
+    ? [caregiverItem, patientItem]
+    : [patientItem, caregiverItem];
 
   return (
-    <SafeAreaView style={globalStyles.startContainer}>
-      <HorizontalBanner
-        imagePath={require('@assets/images/Banners/mentalHealthAreaBanner.png')}
-      />
-      <View style={globalStyles.titleContainer}>
-        <Text style={globalStyles.title}>
-          Área Motivacional
-        </Text>
+    <ScrollView
+      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      showsVerticalScrollIndicator={false}
+    >
+      <HorizontalBanner imagePath={require('@assets/images/Banners/mentalHealthAreaBanner.png')} />
 
-        <NavigationGrid
-          data={motivationalNavigationItems}
-          singleElement
-        />
-      </View>
+      <Header title="Motivação" subtitle="Palavras de apoio para pacientes e cuidadores." />
+      <NavigationGrid data={motivationalItems} />
 
-      <View style={globalStyles.titleContainer}>
-        <Text style={globalStyles.title}>
-          Tópicos em saúde mental
-        </Text>
-
-        <NavigationGrid
-          data={mentalHealthAreaNavigationItems}
-          singleElement={true}
-        />
-      </View>
-      <PanicButton />
-    </SafeAreaView>
+      <Header title="Cuidar da mente" subtitle="Práticas para momentos de ansiedade." />
+      <NavigationGrid data={topicItems} />
+    </ScrollView>
   );
 }
 
+const styles = StyleSheet.create({
+  content: {
+    paddingHorizontal: space.sm,
+    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    gap: space.sm,
+  },
+});
