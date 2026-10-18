@@ -9,7 +9,6 @@ export default function SplashScreen() {
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync('hidden');
-    animationRef.current?.play();
 
     return () => {
       NavigationBar.setVisibilityAsync('visible');
@@ -30,7 +29,7 @@ export default function SplashScreen() {
         onAnimationFinish={handleAnimationFinish}
         resizeMode="cover"
         style={{ width: '100%', height: '100%' }}
-        autoPlay={false}
+        autoPlay
         loop={false}
       />
     </SafeAreaView>
