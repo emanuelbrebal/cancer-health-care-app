@@ -1,20 +1,20 @@
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
-import { Colors } from "../constants/Colors";
 import { ImageStyle } from 'react-native';
+import { color, fontFamily, layout, radius, space, typography } from "../constants/tokens";
 
 export const baseText: TextStyle = {
-    fontFamily: 'Montserrat',
+    fontFamily: fontFamily.regular,
 }
 
 const bigImageContainer: ImageStyle = {
-    height: 320,
+    height: layout.mascotMd * 2 + space.xl + space.lg,
     width: '100%',
 };
 
 const rectangleHelper: ViewStyle = {
-    height: 110,
+    height: layout.bannerHeight,
     width: '90%',
-    borderRadius: 12,
+    borderRadius: radius.md,
     alignSelf: 'center',
     overflow: 'hidden',
 };
@@ -56,16 +56,15 @@ export const globalStyles = StyleSheet.create({
     formContainer: {
         width: '100%',
         justifyContent: 'flex-start',
-        paddingHorizontal: 10,
-        marginVertical: 10,
-        gap: 20,
+        paddingHorizontal: space.xs,
+        marginVertical: space.xs,
+        gap: space.md,
     },
     titleContainer: {
         textAlign: 'left',
         justifyContent: 'flex-start',
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingVertical: 10,
+        paddingHorizontal: space.xs,
+        paddingVertical: space.xs,
     },
     dynamicContent: {
         flex: 1,
@@ -76,8 +75,8 @@ export const globalStyles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'transparent',
         justifyContent: 'flex-start',
-        paddingTop: 50,
-        paddingHorizontal: 15
+        paddingTop: space.xl,
+        paddingHorizontal: space.sm,
     },
 
     // Generic container for buttons
@@ -85,47 +84,40 @@ export const globalStyles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        gap: 10,
-        marginVertical: 20,
+        gap: space.xs,
+        marginVertical: space.md,
     },
 
     // Text
     textPrimary: {
-        ...baseText,
-        color: Colors.purpleSecondary,
-        fontWeight: '700',
-        fontSize: 28,
+        ...typography.display,
+        color: color.text.brand,
     },
     textSecondary: {
-        ...baseText,
-        color: Colors.text.secondary,
-        fontSize: 17,
+        ...typography.body,
+        color: color.text.secondary,
     },
     descriptionText: {
-        fontSize: 14,
-        color: '#4B5563',
-        marginBottom: 20,
-        lineHeight: 20,
+        ...typography.small,
+        color: color.text.secondary,
+        marginBottom: space.md,
     },
     title: {
-        ...baseText,
-        color: Colors.text.primary,
-        fontWeight: '600',
-        marginBottom: 15,
+        ...typography.subtitle,
+        color: color.text.primary,
+        marginBottom: space.sm,
     },
 
 
     textHyperlink: {
-        ...baseText,
-        color: Colors.purpleSecondary,
+        ...typography.bodyStrong,
+        color: color.text.link,
         textDecorationLine: 'underline',
         textAlign: 'center',
-        fontWeight: 'bold'
     },
     textError: {
-        ...baseText,
-        color: Colors.status.error,
-        fontSize: 14,
+        ...typography.small,
+        color: color.text.danger,
     },
 
     // Images Containers
@@ -136,8 +128,8 @@ export const globalStyles = StyleSheet.create({
     },
     rectangleImageContainer: {
         ...rectangleHelper,
-        marginTop: 20,
-        marginBottom: 10,
+        marginTop: space.md,
+        marginBottom: space.xs,
     },
 
     // Images Styles
