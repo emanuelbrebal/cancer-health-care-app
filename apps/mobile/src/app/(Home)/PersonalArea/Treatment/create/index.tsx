@@ -5,7 +5,7 @@ import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
-import * as ExpoCalendar from 'expo-calendar';
+import * as ExpoCalendar from 'expo-calendar/legacy';
 import {
   scheduleTreatmentNotifications,
   scheduleEndOfTreatmentNotification,
