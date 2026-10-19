@@ -9,7 +9,7 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from '@expo-google-fonts/montserrat';
-import { color } from '../constants/tokens';
+import { color, palette } from '../constants/tokens';
 import { globalStyles } from '../styles/global';
 import { addToHistory } from '../services/notificationService';
 import { toastConfig } from '../components/ds/Toast';
@@ -41,7 +41,7 @@ export default function RootLayout() {
 
   return (
     <LinearGradient
-      colors={[color.bg.gradientBottom, color.bg.gradientTop]}
+      colors={[color.bg.gradientBottom, palette.lilac400]}
       start={[0, 1]}
       end={[0, 0]}
       style={globalStyles.layoutContainer}
