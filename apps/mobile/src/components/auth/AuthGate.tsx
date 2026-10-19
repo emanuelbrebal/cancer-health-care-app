@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { FitScrollView } from '@/src/components/layouts/FitScrollView';
 import { Button } from '@/src/components/ds/Button';
 import { color, iconSize, layout, space, typography } from '@/src/constants/tokens';
 
@@ -14,11 +15,11 @@ interface AuthGateProps {
 
 /**
  * Tela exibida nas áreas que exigem conta (Mascote, Meu Perfil).
- * Cabe na tela sem rolagem; o usuário volta ao conteúdo aberto pelas abas.
+ * Sem rolagem quando cabe na tela; o usuário volta ao conteúdo aberto pelas abas.
  */
 export function AuthGate({ title, description, benefits, image, mirrorImage }: AuthGateProps) {
   return (
-    <View style={styles.content}>
+    <FitScrollView contentContainerStyle={styles.content}>
       <Image
         source={image}
         style={[styles.image, mirrorImage && styles.mirror]}
@@ -42,13 +43,12 @@ export function AuthGate({ title, description, benefits, image, mirrorImage }: A
         <Button title="Entrar" onPress={() => router.push('/(auth)/LoginScreen')} fullWidth />
         <Button title="Criar conta grátis" variant="secondary" onPress={() => router.push('/(auth)/RegisterScreen')} fullWidth />
       </View>
-    </View>
+    </FitScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
-    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: space.md,
     paddingBottom: space.md,
