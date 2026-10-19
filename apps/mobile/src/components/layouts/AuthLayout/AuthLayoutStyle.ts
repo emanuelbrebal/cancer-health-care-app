@@ -4,7 +4,8 @@ import { color, radius, space } from "@/src/constants/tokens";
 export const authLayoutStyles = StyleSheet.create({
   authLayout: {
     flex: 1,
-    maxHeight: '80%',
+    // Espaço suficiente para o cadastro caber sem rolagem em telas padrão (~844 px).
+    maxHeight: '89%',
     backgroundColor: color.bg.surface,
     padding: space.md,
     borderTopRightRadius: radius.xl * 2,
@@ -12,7 +13,6 @@ export const authLayoutStyles = StyleSheet.create({
     width: '100%',
   },
   scrollContent: {
-    flexGrow: 1,
-    paddingBottom: space.md,
+    paddingBottom: space.xs,
   },
 });
