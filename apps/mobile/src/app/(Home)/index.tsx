@@ -58,12 +58,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#F3E8FF',
+    // Fundo opaco + borda roxa: o lilás claro anterior sumia sobre o gradiente.
+    backgroundColor: Colors.white,
     paddingVertical: 8,
     paddingHorizontal: 18,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#DDD0F5',
+    borderWidth: 1.5,
+    borderColor: Colors.purplePrimary,
   },
   aboutText: {
     fontFamily: 'Montserrat',
