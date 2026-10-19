@@ -33,7 +33,7 @@ export default function PanicButtonContacts() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.md,
+    paddingBottom: space.xl,
     gap: space.sm,
   },
   alertBanner: {

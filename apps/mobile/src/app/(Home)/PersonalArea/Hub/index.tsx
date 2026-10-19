@@ -7,7 +7,7 @@ import { NavItemCard } from '@/src/components/ds/Card';
 import { Header } from '@/src/components/ds/Header';
 import { Button } from '@/src/components/ds/Button';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { color, layout, space } from '@/src/constants/tokens';
+import { color, space } from '@/src/constants/tokens';
 
 // v1: cada card com uma cor livre (azul, verde, vermelho) — 3 de 5 abaixo de 4.5:1.
 // Agora todos usam o NavItemCard do DS; a diferenciação fica no ícone e no subtítulo.
@@ -60,7 +60,7 @@ export default function HubPersonalAreaScreen() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
     gap: space.md,
     backgroundColor: color.bg.surface,
   },

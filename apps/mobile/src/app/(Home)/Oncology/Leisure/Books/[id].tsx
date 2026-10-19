@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     gap: space.md,
   },
   container: {
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
   },
   cover: {
     width: '100%',

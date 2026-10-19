@@ -48,6 +48,7 @@ export default function HomeMentalHealth() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
+    // Folga para o botão de pânico flutuante não cobrir o último item.
     paddingBottom: layout.tabBarHeight + space.xl * 2,
     gap: space.sm,
   },

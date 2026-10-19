@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
     gap: space.xs,
   },
   streakBadge: {

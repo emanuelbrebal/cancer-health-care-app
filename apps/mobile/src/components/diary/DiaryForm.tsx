@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     },
     content: {
         paddingHorizontal: space.sm,
-        paddingBottom: layout.tabBarHeight + space.xl,
+        paddingBottom: space.xl,
         gap: space.md,
     },
     section: {
