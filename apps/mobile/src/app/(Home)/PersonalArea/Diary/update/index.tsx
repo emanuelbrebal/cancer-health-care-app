@@ -1,6 +1,5 @@
 import { View, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import diaryService, { DailyLog } from '@/src/services/diaryService';
 import { toastService } from '@/src/services/toastService';
 import { DiaryForm, DiaryFormValues } from '@/src/components/diary/DiaryForm';
@@ -11,7 +10,6 @@ import { space } from '@/src/constants/tokens';
 
 export default function DiaryUpdateScreen() {
     const router = useRouter();
-    const headerHeight = useHeaderHeight();
     const { id } = useLocalSearchParams<{ id: string }>();
     // v1: erro ao carregar mostrava só um toast e deixava o formulário vazio.
     const { status, data: entry, reload } = useAsyncResource<DailyLog | null>(() => diaryService.getOne(id!), [id], {
@@ -32,7 +30,7 @@ export default function DiaryUpdateScreen() {
 
     if (status !== 'success' || !entry) {
         return (
-            <View style={[styles.state, { paddingTop: headerHeight }]}>
+            <View style={styles.state}>
                 {status === 'loading' && <LoadingState variant="list" count={3} label="Carregando registro" />}
                 {(status === 'error' || status === 'empty') && (
                     <>

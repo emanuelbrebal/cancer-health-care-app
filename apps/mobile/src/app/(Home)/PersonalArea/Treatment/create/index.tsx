@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, KeyboardAvoidingView, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
@@ -52,7 +51,6 @@ async function createCalendarEvent(nome: string, horaInicio: string, dataFim: st
 
 export default function CreateTreatment() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
 
   const [nome, setNome] = useState('');
   const [frequencia, setFrequencia] = useState(FREQUENCIAS[2]);
@@ -114,7 +112,7 @@ export default function CreateTreatment() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[globalStyles.startContainer, { paddingTop: headerHeight }]}
+      style={globalStyles.startContainer}
     >
       <ScrollView
         contentContainerStyle={[globalStyles.scrollContainer, { paddingTop: 10, paddingBottom: 60 }]}

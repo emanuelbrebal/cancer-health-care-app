@@ -4,7 +4,6 @@ import {
   StyleSheet, ActivityIndicator, Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import leisureService, { Movie } from '@/src/services/leisureService';
@@ -13,7 +12,6 @@ import SearchBar from '@/src/components/ui/SearchBar';
 
 export default function MoviesListScreen() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -44,7 +42,7 @@ export default function MoviesListScreen() {
 
   if (loading) {
     return (
-      <View style={[globalStyles.startContainer, { paddingTop: headerHeight, justifyContent: 'center', alignItems: 'center' }]}>
+      <View style={[globalStyles.startContainer, { justifyContent: 'center', alignItems: 'center' }]}>
         <ActivityIndicator size="large" color={Colors.purplePrimary} />
       </View>
     );
@@ -58,7 +56,7 @@ export default function MoviesListScreen() {
     : movies;
 
   return (
-    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
+    <View style={globalStyles.startContainer}>
       <FlatList
         data={filtered}
         ListHeaderComponent={

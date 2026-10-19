@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Linking } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Feather } from '@expo/vector-icons';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 import leisureService, { Book } from '@/src/services/leisureService';
@@ -13,7 +12,6 @@ import { color, iconSize, layout, radius, space, typography } from '@/src/consta
 
 export default function BookDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const headerHeight = useHeaderHeight();
   // v1: sem tratamento de erro; uma falha deixava a tela em branco (return null).
   const { status, data: book, reload } = useAsyncResource<Book | null>(() => leisureService.getBook(id!), [id], {
     isEmpty: (b) => !b,
@@ -30,7 +28,7 @@ export default function BookDetailScreen() {
 
   if (status === 'loading') {
     return (
-      <View style={[styles.state, { paddingTop: headerHeight }]}>
+      <View style={styles.state}>
         <Skeleton height={layout.mascotMd * 2} rounded={radius.lg} />
         <LoadingState variant="list" count={2} label="Carregando livro" />
       </View>
@@ -39,7 +37,7 @@ export default function BookDetailScreen() {
 
   if (status === 'error') {
     return (
-      <View style={[styles.state, { paddingTop: headerHeight }]}>
+      <View style={styles.state}>
         <ErrorState title="Não conseguimos abrir este livro" onRetry={reload} />
         <Button title="Voltar para Livros" variant="ghost" onPress={() => router.back()} />
       </View>
@@ -48,7 +46,7 @@ export default function BookDetailScreen() {
 
   if (status === 'empty' || !book) {
     return (
-      <View style={[styles.state, { paddingTop: headerHeight }]}>
+      <View style={styles.state}>
         <EmptyState icon="book" title="Livro não encontrado" message="Ele pode ter sido removido das recomendações." />
         <Button title="Voltar para Livros" variant="secondary" onPress={() => router.back()} />
       </View>
@@ -58,7 +56,7 @@ export default function BookDetailScreen() {
   const whereToFind = (book.whereToFind ?? []).filter((w) => w && w !== 'A definir');
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { paddingTop: headerHeight }]} showsVerticalScrollIndicator={false}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <Image
         source={getMediaImage(book.imagePath)}
         style={styles.cover}

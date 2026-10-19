@@ -2,7 +2,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
 import { NavItemCard } from '@/src/components/ds/Card';
 import { Header } from '@/src/components/ds/Header';
@@ -25,11 +24,10 @@ const SUPPORT: { title: string; subtitle: string; icon: keyof typeof Feather.gly
 
 export default function HubPersonalAreaScreen() {
   const user = useAuthStore((s) => s.user);
-  const headerHeight = useHeaderHeight();
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <UserProfileRow name={user?.name ?? 'Usuário'} email={user?.email ?? ''} />

@@ -200,7 +200,7 @@ export default function MascotChat() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[styles.flex, { paddingTop: headerHeight }]}
+      style={styles.flex}
       keyboardVerticalOffset={Platform.OS === 'ios' ? headerHeight : 0}
     >
       {/* v1: sem aviso de escopo e limite só exibido quando faltavam 2 mensagens (P20). */}

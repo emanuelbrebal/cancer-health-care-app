@@ -1,6 +1,5 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Image, ImageSourcePropType, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/src/components/ds/Button';
 import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
@@ -18,10 +17,9 @@ interface AuthGateProps {
  * Deixa explícita a fronteira público/privado e oferece o caminho de volta ao conteúdo aberto (P14).
  */
 export function AuthGate({ title, description, benefits, image, mirrorImage }: AuthGateProps) {
-  const headerHeight = useHeaderHeight();
 
   return (
-    <ScrollView contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}>
+    <ScrollView contentContainerStyle={styles.content}>
       <Image
         source={image}
         style={[styles.image, mirrorImage && styles.mirror]}

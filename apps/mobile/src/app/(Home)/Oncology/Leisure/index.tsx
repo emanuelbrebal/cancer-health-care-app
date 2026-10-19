@@ -2,7 +2,6 @@ import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import RecomendationPager from '@/src/components/ui/Pagers/RecomendationPager';
 import { RecomendationType } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import leisureService, { Book, LeisureActivity as Activity, Movie, Series } from '@/src/services/leisureService';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 import { useAsyncResource } from '@/src/hooks/useAsyncResource';
@@ -128,7 +127,6 @@ const SECTIONS: { key: keyof Omit<LeisureData, 'failed'>; title: string; route: 
 ];
 
 export default function Leisure() {
-  const headerHeight = useHeaderHeight();
   const { status, data, reload } = useAsyncResource(fetchLeisure, [], {
     isEmpty: (d) => SECTIONS.every((sec) => d[sec.key].length === 0),
     emptyValue: EMPTY,
@@ -136,7 +134,7 @@ export default function Leisure() {
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <HorizontalBanner imagePath={require('@assets/images/Banners/leisureBanner.png')} />

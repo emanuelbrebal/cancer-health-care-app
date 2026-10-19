@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
@@ -12,7 +11,6 @@ import { toastService } from '@/src/services/toastService';
 
 export default function TreatmentIndex() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
 
@@ -56,7 +54,7 @@ export default function TreatmentIndex() {
   };
 
   return (
-    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
+    <View style={globalStyles.startContainer}>
 
       <View style={[globalStyles.betweenContainer, styles.headerPadding]}>
         <View style={{ flex: 1 }}>

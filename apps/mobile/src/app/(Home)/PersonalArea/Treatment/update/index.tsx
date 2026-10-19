@@ -5,7 +5,6 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DateInput } from '@/src/components/ui/Inputs/DateInput';
 import { TimeInput } from '@/src/components/ui/Inputs/TimeInput';
 import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
@@ -22,7 +21,6 @@ export default function EditTreatment() {
     id: string; currentNome: string; currentFreq: string; currentHora: string;
     currentFim: string; currentMedico: string; currentContato: string; currentHospital: string;
   }>();
-  const headerHeight = useHeaderHeight();
 
   const [nome, setNome] = useState(currentNome ?? '');
   const [frequencia, setFrequencia] = useState(currentFreq ?? FREQUENCIAS[2]);
@@ -82,7 +80,7 @@ export default function EditTreatment() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[globalStyles.startContainer, { paddingTop: headerHeight }]}
+      style={globalStyles.startContainer}
     >
       <ScrollView
         contentContainerStyle={[globalStyles.scrollContainer, { paddingTop: 10, paddingBottom: 60 }]}
