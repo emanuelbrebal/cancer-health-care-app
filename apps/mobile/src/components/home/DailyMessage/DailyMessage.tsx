@@ -61,23 +61,25 @@ export default function DailyMessage({
   const finalImageSource = imageSource || require('@assets/images/Home/purpleMascotPlaceholder.png');
 
   return (
-    <View style={DailyMessageStyles.container} accessible accessibilityLabel={`${displayTitle} ${displayMessage}`}>
+    <View style={DailyMessageStyles.container}>
       <View
         style={[
           DailyMessageStyles.helloMessageContainer,
-          !shouldShowImage && DailyMessageStyles.helloMessageNoImage
+          !shouldShowImage && { flex: 1, paddingLeft: 10, paddingRight: 10 }
         ]}
       >
         <Text
           style={[
-            DailyMessageStyles.text
+            DailyMessageStyles.text,
+            !shouldShowImage && { textAlign: 'justify' }
           ]}
         >
           {displayTitle}
         </Text>
         <Text
           style={[
-            DailyMessageStyles.subtext
+            DailyMessageStyles.subtext,
+            !shouldShowImage && { textAlign: 'justify' }
           ]}
         >
           {displayMessage}

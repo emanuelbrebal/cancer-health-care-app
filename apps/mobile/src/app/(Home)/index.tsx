@@ -5,62 +5,41 @@ import HomeNavigationGrid from '@/src/components/ui/Navigation/HomeNavigationGri
 import { CardItem } from '@/src/interfaces/CardItem';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { globalStyles } from '@/src/styles/global';
-import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, StyleSheet } from 'react-native';
+import { Colors } from '@/src/constants/Colors';
+import { useState } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Lembra que a pessoa escolheu "Agora não" para não reabrir o modal a cada visita (P16).
-export const SOFT_LOGIN_DISMISSED_KEY = 'oncomente:soft-login-dismissed';
 
 export default function HomePage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    if (isAuthenticated) return;
-    AsyncStorage.getItem(SOFT_LOGIN_DISMISSED_KEY)
-      .then((dismissed) => setModalVisible(!dismissed))
-      .catch(() => setModalVisible(true));
-  }, [isAuthenticated]);
-
-  function dismissModal() {
-    setModalVisible(false);
-    AsyncStorage.setItem(SOFT_LOGIN_DISMISSED_KEY, new Date().toISOString()).catch(() => {});
-  }
+  const [modalVisible, setModalVisible] = useState(!isAuthenticated);
 
   const homeNavigationItems: CardItem[] = [
-    { id: '1', title: 'Oncologia',    icon: require('@assets/images/Home/oncologyAreaIcon.png'),  route: '/Oncology' },
-    { id: '2', title: 'Saúde Mental', icon: require('@assets/images/Home/mentalHealthIcon.png'),  route: '/MentalHealth' },
-    { id: '3', title: 'Mascote',      icon: require('@assets/images/Home/communityIcon.png'),     route: '/Mascot' },
-    { id: '4', title: 'Meu Perfil',   icon: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
+    { id: '1', title: 'Oncologia',       icon: require('@assets/images/Home/oncologyAreaIcon.png'),  route: '/Oncology' },
+    { id: '2', title: 'Saúde Mental',    icon: require('@assets/images/Home/mentalHealthIcon.png'),  route: '/MentalHealth' },
+    { id: '3', title: 'Mascote Virtual', icon: require('@assets/images/Home/communityIcon.png'),     route: '/Mascot' },
+    { id: '4', title: 'Meu Perfil',      icon: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
   ];
 
   return (
-    <SafeAreaView style={globalStyles.layoutContainer} edges={['left', 'right']}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <HelloMessage />
-        <HomeNavigationGrid data={homeNavigationItems} />
-        <DailyMessage />
+    <SafeAreaView style={globalStyles.layoutContainer}>
+      <HelloMessage />
+      <HomeNavigationGrid data={homeNavigationItems} />
+      <DailyMessage />
 
-        <Pressable
-          onPress={() => router.push('/About')}
-          accessibilityRole="link"
-          accessibilityLabel="Sobre o OncoMente"
-          style={({ pressed }) => [styles.aboutBtn, pressed && styles.aboutBtnPressed]}
-        >
-          <Feather name="info" size={iconSize.sm} color={color.text.link} />
+      <View style={styles.bottomArea}>
+        <TouchableOpacity onPress={() => router.push('/About')} style={styles.aboutBtn} activeOpacity={0.7}>
+          <Feather name="info" size={14} color={Colors.purplePrimary} />
           <Text style={styles.aboutText}>Sobre o OncoMente</Text>
-        </Pressable>
-      </ScrollView>
+        </TouchableOpacity>
+      </View>
 
       {!isAuthenticated && (
         <SoftLoginModal
           visible={modalVisible}
-          onDismiss={dismissModal}
+          onDismiss={() => setModalVisible(false)}
         />
       )}
     </SafeAreaView>
@@ -68,27 +47,28 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  content: {
-    gap: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl,
+  bottomArea: {
+    position: 'absolute',
+    bottom: 14,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
   aboutBtn: {
-    alignSelf: 'center',
-    minHeight: touch.min,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    backgroundColor: color.bg.brandSubtle,
-    paddingHorizontal: space.sm,
-    borderRadius: radius.pill,
-    borderWidth: layout.borderHairline,
-    borderColor: color.border.default,
-  },
-  aboutBtnPressed: {
-    backgroundColor: color.bg.brandMuted,
+    gap: 6,
+    backgroundColor: '#F3E8FF',
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#DDD0F5',
   },
   aboutText: {
-    ...typography.smallStrong,
-    color: color.text.link,
+    fontFamily: 'Montserrat',
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.purplePrimary,
   },
 });

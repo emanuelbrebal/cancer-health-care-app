@@ -1,44 +1,46 @@
-import { color, layout, radius, space, typography } from "@/src/constants/tokens";
+import { Colors } from "@/src/constants/Colors";
 import { StyleSheet } from "react-native";
 
+const colors = {
+  text: "#0088FF",
+
+}
 export const DailyMessageStyles = StyleSheet.create({
   container: {
-    marginHorizontal: space.sm,
+    marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: space.sm,
-    gap: space.sm,
-    borderRadius: radius.xl,
-    borderWidth: layout.borderStrong,
-    borderColor: color.border.default,
-    backgroundColor: color.bg.highlight,
+    fontFamily: 'Montserrat',
+    padding: 10,
+    gap: 15,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: Colors.cyanSecondary,
+    backgroundColor: Colors.cyan
   },
   titleContainer: {
     width: '100%'
   },
   helloMessageContainer: {
-    flex: 1,
-    gap: space.xxs,
-  },
-  helloMessageNoImage: {
-    paddingHorizontal: space.xs,
+    paddingLeft: 15,
+    width: '75%',
   },
   imageContainer: {
+    width: '25%',
     justifyContent: 'center',
   },
   image: {
-    height: layout.mascotSm,
-    width: layout.mascotSm,
+    height: 75,
+    width: 75,
     transform: [{ scaleX: -1 }],
   },
   text: {
-    ...typography.subtitle,
-    // v1: #0088FF sobre menta (3.3:1). Agora texto de marca (≥ 4.5:1).
-    color: color.text.brand,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.text
   },
   subtext: {
-    ...typography.body,
-    color: color.text.primary,
-  },
+    fontSize: 13,
+  }
 });
