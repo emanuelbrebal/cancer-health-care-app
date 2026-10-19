@@ -1,53 +1,48 @@
+import { Header } from '@/src/components/ds/Header';
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
+import { layout, space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { globalStyles } from '@/src/styles/global';
-import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useHeaderHeight } from 'expo-router/react-navigation';
+import { ScrollView, StyleSheet } from 'react-native';
+
+// Ícones vetoriais distintos por tópico e subtítulos que antecipam o conteúdo (P12).
+const selfCareItems: CardItem[] = [
+  { id: 'sleep', title: 'Sono', subtitle: 'Rotina e higiene do sono', featherIcon: 'moon', route: '/Oncology/Sleep' },
+  { id: 'exercise', title: 'Exercícios físicos', subtitle: 'Movimento seguro durante o tratamento', featherIcon: 'activity', route: '/Oncology/PhysicalExercises' },
+  { id: 'nutrition', title: 'Nutrição', subtitle: 'Alimentação e efeitos colaterais', featherIcon: 'coffee', route: '/Oncology/Nutrition' },
+  { id: 'spiritual', title: 'Espiritualidade', subtitle: 'Fé, esperança e sentido', featherIcon: 'sun', route: '/Oncology/SpiritualArea' },
+  { id: 'leisure', title: 'Lazer', subtitle: 'Livros, filmes, séries e atividades', featherIcon: 'film', route: '/Oncology/Leisure' },
+];
+
+// v1: seção "Benefícios Legais" com card "Lei dos 60 dias" levando a uma tela com vários direitos (P11).
+const rightsItems: CardItem[] = [
+  { id: 'rights', title: 'Direitos do paciente', subtitle: 'Lei dos 60 dias, FGTS, auxílio-doença e IR', featherIcon: 'shield', route: '/Oncology/LegalArea' },
+];
 
 export default function HomeOncology() {
- 
-  const oncologyNavigationItems: CardItem[] = [
-    
-    { id: '1', title: 'Sono', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Sleep.png'), route: '/Oncology/Sleep' },
-    { id: '2', title: 'Exercício físico', icon: require('@assets/images/Icons/OncologyIcons/Navigation/PhysicalExercises.png'), route: '/Oncology/PhysicalExercises' },
-    { id: '3', title: 'Nutrição', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Leisure.png'), route: '/Oncology/Nutrition' },
-    { id: '4', title: 'Espiritualidade', icon: require('@assets/images/Icons/OncologyIcons/Navigation/Leisure.png'), route: '/Oncology/SpiritualArea' },
-    { id: '5', title: 'Lazer', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route: '/Oncology/Leisure' },
-  ];
-
-  const legalBenefitsNavigationItems: CardItem[] = [
-    { id: '1', title: 'Lei dos 60 dias', icon: require('@assets/images/Icons/OncologyIcons/Navigation/CaringForPatient.png'), route:'/Oncology/LegalArea'  },
-  ];
+  const headerHeight = useHeaderHeight();
 
   return (
+    <ScrollView
+      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      showsVerticalScrollIndicator={false}
+    >
+      <HorizontalBanner imagePath={require('@assets/images/Banners/oncologyBanner.png')} />
 
-    <SafeAreaView style={globalStyles.startContainer}>
-      <HorizontalBanner
-        imagePath={require('@assets/images/Banners/oncologyBanner.png')}
-      />
+      <Header title="Autocuidado e tratamento" subtitle="Escolha um tema para ler dicas práticas." />
+      <NavigationGrid data={selfCareItems} />
 
-      <View style={globalStyles.titleContainer}>
-        <Text style={globalStyles.title}>
-          Autocuidado e tratamento
-        </Text>
-
-        <NavigationGrid
-          data={oncologyNavigationItems}
-          singleElement={true}
-        />
-      </View>
-
-      <View style={globalStyles.titleContainer}>
-        <Text style={globalStyles.title}>
-          Benefícios Legais
-        </Text>
-
-        <NavigationGrid
-          data={legalBenefitsNavigationItems}
-          singleElement={true}
-        />
-      </View>
-    </SafeAreaView>
+      <Header title="Seus direitos" subtitle="O que a lei garante a quem tem câncer." />
+      <NavigationGrid data={rightsItems} />
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    paddingHorizontal: space.sm,
+    paddingBottom: layout.tabBarHeight + space.xl,
+    gap: space.sm,
+  },
+});

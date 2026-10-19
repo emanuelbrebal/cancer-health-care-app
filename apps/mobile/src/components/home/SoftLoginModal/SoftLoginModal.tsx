@@ -1,15 +1,15 @@
 import { authService } from '@/src/services/auth';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { Button } from '@/src/components/ds/Button';
+import { TextField } from '@/src/components/ds/TextField';
+import { toastService } from '@/src/services/toastService';
+import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  ActivityIndicator, Dimensions, Image, KeyboardAvoidingView,
-  Modal, Platform, Pressable, StyleSheet, Text,
-  TextInput, TouchableOpacity, View,
+  Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View,
 } from 'react-native';
-
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface Props {
   visible: boolean;
@@ -19,11 +19,10 @@ interface Props {
 export default function SoftLoginModal({ visible, onDismiss }: Props) {
   const storeLogin = useAuthStore((s) => s.login);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [email, setEmail]               = useState('');
-  const [password, setPassword]         = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading]           = useState(false);
-  const [error, setError]               = useState('');
+  const [email, setEmail]       = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState('');
 
   useEffect(() => {
     if (isAuthenticated && visible) onDismiss();
@@ -36,6 +35,8 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
     try {
       const data = await authService.login(email.trim().toLowerCase(), password);
       storeLogin(data.access_token, data.user);
+      const firstName = data.user?.name?.split(' ')[0];
+      toastService.success(firstName ? `Que bom te ver, ${firstName}!` : 'Login realizado!');
       onDismiss();
     } catch (err: any) {
       const status = err?.response?.status;
@@ -57,64 +58,57 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
   }
 
   return (
-    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent onRequestClose={onDismiss}>
       <View style={styles.overlay}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.sheet}
         >
-          <Image
-            source={require('@assets/images/Home/blueMascotPlaceholder.png')}
-            style={styles.mascot}
-            resizeMode="contain"
-          />
-
-          <Text style={styles.title}>Olá! Que bom te ver!</Text>
-          <Text style={styles.subtitle}>Entre para personalizar sua experiência.</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor="#999"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder="Senha"
-              placeholderTextColor="#999"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <Pressable onPress={() => setShowPassword(v => !v)} style={styles.eyeButton}>
-              <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color="#999" />
+          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            <Pressable
+              onPress={onDismiss}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar e continuar sem login"
+              style={styles.close}
+            >
+              <Feather name="x" size={iconSize.lg} color={color.icon.muted} />
             </Pressable>
-          </View>
 
-          {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Image
+              source={require('@assets/images/Home/blueMascotPlaceholder.png')}
+              style={styles.mascot}
+              resizeMode="contain"
+              accessible={false}
+            />
 
-          <TouchableOpacity style={styles.btnPrimary} onPress={handleLogin} disabled={loading}>
-            {loading
-              ? <ActivityIndicator color="#fff" />
-              : <Text style={styles.btnPrimaryText}>Entrar</Text>
-            }
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.btnRegister} onPress={handleRegister}>
-            <Text style={styles.btnRegisterText}>
-              Não tem conta?{' '}
-              <Text style={styles.btnRegisterHighlight}>Cadastre-se</Text>
+            <Text style={styles.title} accessibilityRole="header">Olá! Que bom te ver!</Text>
+            <Text style={styles.subtitle}>
+              Entre para usar o Mascote e o seu Diário. As áreas de Oncologia e Saúde Mental são abertas a todos.
             </Text>
-          </TouchableOpacity>
 
-          <Pressable onPress={onDismiss} style={styles.btnSkip}>
-            <Text style={styles.btnSkipText}>Continuar sem login</Text>
-          </Pressable>
+            <TextField
+              label="E-mail"
+              placeholder="seuemail@exemplo.com"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              value={email}
+              onChangeText={(v) => { setEmail(v); setError(''); }}
+            />
+            <TextField
+              label="Senha"
+              isPassword
+              autoComplete="password"
+              value={password}
+              onChangeText={(v) => { setPassword(v); setError(''); }}
+              error={error || undefined}
+            />
+
+            <Button title="Entrar" onPress={handleLogin} loading={loading} fullWidth />
+            <Button title="Criar conta" variant="secondary" onPress={handleRegister} fullWidth />
+            <Button title="Agora não" variant="ghost" onPress={onDismiss} fullWidth
+              accessibilityHint="Fecha este aviso e não mostra de novo" />
+          </ScrollView>
         </KeyboardAvoidingView>
       </View>
     </Modal>
@@ -124,106 +118,43 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: color.bg.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 28,
-    paddingTop: 12,
-    paddingBottom: 36,
+    backgroundColor: color.bg.surface,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    maxHeight: '92%',
+  },
+  content: {
+    paddingHorizontal: space.md,
+    paddingTop: space.xs,
+    paddingBottom: space.lg,
     alignItems: 'center',
-    minHeight: SCREEN_HEIGHT * 0.7,
+    gap: space.sm,
+    width: '100%',
+    maxWidth: layout.maxContentWidth,
+    alignSelf: 'center',
+  },
+  close: {
+    alignSelf: 'flex-end',
+    width: touch.comfortable,
+    height: touch.comfortable,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   mascot: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    width: layout.mascotSm,
+    height: layout.mascotSm,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1A1A1A',
-    marginBottom: 6,
+    ...typography.title,
+    color: color.text.primary,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 24,
+    ...typography.body,
+    color: color.text.secondary,
     textAlign: 'center',
-  },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    marginBottom: 12,
-    color: '#1A1A1A',
-  },
-  passwordContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    marginBottom: 12,
-  },
-  passwordInput: {
-    flex: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 15,
-    color: '#1A1A1A',
-  },
-  eyeButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-  },
-  error: {
-    color: '#e53935',
-    fontSize: 13,
-    marginBottom: 8,
-    alignSelf: 'flex-start',
-  },
-  btnPrimary: {
-    width: '100%',
-    backgroundColor: '#9B5DE0',
-    borderRadius: 10,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  btnPrimaryText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  btnRegister: {
-    marginTop: 14,
-    paddingVertical: 6,
-  },
-  btnRegisterText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  btnRegisterHighlight: {
-    color: '#9B5DE0',
-    fontWeight: '700',
-    textDecorationLine: 'underline',
-  },
-  btnSkip: {
-    marginTop: 10,
-    paddingVertical: 8,
-  },
-  btnSkipText: {
-    color: '#AAA',
-    fontSize: 13,
   },
 });

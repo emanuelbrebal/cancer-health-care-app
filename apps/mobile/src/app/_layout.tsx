@@ -3,11 +3,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
-import { Colors } from '../constants/Colors';
+import {
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_600SemiBold,
+  Montserrat_700Bold,
+} from '@expo-google-fonts/montserrat';
+import { color } from '../constants/tokens';
 import { globalStyles } from '../styles/global';
 import { addToHistory } from '../services/notificationService';
+import { toastConfig } from '../components/ds/Toast';
+import { DebugStatePanel } from '../components/ds/DebugStatePanel';
 
 export default function RootLayout() {
+  // 'Montserrat' (sem sufixo) mantém compatível o código legado que usa fontFamily: 'Montserrat'.
+  const [fontsLoaded] = useFonts({
+    Montserrat: Montserrat_400Regular,
+    Montserrat_400Regular,
+    Montserrat_600SemiBold,
+    Montserrat_700Bold,
+  });
+
   useEffect(() => {
     const sub = Notifications.addNotificationReceivedListener(async (notification) => {
       await addToHistory({
@@ -21,9 +37,11 @@ export default function RootLayout() {
     return () => sub.remove();
   }, []);
 
+  if (!fontsLoaded) return null;
+
   return (
     <LinearGradient
-      colors={[Colors.bgGradient.start, Colors.lilacPrimary]}
+      colors={[color.bg.gradientBottom, color.bg.gradientTop]}
       start={[0, 1]}
       end={[0, 0]}
       style={globalStyles.layoutContainer}
@@ -36,8 +54,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ animation: 'none' }} />
         <Stack.Screen name="(Home)" />
         <Stack.Screen name="(auth)" />
+        <Stack.Screen name="design-system" options={{ animation: 'slide_from_bottom' }} />
       </Stack>
-      <Toast />
+      <Toast config={toastConfig} />
+      <DebugStatePanel />
     </LinearGradient>
   );
 }

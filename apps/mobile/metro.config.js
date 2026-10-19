@@ -44,4 +44,17 @@ config.resolver.blockList = [
   new RegExp(`${path.resolve(workspaceRoot, 'packages/shared/node_modules').replace(/\\/g, '\\\\')}.*`),
 ];
 
+// Web (preview para gravação/prints): Lottie nativo não tem build web sem dotlottie.
+const webStubs = {
+  'lottie-react-native': path.resolve(projectRoot, 'src/web-stubs/LottieView.tsx'),
+  'react-native-youtube-iframe': path.resolve(projectRoot, 'src/web-stubs/YoutubeIframe.tsx'),
+};
+const defaultResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (platform === 'web' && webStubs[moduleName]) {
+    return { type: 'sourceFile', filePath: webStubs[moduleName] };
+  }
+  return (defaultResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
+};
+
 module.exports = config;

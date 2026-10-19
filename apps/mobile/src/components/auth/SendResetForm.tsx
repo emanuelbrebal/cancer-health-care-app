@@ -15,7 +15,8 @@ export function SendResetForm({ setEmail, error }: FormProps) {
       <InputWithIcon
         iconLeftName="mail" 
         onChangeText={setEmail}
-        placeholder='email@email.com'
+        label="E-mail da conta"
+        placeholder='seuemail@exemplo.com'
         keyboardType="email-address"
         autoCapitalize="none"
       />

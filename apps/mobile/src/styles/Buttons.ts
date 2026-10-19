@@ -1,38 +1,17 @@
-import { StyleSheet, TextStyle, ViewStyle } from "react-native";
-import { Colors } from "../constants/Colors";
-import { baseText } from "./global";
+import { StyleSheet, ViewStyle } from "react-native";
 
+// Cores, tipografia, altura e estados vêm do Button do Design System (components/ds/Button.tsx).
+// Aqui fica só a largura usada pelos pares de botões lado a lado.
 const baseButton: ViewStyle = {
-    height: 45,
-    width: '45%',
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
+    flex: 1,
+    maxWidth: '48%',
 };
-const baseButtonText: TextStyle = {
-    ...baseText,
-    fontSize: 16,
-    fontWeight: '600'
-}
+
 export const ButtonStyles = StyleSheet.create({
-    // Buttons 
     buttonPrimary: {
         ...baseButton,
-        backgroundColor: Colors.purplePrimary,
-    },
-    buttonTextPrimary: {
-        ...baseButtonText,
-        color: Colors.text.white,
     },
     buttonOutline: {
         ...baseButton,
-        backgroundColor: Colors.white,
-        borderWidth: 1,
-        borderColor: Colors.purpleSecondary,
-    },
-    buttonTextOutline: {
-        ...baseButtonText,
-        color: Colors.purpleSecondary,
     },
 });

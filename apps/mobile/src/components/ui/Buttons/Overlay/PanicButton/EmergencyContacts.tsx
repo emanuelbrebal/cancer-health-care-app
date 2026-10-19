@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
-import * as Linking from 'expo-linking';
-import { Feather } from '@expo/vector-icons';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 import { EmergencyContact } from '@/src/interfaces/EmergencyContact';
 import { AccordionCard } from '../../../Accordion/AccordionCard';
-
-const ACCENT_COLORS = ['#0284C7', '#DC2626', '#7C3AED', '#059669'];
-const BG_COLORS    = ['#EFF6FF', '#FEF2F2', '#F5F3FF', '#ECFDF5'];
+import { color, layout, radius, space, typography } from '@/src/constants/tokens';
+import { toastService } from '@/src/services/toastService';
 
 interface EmergencyContactsListProps {
     data: EmergencyContact[];
@@ -19,88 +16,61 @@ export default function EmergencyContacts({ data }: EmergencyContactsListProps) 
         setExpandedId(prevId => (prevId === id ? null : id));
     };
 
-    const openDialer = (phoneNumber: string) => {
+    // Abre o discador direto (canOpenURL('tel:') falha no Android 11+ sem <queries>).
+    const openDialer = async (phoneNumber: string, title: string) => {
         if (!phoneNumber) return;
-        const cleanPhoneNumber = phoneNumber.replace(/\D/g, '');
-        const url = `tel:${cleanPhoneNumber}`;
-
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                Alert.alert('Erro', 'Não foi possível abrir o discador.');
-            }
-        });
+        try {
+            await Linking.openURL(`tel:${phoneNumber}`);
+        } catch {
+            toastService.error(`Não foi possível abrir o discador. Ligue para ${phoneNumber} (${title}).`);
+        }
     };
 
-    const renderCard = ({ item, index }: { item: EmergencyContact; index: number }) => {
-        const isExpanded = expandedId === String(item.id);
-        const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
-        const bg = BG_COLORS[index % BG_COLORS.length];
-        const cleanNumber = item.phoneNumber.replace(/\D/g, '');
-
-        return (
-            <View style={[styles.cardWrapper, { borderLeftColor: accent, backgroundColor: bg }]}>
-                <AccordionCard
-                    title={item.title}
-                    description={item.description || 'Nenhuma descrição disponível.'}
-                    isExpanded={isExpanded}
-                    onToggle={() => toggleExpand(String(item.id))}
-                    actionText={`Ligar — ${item.phoneNumber}`}
-                    actionIcon="phone"
-                    onAction={() => openDialer(cleanNumber)}
-                    actionButtonColor={accent}
-                    expandedBorderColor={accent}
-                    chevronColor={accent}
-                />
-               
-            </View>
-        );
-    };
+    if (data.length === 0) {
+        return <Text style={styles.emptyText}>Nenhum contato encontrado.</Text>;
+    }
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={data}
-                keyExtractor={(item) => String(item.id)}
-                renderItem={renderCard}
-                contentContainerStyle={styles.listContent}
-                scrollEnabled={false}
-                ListEmptyComponent={<Text style={styles.emptyText}>Nenhum contato encontrado.</Text>}
-            />
+        <View style={styles.list} accessibilityRole="list">
+            {data.map((item) => {
+                const cleanNumber = item.phoneNumber.replace(/\D/g, '');
+                return (
+                    <View key={String(item.id)} style={styles.cardWrapper}>
+                        <AccordionCard
+                            title={item.title}
+                            description={item.description || 'Nenhuma descrição disponível.'}
+                            isExpanded={expandedId === String(item.id)}
+                            onToggle={() => toggleExpand(String(item.id))}
+                            actionText={`Ligar para ${item.phoneNumber}`}
+                            actionIcon="phone"
+                            actionVariant="danger"
+                            onAction={() => openDialer(cleanNumber, item.title)}
+                        />
+                    </View>
+                );
+            })}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    list: {
         width: '100%',
-        flex: 1,
-    },
-    listContent: {
-        paddingHorizontal: 5,
-        paddingBottom: 20,
+        gap: space.sm,
+        paddingBottom: space.md,
     },
     cardWrapper: {
-        marginBottom: 14,
-        borderLeftWidth: 4,
-        borderRadius: 16,
+        borderLeftWidth: space.xxs,
+        borderLeftColor: color.action.danger,
+        borderRadius: radius.lg,
         overflow: 'hidden',
     },
-    phoneBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-        paddingHorizontal: 20,
-        paddingBottom: 14,
-    },
-    phoneBadgeText: {
-        fontSize: 13,
-        fontWeight: '600',
-    },
     emptyText: {
+        ...typography.body,
         textAlign: 'center',
-        color: '#666',
-        marginTop: 20,
+        color: color.text.secondary,
+        marginTop: space.md,
+        borderWidth: layout.borderHairline,
+        borderColor: color.border.default,
     },
 });

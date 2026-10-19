@@ -9,7 +9,7 @@ import { commonStackOptions } from "@/src/constants/CommonScreenOptions";
 
 const screensConfig: ScreenConfig[] = [
     { name: "index", title: "Mascote Virtual" },
-    { name: "Chat/index", title: "Chat" },
+    { name: "Chat/index", title: "Mascote Virtual" },
 ];
 
 export default function MascotStackLayout() {

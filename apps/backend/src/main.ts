@@ -8,6 +8,10 @@ import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // Autenticação é por Bearer token (sem cookies); CORS libera o app via Expo Web e o painel admin.
+  app.enableCors({
+    origin: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : true,
+  });
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ limit: '5mb', extended: true }));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

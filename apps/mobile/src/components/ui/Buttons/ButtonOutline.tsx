@@ -1,20 +1,18 @@
+import { Button } from "@/src/components/ds/Button";
 import { ButtonProps } from "@/src/interfaces/ui/ButtonProps";
 import { ButtonStyles } from "@/src/styles/Buttons";
-import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 
-export function ButtonOutline({ title, action, loading = false }: ButtonProps) {
+/** Atalho legado para o Button do Design System (variante secondary). */
+export function ButtonOutline({ title, action, loading = false, disabled, accessibilityLabel }: ButtonProps) {
     return (
-        <TouchableOpacity
+        <Button
+            title={title}
             onPress={action}
-            disabled={loading}
-            style={ButtonStyles.buttonOutline}>
-            {loading ? (
-                <ActivityIndicator color={'#FFF'} />
-            ) : (
-                <Text style={ButtonStyles.buttonTextOutline}>
-                    {title}
-                </Text>
-            )}
-        </TouchableOpacity>
+            variant="secondary"
+            loading={loading}
+            disabled={disabled}
+            accessibilityLabel={accessibilityLabel}
+            style={ButtonStyles.buttonOutline}
+        />
     )
 }

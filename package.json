@@ -6,7 +6,9 @@
     "packages/*"
   ],
   "devDependencies": {
+    "docx": "^9.12.0",
     "lerna": "^9.0.7",
+    "playwright": "^1.64.1",
     "typescript": "^5.0.0"
   },
   "scripts": {
@@ -20,5 +22,16 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "@nestjs/swagger": "^11.4.4"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "bcrypt@6.0.0": true,
+    "esbuild@0.27.7": true,
+    "nx@22.7.1": true,
+    "prisma@6.19.3": true,
+    "unrs-resolver@1.11.1": true,
+    "@nestjs/core": false,
+    "@scarf/scarf": false
   }
 }

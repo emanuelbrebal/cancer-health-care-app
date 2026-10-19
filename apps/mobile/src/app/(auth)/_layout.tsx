@@ -1,18 +1,19 @@
 import { ScreenTitle } from "@/src/components/ui/ScreenTitle";
 import { Stack } from "expo-router";
+import { color } from "@/src/constants/tokens";
 
 export default function Layout() {
     return (
         <Stack screenOptions={{
             headerShown: true,
             headerTitle: "",
-            headerTintColor: 'white',
+            headerTintColor: color.text.brand,
             headerTransparent: true,
             contentStyle: { 
                 backgroundColor: 'transparent',
              },
             headerTitleStyle: {
-                color: 'white',
+                color: color.text.brand,
             },
             headerBackButtonDisplayMode: 'minimal',
             animation: 'default',

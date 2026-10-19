@@ -7,12 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "cancerhealthcareapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "bundleIdentifier": "com.oncomente.app",
       "supportsTablet": true,
@@ -26,7 +20,6 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -47,7 +40,14 @@
       "expo-font",
       "@react-native-community/datetimepicker",
       "expo-image",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
       "expo-status-bar",
       "expo-web-browser"
     ],

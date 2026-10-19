@@ -1,143 +1,170 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Linking, ActivityIndicator } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, Linking } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Feather } from '@expo/vector-icons';
-import { Colors } from '@/src/constants/Colors';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 import leisureService, { Book } from '@/src/services/leisureService';
+import { useAsyncResource } from '@/src/hooks/useAsyncResource';
+import { Button } from '@/src/components/ds/Button';
+import { EmptyState, ErrorState, LoadingState, Skeleton } from '@/src/components/ds/States';
+import { toastService } from '@/src/services/toastService';
+import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
 
 export default function BookDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [book, setBook] = useState<Book | null>(null);
-  const [loading, setLoading] = useState(true);
+  const headerHeight = useHeaderHeight();
+  // v1: sem tratamento de erro; uma falha deixava a tela em branco (return null).
+  const { status, data: book, reload } = useAsyncResource<Book | null>(() => leisureService.getBook(id!), [id], {
+    isEmpty: (b) => !b,
+    emptyValue: null,
+  });
 
-  useEffect(() => {
-    if (id) {
-      leisureService.getBook(id)
-        .then(setBook)
-        .finally(() => setLoading(false));
+  async function openLink(url: string) {
+    try {
+      await Linking.openURL(url);
+    } catch {
+      toastService.error('Não foi possível abrir o link.');
     }
-  }, [id]);
+  }
 
-  if (loading) {
+  if (status === 'loading') {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.purplePrimary} />
+      <View style={[styles.state, { paddingTop: headerHeight }]}>
+        <Skeleton height={layout.mascotMd * 2} rounded={radius.lg} />
+        <LoadingState variant="list" count={2} label="Carregando livro" />
       </View>
     );
   }
 
-  if (!book) return null;
+  if (status === 'error') {
+    return (
+      <View style={[styles.state, { paddingTop: headerHeight }]}>
+        <ErrorState title="Não conseguimos abrir este livro" onRetry={reload} />
+        <Button title="Voltar para Livros" variant="ghost" onPress={() => router.back()} />
+      </View>
+    );
+  }
 
-  const whereToFind = book.whereToFind ?? [];
-  const hasMeaningfulWhere = whereToFind.some(w => w && w !== 'A definir');
+  if (status === 'empty' || !book) {
+    return (
+      <View style={[styles.state, { paddingTop: headerHeight }]}>
+        <EmptyState icon="book" title="Livro não encontrado" message="Ele pode ter sido removido das recomendações." />
+        <Button title="Voltar para Livros" variant="secondary" onPress={() => router.back()} />
+      </View>
+    );
+  }
+
+  const whereToFind = (book.whereToFind ?? []).filter((w) => w && w !== 'A definir');
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Image source={getMediaImage(book.imagePath)} style={styles.cover} resizeMode="cover" />
+    <ScrollView contentContainerStyle={[styles.container, { paddingTop: headerHeight }]} showsVerticalScrollIndicator={false}>
+      <Image
+        source={getMediaImage(book.imagePath)}
+        style={styles.cover}
+        resizeMode="contain"
+        accessibilityLabel={`Capa do livro ${book.title}`}
+      />
 
       <View style={styles.content}>
-        <Text style={styles.title}>{book.title}</Text>
+        <Text style={styles.title} accessibilityRole="header">{book.title}</Text>
         {!!book.author && <Text style={styles.author}>por {book.author}</Text>}
-
-        <View style={styles.divider} />
 
         <View style={styles.metaSection}>
           {!!book.genre && <MetaRow icon="tag" label="Gênero" value={book.genre} />}
-          {!!book.pageCount && book.pageCount !== 0 && (
-            <MetaRow icon="book-open" label="Páginas" value={String(book.pageCount)} />
-          )}
-          {hasMeaningfulWhere && (
-            <MetaRow icon="map-pin" label="Onde encontrar" value={whereToFind.filter(w => w && w !== 'A definir').join(', ')} />
-          )}
+          {!!book.pageCount && <MetaRow icon="book-open" label="Páginas" value={String(book.pageCount)} />}
+          {whereToFind.length > 0 && <MetaRow icon="map-pin" label="Onde encontrar" value={whereToFind.join(', ')} />}
         </View>
 
         {!!book.synopsis && (
-          <>
-            <View style={styles.divider} />
+          <View style={styles.synopsis}>
             <Text style={styles.synopsisLabel}>Sinopse</Text>
             <Text style={styles.synopsisText}>{book.synopsis}</Text>
-          </>
+          </View>
         )}
 
         {!!book.eduCapesLink && (
-          <>
-            <View style={styles.divider} />
-            <TouchableOpacity
-              style={styles.linkButton}
-              onPress={() => Linking.openURL(book.eduCapesLink!)}
-              activeOpacity={0.8}
-            >
-              <Feather name="external-link" size={18} color="#FFF" />
-              <Text style={styles.linkButtonText}>Acessar no EduCapes</Text>
-            </TouchableOpacity>
-          </>
+          <Button
+            title="Ler grátis no EduCapes"
+            icon="external-link"
+            onPress={() => openLink(book.eduCapesLink!)}
+            accessibilityHint="Abre o navegador"
+            fullWidth
+          />
         )}
       </View>
     </ScrollView>
   );
 }
 
-function MetaRow({ icon, label, value }: { icon: any; label: string; value: string }) {
+function MetaRow({ icon, label, value }: { icon: keyof typeof Feather.glyphMap; label: string; value: string }) {
   return (
     <View style={styles.metaRow}>
-      <Feather name={icon} size={15} color={Colors.purplePrimary} />
-      <Text style={styles.metaLabel}>{label}: </Text>
-      <Text style={styles.metaValue}>{value}</Text>
+      <Feather name={icon} size={iconSize.sm} color={color.icon.brand} />
+      <Text style={styles.metaText}>
+        <Text style={styles.metaLabel}>{label}: </Text>
+        {value}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  container: { paddingBottom: 40 },
-  cover: { width: '100%', height: 320 },
-  content: { padding: 20 },
+  state: {
+    flex: 1,
+    padding: space.sm,
+    gap: space.md,
+  },
+  container: {
+    paddingBottom: layout.tabBarHeight + space.xl * 2,
+  },
+  cover: {
+    width: '100%',
+    height: layout.mascotMd * 2 + space.xl,
+    backgroundColor: color.bg.brandSubtle,
+  },
+  content: {
+    padding: space.sm,
+    gap: space.sm,
+  },
   title: {
-    fontFamily: 'Montserrat',
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#222',
-    marginBottom: 6,
+    ...typography.title,
+    color: color.text.primary,
   },
   author: {
-    fontFamily: 'Montserrat',
-    fontSize: 15,
-    color: Colors.text.secondary,
-    fontStyle: 'italic',
+    ...typography.body,
+    color: color.text.secondary,
   },
-  divider: { height: 1, backgroundColor: '#F0F0F0', marginVertical: 16 },
-  metaSection: { gap: 10 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
-  metaLabel: { fontFamily: 'Montserrat', fontSize: 13, fontWeight: '600', color: '#555', marginLeft: 8 },
-  metaValue: { fontFamily: 'Montserrat', fontSize: 13, color: '#555', flex: 1 },
-  synopsisLabel: {
-    fontFamily: 'Montserrat',
-    fontSize: 14,
-    fontWeight: '700',
-    color: Colors.purplePrimary,
-    marginBottom: 8,
+  metaSection: {
+    gap: space.xs,
+    paddingVertical: space.sm,
+    borderTopWidth: layout.borderHairline,
+    borderBottomWidth: layout.borderHairline,
+    borderColor: color.border.default,
   },
-  synopsisText: {
-    fontFamily: 'Montserrat',
-    fontSize: 14,
-    color: '#444',
-    lineHeight: 22,
-  },
-  linkButton: {
+  metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    backgroundColor: Colors.purplePrimary,
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    gap: space.xs,
   },
-  linkButtonText: {
-    fontFamily: 'Montserrat',
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#FFF',
+  metaText: {
+    ...typography.small,
+    color: color.text.secondary,
+    flex: 1,
+  },
+  metaLabel: {
+    ...typography.smallStrong,
+    color: color.text.primary,
+  },
+  synopsis: {
+    gap: space.xs,
+  },
+  synopsisLabel: {
+    ...typography.bodyStrong,
+    color: color.text.brand,
+  },
+  synopsisText: {
+    ...typography.body,
+    color: color.text.primary,
   },
 });

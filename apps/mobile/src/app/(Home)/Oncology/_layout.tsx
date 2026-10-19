@@ -11,7 +11,7 @@ const screensConfig: ScreenConfig[] = [
     { name: "Nutrition/index", title: "Nutrição" },
     { name: "Sleep/index", title: "Cuidados com o Sono" },
     { name: "PhysicalExercises/index", title: "Exercícios Físicos" },
-    { name: "LegalArea/index", title: "Benefícios Legais" },
+    { name: "LegalArea/index", title: "Direitos do paciente" },
     { name: "Leisure/index", title: "Recomendações de Lazer" },
     { name: "SpiritualArea/index", title: "Espiritualidade" },
     { name: "Leisure/Books/index", title: "Livros Recomendados" },

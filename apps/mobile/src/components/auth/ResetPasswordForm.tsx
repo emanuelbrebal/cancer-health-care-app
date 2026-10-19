@@ -15,14 +15,16 @@ export function ResetPasswordForm({ setPassword, setConfirmPassword, error }: Re
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setPassword}
-        placeholder="Nova senha (mín. 6 caracteres)"
+        label="Nova senha"
+        placeholder="Mínimo de 6 caracteres"
       />
 
       <InputWithIcon
         iconLeftName="lock"
         isPassword={true}
         onChangeText={setConfirmPassword}
-        placeholder="Confirmar nova senha"
+        label="Confirmar nova senha"
+        placeholder="Repita a nova senha"
       />
 
       {error ? <Text style={globalStyles.textError}>{error}</Text> : null}

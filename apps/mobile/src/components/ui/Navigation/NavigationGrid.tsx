@@ -1,114 +1,38 @@
-import { Colors } from '@/src/constants/Colors';
+import { NavItemCard } from '@/src/components/ds/Card';
+import { space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { Href, useRouter } from 'expo-router';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 
 interface NavigationGridProps {
   data: CardItem[];
+  /** Mantido por compatibilidade: a lista agora é sempre de uma coluna. */
   singleElement?: boolean
 }
 
-export default function NavigationGrid({
-  data,
-  singleElement = false,
-}: NavigationGridProps) {
-
+// v1 usava FlatList (scrollEnabled=false) dentro de container flex:0; no web a lista
+// ficava com altura 0 e os cartões sumiam (P02). Lista curta → map simples.
+export default function NavigationGrid({ data }: NavigationGridProps) {
   const router = useRouter();
-  const handleAction = (route: Href) => {
-    if (route) {
-      router.push(route);
-    }
-  };
-
-  const isSingleItem = singleElement && data.length === 1;
-
-  const renderCard = ({ item }: { item: CardItem }) => (
-    <TouchableOpacity style={[styles.card, isSingleItem && styles.cardFullWidth]} onPress={() => handleAction(item.route)}>
-      <View style={styles.iconContainer}>
-        <Image
-          source={item.icon ? item.icon : undefined}
-          style={styles.icon}
-          resizeMode="contain"
-        />
-      </View>
-      <Text style={styles.cardText}>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
-  const containerStyle = singleElement ? styles.verticalContainer : styles.container
 
   return (
-    <View style={containerStyle}>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
-        key={singleElement ? 'one-column' : 'two-columns'}
-        renderItem={renderCard}
-        numColumns={singleElement ? 1 : 2}
-
-        contentContainerStyle={styles.listContent}
-        columnWrapperStyle={singleElement ? undefined : styles.columnWrapper}
-
-        showsVerticalScrollIndicator={true}
-        scrollEnabled={false}
-      />
+    <View style={styles.list} accessibilityRole="list">
+      {data.map((item) => (
+        <NavItemCard
+          key={String(item.id)}
+          title={item.title}
+          subtitle={item.subtitle}
+          icon={item.featherIcon ?? 'chevron-right'}
+          locked={item.locked}
+          onPress={() => router.push(item.route)}
+        />
+      ))}
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 0,
-  },
-  verticalContainer: {
-    flex: 0,
-    flexDirection: 'column'
-  },
-  listContent: {
-    paddingHorizontal: 5,
-  },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    marginBottom: 15,
-    gap: 8,
-  },
-  card: {
-    height: 55,
-    minWidth: '49%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: Colors.cyan,
-    elevation: 2,
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    backgroundColor: Colors.white,
-    marginBottom: 7,
-  },
-  iconContainer: {
-    width: 35,
-    height: 35,
-    marginRight: 8,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  icon: {
-    width: 32,
-    height: 32,
-  },
-  cardText: {
-    fontSize: 14,
-    textAlign: 'center',
-    flexShrink: 1,
-    color: Colors.black,
-    flex: 1,
-  },
-  cardFullWidth: {
-    width: '100%',
+  list: {
+    gap: space.xs,
   },
 });
