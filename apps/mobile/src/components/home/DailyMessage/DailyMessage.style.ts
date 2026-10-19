@@ -1,21 +1,18 @@
 import { Colors } from "@/src/constants/Colors";
+import { fontFamily } from "@/src/constants/tokens";
 import { StyleSheet } from "react-native";
 
-const colors = {
-  text: "#0088FF",
-
-}
 export const DailyMessageStyles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'Montserrat',
-    padding: 10,
-    gap: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    gap: 12,
     borderRadius: 20,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: Colors.cyanSecondary,
     backgroundColor: Colors.cyan
   },
@@ -23,24 +20,31 @@ export const DailyMessageStyles = StyleSheet.create({
     width: '100%'
   },
   helloMessageContainer: {
-    paddingLeft: 15,
-    width: '75%',
+    paddingLeft: 8,
+    width: '72%',
+    gap: 4,
   },
   imageContainer: {
-    width: '25%',
+    width: '28%',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
-    height: 75,
-    width: 75,
+    height: 84,
+    width: 84,
     transform: [{ scaleX: -1 }],
   },
   text: {
+    fontFamily: fontFamily.bold,
     fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.text
+    lineHeight: 24,
+    // Azul #0088FF sobre o menta tinha contraste baixo; roxo da marca fica legível.
+    color: Colors.purpleSecondary
   },
   subtext: {
-    fontSize: 13,
+    fontFamily: fontFamily.regular,
+    fontSize: 14,
+    lineHeight: 20,
+    color: Colors.text.primary,
   }
 });
