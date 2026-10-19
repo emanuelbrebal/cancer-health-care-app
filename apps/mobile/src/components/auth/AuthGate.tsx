@@ -1,8 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, ImageSourcePropType, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/src/components/ds/Button';
-import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
+import { color, iconSize, layout, space, typography } from '@/src/constants/tokens';
 
 interface AuthGateProps {
   title: string;
@@ -14,23 +14,17 @@ interface AuthGateProps {
 
 /**
  * Tela exibida nas áreas que exigem conta (Mascote, Meu Perfil).
- * Deixa explícita a fronteira público/privado e oferece o caminho de volta ao conteúdo aberto (P14).
+ * Cabe na tela sem rolagem; o usuário volta ao conteúdo aberto pelas abas.
  */
 export function AuthGate({ title, description, benefits, image, mirrorImage }: AuthGateProps) {
-
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <View style={styles.content}>
       <Image
         source={image}
         style={[styles.image, mirrorImage && styles.mirror]}
         resizeMode="contain"
         accessible={false}
       />
-
-      <View style={styles.lockBadge}>
-        <Feather name="lock" size={iconSize.sm} color={color.text.brandStrong} />
-        <Text style={styles.lockText}>Área com login</Text>
-      </View>
 
       <Text style={styles.title} accessibilityRole="header">{title}</Text>
       <Text style={styles.description}>{description}</Text>
@@ -47,22 +41,17 @@ export function AuthGate({ title, description, benefits, image, mirrorImage }: A
       <View style={styles.actions}>
         <Button title="Entrar" onPress={() => router.push('/(auth)/LoginScreen')} fullWidth />
         <Button title="Criar conta grátis" variant="secondary" onPress={() => router.push('/(auth)/RegisterScreen')} fullWidth />
-        <Button
-          title="Continuar sem conta"
-          variant="ghost"
-          onPress={() => router.navigate('/(Home)')}
-          accessibilityHint="Volta ao Início; Oncologia e Saúde Mental são abertas"
-          fullWidth
-        />
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
+    flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: space.md,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.md,
     alignItems: 'center',
     gap: space.sm,
     width: '100%',
@@ -70,24 +59,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   image: {
-    width: layout.mascotMd,
-    height: layout.mascotMd,
+    width: layout.mascotLg,
+    height: layout.mascotLg,
   },
   mirror: {
     transform: [{ scaleX: -1 }],
-  },
-  lockBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.xxs,
-    backgroundColor: color.bg.brandMuted,
-    paddingHorizontal: space.sm,
-    paddingVertical: space.xxs,
-    borderRadius: radius.pill,
-  },
-  lockText: {
-    ...typography.smallStrong,
-    color: color.text.brandStrong,
   },
   title: {
     ...typography.title,

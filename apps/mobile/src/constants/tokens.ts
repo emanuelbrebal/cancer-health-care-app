@@ -163,6 +163,7 @@ export const layout = {
   maxContentWidth: 560,
   mascotSm: 72,
   mascotMd: 120,
+  mascotLg: 150,
   bannerHeight: 112,
   borderHairline: 1,
   borderStrong: 2,
