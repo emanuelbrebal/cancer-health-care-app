@@ -42,16 +42,30 @@ export default function HubPersonalAreaScreen() {
 
       <View style={styles.section}>
         <Header title="Minha jornada" />
-        {JOURNEY.map((item) => (
-          <NavItemCard key={item.route} {...item} onPress={() => router.push(item.route as any)} />
-        ))}
+        <View>
+          {JOURNEY.map((item, index) => (
+            <NavItemCard
+              key={item.route}
+              {...item}
+              divider={index < JOURNEY.length - 1}
+              onPress={() => router.push(item.route as any)}
+            />
+          ))}
+        </View>
       </View>
 
       <View style={styles.section}>
         <Header title="Apoio" />
-        {SUPPORT.map((item) => (
-          <NavItemCard key={item.route} {...item} onPress={() => router.push(item.route as any)} />
-        ))}
+        <View>
+          {SUPPORT.map((item, index) => (
+            <NavItemCard
+              key={item.route}
+              {...item}
+              divider={index < SUPPORT.length - 1}
+              onPress={() => router.push(item.route as any)}
+            />
+          ))}
+        </View>
       </View>
     </ScrollView>
   );

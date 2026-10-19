@@ -36,18 +36,24 @@ interface NavItemCardProps {
   subtitle?: string;
   icon: keyof typeof Feather.glyphMap;
   onPress: () => void;
+  /** Linha divisória abaixo do item (desligue no último da lista). */
+  divider?: boolean;
   forcePressed?: boolean;
 }
 
-/** Cartão de navegação: ícone + título + subtítulo + chevron. Alvo de toque ≥ 64 px. */
-export function NavItemCard({ title, subtitle, icon, onPress, forcePressed }: NavItemCardProps) {
+/**
+ * Item de lista de navegação: ícone + título + subtítulo + chevron.
+ * Visual de linha de lista (sem caixa, borda ou sombra) para não parecer botão;
+ * o toque só realça o fundo. Alvo de toque ≥ 64 px.
+ */
+export function NavItemCard({ title, subtitle, icon, onPress, divider = true, forcePressed }: NavItemCardProps) {
   return (
-    <Card
+    <Pressable
       onPress={onPress}
-      forcePressed={forcePressed}
+      accessibilityRole="link"
       accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
       accessibilityHint="Abre a seção"
-      style={styles.navCard}
+      style={({ pressed }) => [styles.navRow, divider && styles.navDivider, (forcePressed ?? pressed) && styles.navRowPressed]}
     >
       <View style={styles.iconBox}>
         <Feather name={icon} size={iconSize.lg} color={color.icon.brand} />
@@ -57,7 +63,7 @@ export function NavItemCard({ title, subtitle, icon, onPress, forcePressed }: Na
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
       <Feather name="chevron-right" size={iconSize.md} color={color.icon.muted} />
-    </Card>
+    </Pressable>
   );
 }
 
@@ -78,11 +84,20 @@ const styles = StyleSheet.create({
     borderColor: color.border.brand,
     transform: [{ scale: 0.99 }],
   },
-  navCard: {
+  navRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
     minHeight: touch.comfortable + space.sm,
+    paddingVertical: space.xs,
+    paddingHorizontal: space.xxs,
+  },
+  navDivider: {
+    borderBottomWidth: layout.borderHairline,
+    borderBottomColor: color.border.default,
+  },
+  navRowPressed: {
+    backgroundColor: color.bg.brandSubtle,
   },
   iconBox: {
     width: touch.comfortable,

@@ -1,8 +1,7 @@
 import { NavItemCard } from '@/src/components/ds/Card';
-import { space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
 import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 interface NavigationGridProps {
   data: CardItem[];
@@ -16,22 +15,17 @@ export default function NavigationGrid({ data }: NavigationGridProps) {
   const router = useRouter();
 
   return (
-    <View style={styles.list} accessibilityRole="list">
-      {data.map((item) => (
+    <View accessibilityRole="list">
+      {data.map((item, index) => (
         <NavItemCard
           key={String(item.id)}
           title={item.title}
           subtitle={item.subtitle}
           icon={item.featherIcon ?? 'chevron-right'}
+          divider={index < data.length - 1}
           onPress={() => router.push(item.route)}
         />
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  list: {
-    gap: space.xs,
-  },
-});
