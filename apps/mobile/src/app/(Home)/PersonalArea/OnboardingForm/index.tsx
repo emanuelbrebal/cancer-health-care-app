@@ -4,7 +4,6 @@ import { Feather } from '@expo/vector-icons';
 import { baseText, globalStyles } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { SelectWithIcon } from '@/src/components/ui/Inputs/SelectWithIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import * as ImagePicker from 'expo-image-picker';
 import api from '@/src/services/api';
@@ -108,7 +107,7 @@ export default function OnboardingProfileScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <SafeAreaView style={globalStyles.startContainer}>
+      <View style={globalStyles.startContainer}>
         <ScrollView
           contentContainerStyle={styles.paddingGeral}
           keyboardShouldPersistTaps="handled"
@@ -165,7 +164,7 @@ export default function OnboardingProfileScreen() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 }

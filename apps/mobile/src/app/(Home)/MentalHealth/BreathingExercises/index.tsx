@@ -2,7 +2,6 @@ import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TECHNIQUES = [
   {
@@ -109,7 +108,7 @@ export default function BreathingExercises() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+    <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         <Text style={styles.screenTitle}>Exercícios de Respiração</Text>
@@ -176,7 +175,7 @@ export default function BreathingExercises() {
 
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

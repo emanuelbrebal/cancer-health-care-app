@@ -4,7 +4,6 @@ import { Colors } from '@/src/constants/Colors';
 import ActionCardList, { BaseActionItem } from '@/src/components/ui/Pagers/ActionCardList';
 import { globalStyles } from '@/src/styles/global';
 import { UserProfileCenter } from '@/src/components/ui/UserProfile/ProfileCenter';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { router } from 'expo-router';
 import api from '@/src/services/api';
@@ -50,7 +49,7 @@ export default function AccountConfigurationIndex() {
   ];
 
   return (
-    <SafeAreaView style={globalStyles.scrollContainer}>
+    <View style={globalStyles.scrollContainer}>
 
       <UserProfileCenter name={user?.name ?? 'Usuário'} email={user?.email ?? ''} />
 
@@ -96,7 +95,7 @@ export default function AccountConfigurationIndex() {
         </View>
       </Modal>
 
-    </SafeAreaView>
+    </View>
   );
 }
 
