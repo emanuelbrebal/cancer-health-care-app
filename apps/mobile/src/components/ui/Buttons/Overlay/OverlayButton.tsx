@@ -12,6 +12,7 @@ interface OverlayButtonProps {
     iconColor?: string;
     size?: number;
     style?: StyleProp<ViewStyle>;
+    accessibilityLabel?: string;
 }
 
 export function OverlayButton({
@@ -19,7 +20,8 @@ export function OverlayButton({
     iconName,
     iconColor = Colors.white,
     size = 60,
-    style
+    style,
+    accessibilityLabel
 }: OverlayButtonProps) {
 
     function handlePress() {
@@ -33,6 +35,8 @@ export function OverlayButton({
     return (
         <Pressable
             onPress={handlePress}
+            accessibilityRole="button"
+            accessibilityLabel={accessibilityLabel}
             style={({ pressed }) => [
                 styles.overlayButtonContainer,
                 pressed && styles.pressed,

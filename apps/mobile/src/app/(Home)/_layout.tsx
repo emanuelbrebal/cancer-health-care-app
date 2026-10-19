@@ -1,23 +1,10 @@
 import { HeaderLogo } from '@/src/components/home/HeaderLogo';
-import { SosButton } from '@/src/components/ds/SosButton';
 import { ScreenTitle } from '@/src/components/ui/ScreenTitle';
 import { color, iconSize, layout, space, typography } from '@/src/constants/tokens';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs, usePathname, useRouter } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { ColorValue, StyleSheet, Text, View } from 'react-native';
-
-// Telas onde o SOS flutuante atrapalharia (a própria lista de contatos, chat e formulários).
-const SOS_HIDDEN_PREFIXES = [
-    '/MentalHealth/PanicButtonContacts',
-    '/Mascot/Chat',
-    '/PersonalArea/Diary/create',
-    '/PersonalArea/Diary/update',
-    '/PersonalArea/Treatment/create',
-    '/PersonalArea/Treatment/update',
-    '/PersonalArea/AccountConfigurations',
-    '/PersonalArea/OnboardingForm',
-];
 
 const styles = StyleSheet.create({
     root: {
@@ -52,8 +39,6 @@ const renderTabBarIcon = (focused: boolean, tint: ColorValue, activeIcon: any, i
 export default function HomeLayout() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const router = useRouter();
-    const pathname = usePathname();
-    const showSos = !SOS_HIDDEN_PREFIXES.some((p) => pathname.startsWith(p));
 
     return (
         <View style={styles.root}>
@@ -154,7 +139,6 @@ export default function HomeLayout() {
                     }}
                 />
             </Tabs>
-            {showSos ? <SosButton /> : null}
         </View>
     )
 }
