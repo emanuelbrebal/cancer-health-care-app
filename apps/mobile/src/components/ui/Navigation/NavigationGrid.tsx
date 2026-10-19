@@ -23,7 +23,6 @@ export default function NavigationGrid({ data }: NavigationGridProps) {
           title={item.title}
           subtitle={item.subtitle}
           icon={item.featherIcon ?? 'chevron-right'}
-          locked={item.locked}
           onPress={() => router.push(item.route)}
         />
       ))}

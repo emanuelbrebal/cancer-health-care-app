@@ -1,9 +1,9 @@
 import { HeaderLogo } from '@/src/components/home/HeaderLogo';
 import { SosButton } from '@/src/components/ds/SosButton';
 import { ScreenTitle } from '@/src/components/ui/ScreenTitle';
-import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
+import { color, iconSize, layout, space, typography } from '@/src/constants/tokens';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs, usePathname, useRouter } from "expo-router";
 import { ColorValue, StyleSheet, Text, View } from 'react-native';
 
@@ -36,13 +36,6 @@ const styles = StyleSheet.create({
     tabLabel: {
         textAlign: 'center',
     },
-    lockBadge: {
-        position: 'absolute',
-        right: -space.xs,
-        bottom: -space.xxs,
-        backgroundColor: color.bg.surface,
-        borderRadius: radius.pill,
-    },
 });
 
 // Rótulo próprio: quebra em 2 linhas em vez de truncar ("Saúde Me…" em 390 px com Montserrat).
@@ -50,16 +43,9 @@ const renderTabLabel = (label: string) => function TabLabel({ color: tint }: { c
     return <Text style={[typography.tabLabel, styles.tabLabel, { color: tint }]} numberOfLines={2}>{label}</Text>;
 };
 
-const renderTabBarIcon = (focused: boolean, tint: ColorValue, activeIcon: any, inactiveIcon: any, locked = false) => (
+const renderTabBarIcon = (focused: boolean, tint: ColorValue, activeIcon: any, inactiveIcon: any) => (
     <View style={focused ? styles.activeBorderContainer : styles.iconWrapper}>
-        <View>
-            <Ionicons name={focused ? activeIcon : inactiveIcon} size={iconSize.lg} color={tint} />
-            {locked ? (
-                <View style={styles.lockBadge}>
-                    <Feather name="lock" size={iconSize.xs} color={color.text.secondary} />
-                </View>
-            ) : null}
-        </View>
+        <Ionicons name={focused ? activeIcon : inactiveIcon} size={iconSize.lg} color={tint} />
     </View>
 );
 
@@ -125,9 +111,9 @@ export default function HomeLayout() {
                     options={{
                         // "Mascote Virtual" era truncado em 390 px (P15); nome completo fica no título da tela.
                         tabBarLabel: renderTabLabel("Mascote"),
-                        tabBarAccessibilityLabel: isAuthenticated ? "Mascote virtual" : "Mascote virtual. Requer login",
+                        tabBarAccessibilityLabel: "Mascote virtual",
                         tabBarIcon: ({ focused, color: tint }) => renderTabBarIcon(
-                            focused, tint, "chatbubbles", "chatbubbles-outline", !isAuthenticated
+                            focused, tint, "chatbubbles", "chatbubbles-outline"
                         ),
                     }}
                     listeners={{
@@ -152,9 +138,9 @@ export default function HomeLayout() {
                 <Tabs.Screen name="PersonalArea"
                     options={{
                         tabBarLabel: renderTabLabel("Meu Perfil"),
-                        tabBarAccessibilityLabel: isAuthenticated ? "Meu Perfil" : "Meu Perfil. Requer login",
+                        tabBarAccessibilityLabel: "Meu Perfil",
                         tabBarIcon: ({ focused, color: tint }) => renderTabBarIcon(
-                            focused, tint, "person-circle", "person-circle-outline", !isAuthenticated
+                            focused, tint, "person-circle", "person-circle-outline"
                         ),
                     }}
                     listeners={{

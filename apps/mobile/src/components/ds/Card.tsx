@@ -36,19 +36,17 @@ interface NavItemCardProps {
   subtitle?: string;
   icon: keyof typeof Feather.glyphMap;
   onPress: () => void;
-  /** Mostra um cadeado quando o destino exige login. */
-  locked?: boolean;
   forcePressed?: boolean;
 }
 
 /** Cartão de navegação: ícone + título + subtítulo + chevron. Alvo de toque ≥ 64 px. */
-export function NavItemCard({ title, subtitle, icon, onPress, locked, forcePressed }: NavItemCardProps) {
+export function NavItemCard({ title, subtitle, icon, onPress, forcePressed }: NavItemCardProps) {
   return (
     <Card
       onPress={onPress}
       forcePressed={forcePressed}
       accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
-      accessibilityHint={locked ? 'Requer login' : 'Abre a seção'}
+      accessibilityHint="Abre a seção"
       style={styles.navCard}
     >
       <View style={styles.iconBox}>
@@ -58,7 +56,7 @@ export function NavItemCard({ title, subtitle, icon, onPress, locked, forcePress
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
-      <Feather name={locked ? 'lock' : 'chevron-right'} size={iconSize.md} color={color.icon.muted} />
+      <Feather name="chevron-right" size={iconSize.md} color={color.icon.muted} />
     </Card>
   );
 }

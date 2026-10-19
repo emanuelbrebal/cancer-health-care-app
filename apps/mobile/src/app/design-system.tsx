@@ -183,7 +183,7 @@ export default function DesignSystemScreen() {
           <Card><Text style={styles.body}>Card estático: superfície branca, raio lg, borda sutil.</Text></Card>
           <NavItemCard title="Sono" subtitle="Rotina e higiene do sono" icon="moon" onPress={() => {}} />
           <NavItemCard title="Sono" subtitle="Pressed" icon="moon" onPress={() => {}} forcePressed />
-          <NavItemCard title="Mascote" subtitle="Requer login" icon="message-circle" onPress={() => {}} locked />
+          <NavItemCard title="Mascote" subtitle="Converse com o mascote" icon="message-circle" onPress={() => {}} />
           <Header title="Livros recomendados" actionLabel="Ver todos" onAction={() => {}} />
         </Section>
 

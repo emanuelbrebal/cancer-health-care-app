@@ -35,8 +35,8 @@ export default function HomePage() {
   const homeNavigationItems: CardItem[] = [
     { id: '1', title: 'Oncologia',    icon: require('@assets/images/Home/oncologyAreaIcon.png'),  route: '/Oncology' },
     { id: '2', title: 'Saúde Mental', icon: require('@assets/images/Home/mentalHealthIcon.png'),  route: '/MentalHealth' },
-    { id: '3', title: 'Mascote',      icon: require('@assets/images/Home/communityIcon.png'),     route: '/Mascot', locked: !isAuthenticated },
-    { id: '4', title: 'Meu Perfil',   icon: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea', locked: !isAuthenticated },
+    { id: '3', title: 'Mascote',      icon: require('@assets/images/Home/communityIcon.png'),     route: '/Mascot' },
+    { id: '4', title: 'Meu Perfil',   icon: require('@assets/images/Home/personalAreaIcon.png'), route: '/PersonalArea' },
   ];
 
   return (

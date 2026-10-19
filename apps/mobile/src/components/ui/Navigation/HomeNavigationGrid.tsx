@@ -1,6 +1,5 @@
-import { color, iconSize, layout, radius, shadow, space, typography } from '@/src/constants/tokens';
+import { color, layout, radius, shadow, space, typography } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -19,7 +18,7 @@ export default function HomeNavigationGrid({ data }: NavigationGridProps) {
           key={String(item.id)}
           onPress={() => router.push(item.route)}
           accessibilityRole="button"
-          accessibilityLabel={item.locked ? `${item.title}. Requer login` : item.title}
+          accessibilityLabel={item.title}
           style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
         >
           <View style={styles.iconContainer}>
@@ -27,7 +26,6 @@ export default function HomeNavigationGrid({ data }: NavigationGridProps) {
           </View>
           <View style={styles.labelRow}>
             <Text style={styles.cardText}>{item.title}</Text>
-            {item.locked ? <Feather name="lock" size={iconSize.sm} color={color.icon.muted} /> : null}
           </View>
         </Pressable>
       ))}
