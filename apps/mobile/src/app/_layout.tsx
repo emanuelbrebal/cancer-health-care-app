@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Stack } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
 import {
@@ -14,6 +14,9 @@ import { globalStyles } from '../styles/global';
 import { addToHistory } from '../services/notificationService';
 import { toastConfig } from '../components/ds/Toast';
 import { DebugStatePanel } from '../components/ds/DebugStatePanel';
+
+// Fundo do tema transparente: sem isso o navegador pinta #F2F2F2 por cima do degradê (visível no web).
+const transparentTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'transparent' } };
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -45,6 +48,7 @@ export default function RootLayout() {
       end={[0, 0]}
       style={globalStyles.layoutContainer}
     >
+      <ThemeProvider value={transparentTheme}>
       <Stack screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: 'transparent' },
@@ -55,6 +59,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="design-system" options={{ animation: 'slide_from_bottom' }} />
       </Stack>
+      </ThemeProvider>
       <Toast config={toastConfig} />
       <DebugStatePanel />
     </LinearGradient>
