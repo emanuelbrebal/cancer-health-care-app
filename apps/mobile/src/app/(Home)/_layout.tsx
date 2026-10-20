@@ -69,7 +69,7 @@ export default function HomeLayout() {
                             focused, tint, "home", "home-outline"
                         ),
                         headerLeft: () => <HeaderLogo />,
-                        headerRight: () => <ScreenTitle title='Início' />,
+                        headerRight: () => <ScreenTitle title='Início' color={color.text.onGradient} />,
                     }}
                 />
 
