@@ -44,8 +44,8 @@ export default function HomeNavigationGrid({
 }
 
 const styles = StyleSheet.create({
+  // Sem flex:0: no web ele vira "flex: 0 1 0%" e a grade fica com altura 0 (P02).
   container: {
-    flex: 0,
     padding: 10
   },
   listContent: {
