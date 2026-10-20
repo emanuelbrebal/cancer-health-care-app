@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, Pressable, Image, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import leisureService, { Book } from '@/src/services/leisureService';
 import { getMediaImage } from '@/src/constants/mediaImageMap';
 import SearchBar from '@/src/components/ui/SearchBar';
@@ -12,7 +11,6 @@ import { color, layout, radius, shadow, space, typography } from '@/src/constant
 
 export default function BooksListScreen() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
   const [query, setQuery] = useState('');
   // v1: Alert bloqueante + "Nenhum livro disponível" na falha de rede (P09).
   const { status, data, reload, refresh, refreshing } = useAsyncResource(() => leisureService.getBooks(), [], {
@@ -54,7 +52,7 @@ export default function BooksListScreen() {
 
   if (status !== 'success') {
     return (
-      <View style={[styles.screen, { paddingTop: headerHeight }]}>
+      <View style={styles.screen}>
         <View style={styles.list}>
           {header}
           {status === 'loading' && <LoadingState variant="grid" count={4} label="Carregando livros" />}
@@ -68,7 +66,7 @@ export default function BooksListScreen() {
   }
 
   return (
-    <View style={[styles.screen, { paddingTop: headerHeight }]}>
+    <View style={styles.screen}>
       <FlatList
         data={filtered}
         ListHeaderComponent={header}
@@ -121,7 +119,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
     gap: space.sm,
   },
   row: {

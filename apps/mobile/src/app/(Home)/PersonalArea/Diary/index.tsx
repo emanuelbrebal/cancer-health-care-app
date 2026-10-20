@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, RefreshControl } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Feather } from '@expo/vector-icons';
 import diaryService, { DailyLog } from '@/src/services/diaryService';
 import { EMOTE_BY_ID } from '@/src/constants/Emotes';
@@ -43,7 +42,6 @@ const formatDate = (dateString: string) =>
 
 export default function DiaryIndex() {
   const router = useRouter();
-  const headerHeight = useHeaderHeight();
   const { status, data, setData, reload, refresh, revalidate, refreshing } = useAsyncResource(fetchEntries, [], {
     emptyValue: [] as DailyLog[],
   });
@@ -127,7 +125,7 @@ export default function DiaryIndex() {
 
   if (status !== 'success') {
     return (
-      <View style={[styles.screen, { paddingTop: headerHeight }]}>
+      <View style={styles.screen}>
         <View style={styles.list}>
           {header}
           {status === 'loading' && <LoadingState variant="list" count={4} label="Carregando seu diário" />}
@@ -154,7 +152,7 @@ export default function DiaryIndex() {
   }
 
   return (
-    <View style={[styles.screen, { paddingTop: headerHeight }]}>
+    <View style={styles.screen}>
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
     gap: space.xs,
   },
   streakBadge: {

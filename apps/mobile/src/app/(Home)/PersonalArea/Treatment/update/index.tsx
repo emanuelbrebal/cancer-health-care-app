@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform, KeyboardAvoidingView } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { toastService } from '@/src/services/toastService';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DateInput } from '@/src/components/ui/Inputs/DateInput';
 import { TimeInput } from '@/src/components/ui/Inputs/TimeInput';
 import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
@@ -17,12 +17,12 @@ const FREQUENCIAS = [
 ];
 
 export default function EditTreatment() {
+  const headerHeight = useHeaderHeight();
   const router = useRouter();
   const { id, currentNome, currentFreq, currentHora, currentFim, currentMedico, currentContato, currentHospital } = useLocalSearchParams<{
     id: string; currentNome: string; currentFreq: string; currentHora: string;
     currentFim: string; currentMedico: string; currentContato: string; currentHospital: string;
   }>();
-  const headerHeight = useHeaderHeight();
 
   const [nome, setNome] = useState(currentNome ?? '');
   const [frequencia, setFrequencia] = useState(currentFreq ?? FREQUENCIAS[2]);
@@ -81,8 +81,8 @@ export default function EditTreatment() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[globalStyles.startContainer, { paddingTop: headerHeight }]}
+      behavior="padding" keyboardVerticalOffset={headerHeight}
+      style={globalStyles.startContainer}
     >
       <ScrollView
         contentContainerStyle={[globalStyles.scrollContainer, { paddingTop: 10, paddingBottom: 60 }]}

@@ -15,16 +15,13 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 const step = async (name, fn) => { try { await fn(); console.log('PASS', name); } catch (e) { console.log('FAIL', name, e.message.split('\n')[0]); } };
 
-await page.goto(base + '/', { waitUntil: 'networkidle' });
-await step('long-press logo abre /design-system', async () => {
-  const logo = page.getByText('ONCOMENTE').first();
-  const b = await logo.boundingBox();
-  await page.mouse.move(b.x + 5, b.y + 5); await page.mouse.down(); await page.waitForTimeout(1200); await page.mouse.up();
-  await page.waitForURL('**/design-system', { timeout: 5000 });
-});
 await page.goto(base + '/Oncology', { waitUntil: 'networkidle' });
-await step('SOS abre contatos de emergência', async () => {
-  await page.getByLabel('SOS: ajuda urgente').first().click();
+await step('Botão de pânico ausente fora da Saúde Mental', async () => {
+  if (await page.getByLabel('Botão de pânico: contatos de emergência').count()) throw new Error('visível em /Oncology');
+});
+await page.goto(base + '/MentalHealth', { waitUntil: 'networkidle' });
+await step('Botão de pânico abre contatos de emergência', async () => {
+  await page.getByLabel('Botão de pânico: contatos de emergência').first().click();
   await page.waitForURL('**/PanicButtonContacts', { timeout: 5000 });
   await page.getByText('CVV').first().click();
   await page.getByText('Ligar para 188').first().waitFor({ timeout: 3000 });
@@ -32,7 +29,7 @@ await step('SOS abre contatos de emergência', async () => {
 await page.goto(base + '/Oncology', { waitUntil: 'networkidle' });
 await step('Oncologia → Lazer → Ver todos (livros) → detalhe → voltar', async () => {
   await page.getByLabel(/^Lazer./).click();
-  await page.getByLabel('Ver todos: Livros').click();
+  await page.getByText('Livros recomendados').click();
   await page.waitForURL('**/Leisure/Books', { timeout: 8000 });
   await page.getByLabel(/^Além da Cura, de/).click();
   await page.getByText('Sinopse').waitFor({ timeout: 8000 });

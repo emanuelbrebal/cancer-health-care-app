@@ -1,27 +1,22 @@
-import { color, layout, space, typography } from '@/src/constants/tokens';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function HelloMessage() {
 
   const { user } = useAuthStore();
-  const firstName = user?.name?.split(' ')[0];
 
   return (
     <View style={styles.container}>
 
       <View style={styles.helloMessageContainer}>
-        <Text style={styles.text} accessibilityRole="header">Olá, {firstName ?? 'que bom te ver'}!</Text>
-        <Text style={styles.subtext}>Como podemos cuidar de você hoje?</Text>
+        <Text style={styles.text}>Olá, {user?.name ? user.name : 'Paciente'}!</Text>
+        <Text style={styles.text}>Que bom te ter aqui!</Text>
+        <Text style={styles.subtext}>Vamos cuidar de você hoje?</Text>
       </View>
 
-      <Image
-        source={require('@assets/images/Home/blueMascotPlaceholder.png')}
-        style={styles.image}
-        resizeMode="contain"
-        accessibilityIgnoresInvertColors
-        accessible={false}
-      />
+      <View style={styles.imageContainer}>
+        <Image source={require('@assets/images/Home/blueMascotPlaceholder.png')} style={styles.image} resizeMode="contain" />
+      </View>
     </View>
   );
 }
@@ -29,28 +24,33 @@ export default function HelloMessage() {
 const styles = StyleSheet.create({
 
   container: {
+    height: '30%',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: space.sm,
-    paddingTop: space.xl + space.lg,
+    fontFamily: 'Montserrat',
+    paddingTop: 30
   },
   helloMessageContainer: {
-    flex: 1,
-    gap: space.xxs,
+    paddingLeft: 20,
+    width: '68%',
+  },
+  imageContainer: {
+    width: '30%',
+    justifyContent: 'center',
+    paddingRight: 20,
   },
   image: {
-    height: layout.mascotMd,
-    width: layout.mascotMd,
+    height: 130,
+    width: 130,
     transform: [{ scaleX: -1 }],
   },
   text: {
-    ...typography.title,
-    color: color.text.primary,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   subtext: {
-    ...typography.body,
-    color: color.text.secondary,
+    fontSize: 14,
   }
 });

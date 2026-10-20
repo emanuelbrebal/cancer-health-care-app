@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import * as NavigationBar from 'expo-navigation-bar';
 import { router } from 'expo-router';

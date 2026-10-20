@@ -10,6 +10,4 @@ export interface CardItem {
   featherIcon?: keyof typeof Feather.glyphMap;
   subtitle?: string;
   route: Href;
-  /** Destino exige login (mostra cadeado enquanto o usuário não entrou). */
-  locked?: boolean;
 }

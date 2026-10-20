@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { space } from "@/src/constants/tokens";
 import { globalStyles } from "@/src/styles/global";
 import { InputWithIcon } from "../ui/Inputs/InputWithIcon";
 import { SelectWithIcon } from "../ui/Inputs/SelectWithIcon";
@@ -30,7 +31,7 @@ const userRoleData = [
 
 export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPassword, setName, userRole, errors = {} }: FormProps) {
   return (
-    <View style={globalStyles.formContainer}>
+    <View style={[globalStyles.formContainer, styles.compact]}>
       <SelectWithIcon
         iconLeftName="user"
         data={userRoleData}
@@ -80,3 +81,10 @@ export function RegisterForm({ setEmail, setPassword, setUserRole, setConfirmPas
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  // 5 campos rotulados: espaçamento menor que o padrão para caber sem rolagem.
+  compact: {
+    gap: space.sm,
+  },
+});

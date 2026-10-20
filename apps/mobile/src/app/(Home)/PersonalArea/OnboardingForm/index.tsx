@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Feather } from '@expo/vector-icons';
 import { baseText, globalStyles } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { SelectWithIcon } from '@/src/components/ui/Inputs/SelectWithIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import * as ImagePicker from 'expo-image-picker';
 import api from '@/src/services/api';
@@ -35,6 +35,7 @@ function normalizeBirthday(raw: string | null | undefined): string {
 }
 
 export default function OnboardingProfileScreen() {
+  const headerHeight = useHeaderHeight();
   const { firstTime } = useLocalSearchParams<{ firstTime?: string }>();
   const user = useAuthStore((s) => s.user);
   const login = useAuthStore((s) => s.login);
@@ -107,8 +108,8 @@ export default function OnboardingProfileScreen() {
   const avatarSource = avatarUri ? { uri: avatarUri } : PLACEHOLDER_AVATAR;
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <SafeAreaView style={globalStyles.startContainer}>
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={headerHeight} style={{ flex: 1 }}>
+      <View style={globalStyles.startContainer}>
         <ScrollView
           contentContainerStyle={styles.paddingGeral}
           keyboardShouldPersistTaps="handled"
@@ -165,7 +166,7 @@ export default function OnboardingProfileScreen() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
 }

@@ -1,7 +1,6 @@
 import { Colors } from '@/src/constants/Colors';
 import { Feather } from '@expo/vector-icons';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SUPPORT_OPTIONS = [
   {
@@ -61,7 +60,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 export default function PsychologicalSupport() {
   return (
-    <SafeAreaView style={{ flex: 1  }} edges={['top']}>
+    <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         <View style={styles.heroBanner}>
@@ -115,7 +114,7 @@ export default function PsychologicalSupport() {
         </View>
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

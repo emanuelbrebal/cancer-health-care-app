@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Platform, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
@@ -106,135 +105,133 @@ export default function CalendarioInterativo() {
     : 0;
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
-          {/* Cabeçalho */}
-          <View style={[globalStyles.titleContainer, { paddingHorizontal: 20 }]}>
-            <Text style={[globalStyles.textPrimary, { fontSize: 24, fontWeight: 'bold' }]}>Meu Calendário</Text>
+        {/* Cabeçalho */}
+        <View style={[globalStyles.titleContainer, { paddingHorizontal: 20 }]}>
+          <Text style={[globalStyles.textPrimary, { fontSize: 24, fontWeight: 'bold' }]}>Meu Calendário</Text>
 
-            {/* Campanha do mês */}
-            {campaign && (
-              <View style={[styles.campaignCard, { backgroundColor: campaign.bgColor, borderColor: campaign.borderColor }]}>
-                <Text style={{ fontSize: 24 }}>{campaign.emoji}</Text>
-                <View style={{ marginLeft: 12, flex: 1 }}>
-                  <Text style={[styles.campaignTitle, { color: campaign.titleColor }]}>{campaign.title}</Text>
-                  <Text style={[styles.campaignSubtitle, { color: campaign.subtitleColor }]}>{campaign.subtitle}</Text>
-                </View>
+          {/* Campanha do mês */}
+          {campaign && (
+            <View style={[styles.campaignCard, { backgroundColor: campaign.bgColor, borderColor: campaign.borderColor }]}>
+              <Text style={{ fontSize: 24 }}>{campaign.emoji}</Text>
+              <View style={{ marginLeft: 12, flex: 1 }}>
+                <Text style={[styles.campaignTitle, { color: campaign.titleColor }]}>{campaign.title}</Text>
+                <Text style={[styles.campaignSubtitle, { color: campaign.subtitleColor }]}>{campaign.subtitle}</Text>
               </View>
-            )}
-          </View>
+            </View>
+          )}
+        </View>
 
-          {/* Calendário */}
-          <View style={styles.calendarCard}>
-            <Calendar
-              markingType="multi-dot"
-              markedDates={markedDates}
-              onDayPress={handleDayPress}
-              theme={{
-                calendarBackground: '#FFF',
-                textSectionTitleColor: '#b6c1cd',
-                selectedDayBackgroundColor: Colors.purplePrimary,
-                selectedDayTextColor: '#FFF',
-                todayTextColor: Colors.purplePrimary,
-                dayTextColor: '#2d4150',
-                textDisabledColor: '#d9e1e8',
-                dotColor: Colors.purplePrimary,
-                arrowColor: Colors.purplePrimary,
-                monthTextColor: Colors.purplePrimary,
-                textDayFontWeight: '300',
-                textMonthFontWeight: 'bold',
-                textDayHeaderFontWeight: '300',
-                textDayFontSize: 16,
-                textMonthFontSize: 18,
-                textDayHeaderFontSize: 13,
-              }}
-            />
-          </View>
+        {/* Calendário */}
+        <View style={styles.calendarCard}>
+          <Calendar
+            markingType="multi-dot"
+            markedDates={markedDates}
+            onDayPress={handleDayPress}
+            theme={{
+              calendarBackground: '#FFF',
+              textSectionTitleColor: '#b6c1cd',
+              selectedDayBackgroundColor: Colors.purplePrimary,
+              selectedDayTextColor: '#FFF',
+              todayTextColor: Colors.purplePrimary,
+              dayTextColor: '#2d4150',
+              textDisabledColor: '#d9e1e8',
+              dotColor: Colors.purplePrimary,
+              arrowColor: Colors.purplePrimary,
+              monthTextColor: Colors.purplePrimary,
+              textDayFontWeight: '300',
+              textMonthFontWeight: 'bold',
+              textDayHeaderFontWeight: '300',
+              textDayFontSize: 16,
+              textMonthFontSize: 18,
+              textDayHeaderFontSize: 13,
+            }}
+          />
+        </View>
 
-          {/* Módulo de métricas */}
-          <View style={{ paddingHorizontal: 20, marginTop: 8 }}>
-            <Text style={[globalStyles.title, { marginBottom: 14 }]}>Progresso do Tratamento</Text>
+        {/* Módulo de métricas */}
+        <View style={{ paddingHorizontal: 20, marginTop: 8 }}>
+          <Text style={[globalStyles.title, { marginBottom: 14 }]}>Progresso do Tratamento</Text>
 
-            {treatments.length === 0 ? (
-              <View style={styles.emptyMetrics}>
-                <Ionicons name="medkit-outline" size={32} color="#CCC" />
-                <Text style={styles.emptyMetricsText}>Nenhum tratamento ativo. Adicione um na tela de Tratamentos.</Text>
+          {treatments.length === 0 ? (
+            <View style={styles.emptyMetrics}>
+              <Ionicons name="medkit-outline" size={32} color="#CCC" />
+              <Text style={styles.emptyMetricsText}>Nenhum tratamento ativo. Adicione um na tela de Tratamentos.</Text>
+            </View>
+          ) : (
+            <>
+              {treatments.map((t, idx) => {
+                const prog = getProgress(t);
+                const daysLeft = getDaysRemaining(t);
+                const color = DOT_COLORS[idx % DOT_COLORS.length];
+                return (
+                  <View key={t.id} style={styles.metricCard}>
+                    <View style={styles.metricHeader}>
+                      <View style={[styles.metricDot, { backgroundColor: color }]} />
+                      <Text style={styles.metricName} numberOfLines={1}>{t.nome}</Text>
+                      <Text style={styles.metricPercent}>{prog}%</Text>
+                    </View>
+                    <View style={styles.progressBar}>
+                      <View style={[styles.progressFill, { width: `${prog}%`, backgroundColor: color }]} />
+                    </View>
+                    <Text style={styles.metricSubText}>{t.horaInicio} · {t.frequencia} · {daysLeft} dias restantes</Text>
+                  </View>
+                );
+              })}
+
+              <View style={styles.motivationalCard}>
+                <Text style={styles.motivationalText}>
+                  {avgProgress >= 80
+                    ? `"Incrível! Você está em ${avgProgress}% do seu ciclo. Continue assim!"`
+                    : avgProgress >= 50
+                    ? `"Você já está em ${avgProgress}% — mais da metade do caminho!"`
+                    : `"Cada dia conta. Você já está em ${avgProgress}% do tratamento. Não desista!"`}
+                </Text>
+              </View>
+            </>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Modal de eventos do dia */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
+          <View style={styles.modalSheet}>
+            <View style={styles.modalHandle} />
+            <Text style={styles.modalTitle}>
+              {selectedDay ? new Date(selectedDay + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }) : ''}
+            </Text>
+
+            {dayTreatments.length === 0 ? (
+              <View style={styles.noEventsContainer}>
+                <Ionicons name="calendar-outline" size={32} color="#CCC" />
+                <Text style={styles.noEventsText}>Sem tratamentos neste dia.</Text>
               </View>
             ) : (
-              <>
-                {treatments.map((t, idx) => {
-                  const prog = getProgress(t);
-                  const daysLeft = getDaysRemaining(t);
-                  const color = DOT_COLORS[idx % DOT_COLORS.length];
-                  return (
-                    <View key={t.id} style={styles.metricCard}>
-                      <View style={styles.metricHeader}>
-                        <View style={[styles.metricDot, { backgroundColor: color }]} />
-                        <Text style={styles.metricName} numberOfLines={1}>{t.nome}</Text>
-                        <Text style={styles.metricPercent}>{prog}%</Text>
-                      </View>
-                      <View style={styles.progressBar}>
-                        <View style={[styles.progressFill, { width: `${prog}%`, backgroundColor: color }]} />
-                      </View>
-                      <Text style={styles.metricSubText}>{t.horaInicio} · {t.frequencia} · {daysLeft} dias restantes</Text>
-                    </View>
-                  );
-                })}
-
-                <View style={styles.motivationalCard}>
-                  <Text style={styles.motivationalText}>
-                    {avgProgress >= 80
-                      ? `"Incrível! Você está em ${avgProgress}% do seu ciclo. Continue assim!"`
-                      : avgProgress >= 50
-                      ? `"Você já está em ${avgProgress}% — mais da metade do caminho!"`
-                      : `"Cada dia conta. Você já está em ${avgProgress}% do tratamento. Não desista!"`}
-                  </Text>
+              dayTreatments.map((t, idx) => (
+                <View key={t.id} style={[styles.eventItem, { borderLeftColor: DOT_COLORS[treatments.indexOf(t) % DOT_COLORS.length] }]}>
+                  <Text style={styles.eventName}>💊 {t.nome}</Text>
+                  <Text style={styles.eventDetail}>Lembretes: {getDayNotificationTimes(t).join(' · ')}</Text>
+                  <Text style={styles.eventDetail}>Frequência: {t.frequencia}</Text>
+                  {t.nomeMedico ? <Text style={styles.eventDetail}>Dr(a). {t.nomeMedico}</Text> : null}
                 </View>
-              </>
+              ))
             )}
+
+            <TouchableOpacity style={styles.closeBtn} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeBtnText}>Fechar</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-
-        {/* Modal de eventos do dia */}
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
-            <View style={styles.modalSheet}>
-              <View style={styles.modalHandle} />
-              <Text style={styles.modalTitle}>
-                {selectedDay ? new Date(selectedDay + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }) : ''}
-              </Text>
-
-              {dayTreatments.length === 0 ? (
-                <View style={styles.noEventsContainer}>
-                  <Ionicons name="calendar-outline" size={32} color="#CCC" />
-                  <Text style={styles.noEventsText}>Sem tratamentos neste dia.</Text>
-                </View>
-              ) : (
-                dayTreatments.map((t, idx) => (
-                  <View key={t.id} style={[styles.eventItem, { borderLeftColor: DOT_COLORS[treatments.indexOf(t) % DOT_COLORS.length] }]}>
-                    <Text style={styles.eventName}>💊 {t.nome}</Text>
-                    <Text style={styles.eventDetail}>Lembretes: {getDayNotificationTimes(t).join(' · ')}</Text>
-                    <Text style={styles.eventDetail}>Frequência: {t.frequencia}</Text>
-                    {t.nomeMedico ? <Text style={styles.eventDetail}>Dr(a). {t.nomeMedico}</Text> : null}
-                  </View>
-                ))
-              )}
-
-              <TouchableOpacity style={styles.closeBtn} onPress={() => setModalVisible(false)}>
-                <Text style={styles.closeBtnText}>Fechar</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </TouchableOpacity>
+      </Modal>
+    </View>
   );
 }
 

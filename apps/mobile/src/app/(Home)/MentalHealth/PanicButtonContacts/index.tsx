@@ -1,17 +1,15 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import EmergencyContacts from '@/src/components/ui/Buttons/Overlay/PanicButton/EmergencyContacts';
 import { EmergencyContactsData } from '@/src/constants/Mocks/mockEmergencyContacts';
 import { Header } from '@/src/components/ds/Header';
 import { color, iconSize, layout, radius, space, typography } from '@/src/constants/tokens';
 
 export default function PanicButtonContacts() {
-  const headerHeight = useHeaderHeight();
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <Header
@@ -35,7 +33,7 @@ export default function PanicButtonContacts() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.md,
+    paddingBottom: space.xl,
     gap: space.sm,
   },
   alertBanner: {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, Linking } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { globalStyles } from '@/src/styles/global';
 import { AccordionCard } from '@/src/components/ui/Accordion/AccordionCard';
 
@@ -27,7 +26,6 @@ const REPORT_CHANNELS = [
 ];
 
 export default function ReportsAreaScreen() {
-  const headerHeight = useHeaderHeight();
   const [expandedAwareness, setExpandedAwareness] = useState<string | null>(null);
   const [expandedPrevention, setExpandedPrevention] = useState<string | null>(null);
   const [expandedChannel, setExpandedChannel] = useState<string | null>(null);
@@ -47,7 +45,7 @@ export default function ReportsAreaScreen() {
   };
 
   return (
-    <View style={[globalStyles.startContainer, { paddingTop: headerHeight }]}>
+    <View style={globalStyles.startContainer}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
         <View style={styles.heroBanner}>

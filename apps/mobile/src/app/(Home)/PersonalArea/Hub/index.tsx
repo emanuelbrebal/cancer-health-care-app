@@ -2,13 +2,12 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { UserProfileRow } from '@/src/components/ui/UserProfile/ProfileRow';
 import { NavItemCard } from '@/src/components/ds/Card';
 import { Header } from '@/src/components/ds/Header';
 import { Button } from '@/src/components/ds/Button';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { color, layout, space } from '@/src/constants/tokens';
+import { color, space } from '@/src/constants/tokens';
 
 // v1: cada card com uma cor livre (azul, verde, vermelho) — 3 de 5 abaixo de 4.5:1.
 // Agora todos usam o NavItemCard do DS; a diferenciação fica no ícone e no subtítulo.
@@ -25,11 +24,10 @@ const SUPPORT: { title: string; subtitle: string; icon: keyof typeof Feather.gly
 
 export default function HubPersonalAreaScreen() {
   const user = useAuthStore((s) => s.user);
-  const headerHeight = useHeaderHeight();
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <UserProfileRow name={user?.name ?? 'Usuário'} email={user?.email ?? ''} />
@@ -44,16 +42,30 @@ export default function HubPersonalAreaScreen() {
 
       <View style={styles.section}>
         <Header title="Minha jornada" />
-        {JOURNEY.map((item) => (
-          <NavItemCard key={item.route} {...item} onPress={() => router.push(item.route as any)} />
-        ))}
+        <View>
+          {JOURNEY.map((item, index) => (
+            <NavItemCard
+              key={item.route}
+              {...item}
+              divider={index < JOURNEY.length - 1}
+              onPress={() => router.push(item.route as any)}
+            />
+          ))}
+        </View>
       </View>
 
       <View style={styles.section}>
         <Header title="Apoio" />
-        {SUPPORT.map((item) => (
-          <NavItemCard key={item.route} {...item} onPress={() => router.push(item.route as any)} />
-        ))}
+        <View>
+          {SUPPORT.map((item, index) => (
+            <NavItemCard
+              key={item.route}
+              {...item}
+              divider={index < SUPPORT.length - 1}
+              onPress={() => router.push(item.route as any)}
+            />
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -62,7 +74,7 @@ export default function HubPersonalAreaScreen() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl * 2,
+    paddingBottom: space.xl,
     gap: space.md,
     backgroundColor: color.bg.surface,
   },

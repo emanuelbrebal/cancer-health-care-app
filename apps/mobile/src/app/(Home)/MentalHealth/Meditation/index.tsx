@@ -3,7 +3,6 @@ import { MediaList } from '@/src/components/ui/Media/MediaList';
 import { meditationData } from '@/src/constants/Mocks/mockDataOncologyRecomendations';
 import { Feather } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TIPS = [
   { icon: 'wind' as const,    text: 'Respire lenta e profundamente' },
@@ -20,7 +19,7 @@ const meditationWithMeta = meditationData.map((item, idx) => ({
 
 export default function Meditation() {
   return (
-    <SafeAreaView style={{ flex: 1  }} edges={['top']}>
+    <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         <View style={styles.heroBanner}>
@@ -63,7 +62,7 @@ export default function Meditation() {
         </View>
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

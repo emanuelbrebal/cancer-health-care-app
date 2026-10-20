@@ -75,7 +75,8 @@ export const globalStyles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'transparent',
         justifyContent: 'flex-start',
-        paddingTop: space.xl,
+        // O header agora é opaco e fora do conteúdo; não precisa mais de folga para ele.
+        paddingTop: space.xs,
         paddingHorizontal: space.sm,
     },
 

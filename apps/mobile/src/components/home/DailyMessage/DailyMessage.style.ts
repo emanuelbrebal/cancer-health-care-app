@@ -1,44 +1,50 @@
-import { color, layout, radius, space, typography } from "@/src/constants/tokens";
+import { Colors } from "@/src/constants/Colors";
+import { fontFamily } from "@/src/constants/tokens";
 import { StyleSheet } from "react-native";
 
 export const DailyMessageStyles = StyleSheet.create({
   container: {
-    marginHorizontal: space.sm,
+    marginHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: space.sm,
-    gap: space.sm,
-    borderRadius: radius.xl,
-    borderWidth: layout.borderStrong,
-    borderColor: color.border.default,
-    backgroundColor: color.bg.highlight,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    gap: 12,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: Colors.cyanSecondary,
+    backgroundColor: Colors.cyan
   },
   titleContainer: {
     width: '100%'
   },
   helloMessageContainer: {
-    flex: 1,
-    gap: space.xxs,
-  },
-  helloMessageNoImage: {
-    paddingHorizontal: space.xs,
+    paddingLeft: 8,
+    width: '72%',
+    gap: 4,
   },
   imageContainer: {
+    width: '28%',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
-    height: layout.mascotSm,
-    width: layout.mascotSm,
+    height: 84,
+    width: 84,
     transform: [{ scaleX: -1 }],
   },
   text: {
-    ...typography.subtitle,
-    // v1: #0088FF sobre menta (3.3:1). Agora texto de marca (≥ 4.5:1).
-    color: color.text.brand,
+    fontFamily: fontFamily.bold,
+    fontSize: 18,
+    lineHeight: 24,
+    // Azul #0088FF sobre o menta tinha contraste baixo; roxo da marca fica legível.
+    color: Colors.purpleSecondary
   },
   subtext: {
-    ...typography.body,
-    color: color.text.primary,
-  },
+    fontFamily: fontFamily.regular,
+    fontSize: 14,
+    lineHeight: 20,
+    color: Colors.text.primary,
+  }
 });

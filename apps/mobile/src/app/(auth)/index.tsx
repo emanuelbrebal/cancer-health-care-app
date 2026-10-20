@@ -30,7 +30,7 @@ export default function WelcomeScreen() {
   return (
     <AuthLayout
       textPrimary="Bem-vindo(a)"
-      textSecondary="Lorem ipsum dolor sit amet, vamos cuidar de você hoje."
+      textSecondary="Vamos cuidar de você hoje."
     >
       <ImageContainer imagePath={require('@assets/images/Home/blueMascotPlaceholder.png')} reverted={false} />
 

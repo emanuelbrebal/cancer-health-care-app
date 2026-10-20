@@ -9,6 +9,6 @@ export function PanicButton() {
     };
 
     return (
-        <OverlayButton onPress={showPanicContacts} iconName="alert-circle-outline" />
+        <OverlayButton onPress={showPanicContacts} iconName="alert-circle-outline" accessibilityLabel="Botão de pânico: contatos de emergência" />
     );
 }

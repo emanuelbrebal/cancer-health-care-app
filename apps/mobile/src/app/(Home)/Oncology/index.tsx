@@ -1,9 +1,8 @@
 import { Header } from '@/src/components/ds/Header';
 import { HorizontalBanner } from '@/src/components/ui/Images/HorizontalBanner';
 import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
-import { layout, space } from '@/src/constants/tokens';
+import { space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { ScrollView, StyleSheet } from 'react-native';
 
 // Ícones vetoriais distintos por tópico e subtítulos que antecipam o conteúdo (P12).
@@ -21,11 +20,10 @@ const rightsItems: CardItem[] = [
 ];
 
 export default function HomeOncology() {
-  const headerHeight = useHeaderHeight();
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <HorizontalBanner imagePath={require('@assets/images/Banners/oncologyBanner.png')} />
@@ -42,7 +40,7 @@ export default function HomeOncology() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
-    paddingBottom: layout.tabBarHeight + space.xl,
+    paddingBottom: space.xl,
     gap: space.sm,
   },
 });

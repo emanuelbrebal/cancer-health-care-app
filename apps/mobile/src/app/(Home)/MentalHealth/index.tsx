@@ -4,7 +4,6 @@ import NavigationGrid from '@/src/components/ui/Navigation/NavigationGrid';
 import { layout, space } from '@/src/constants/tokens';
 import { CardItem } from '@/src/interfaces/CardItem';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { useHeaderHeight } from 'expo-router/react-navigation';
 import { ScrollView, StyleSheet } from 'react-native';
 import { UserRole } from '../../../../../../packages/shared/types/user';
 
@@ -23,7 +22,6 @@ const caregiverItem: CardItem = {
 
 export default function HomeMentalHealth() {
   const user = useAuthStore((s) => s.user);
-  const headerHeight = useHeaderHeight();
 
   // v1 escondia o conteúdo de cuidadores de quem não tinha login (P13).
   // Agora os dois ficam visíveis; o do papel do usuário aparece primeiro.
@@ -33,7 +31,7 @@ export default function HomeMentalHealth() {
 
   return (
     <ScrollView
-      contentContainerStyle={[styles.content, { paddingTop: headerHeight }]}
+      contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
       <HorizontalBanner imagePath={require('@assets/images/Banners/mentalHealthAreaBanner.png')} />
@@ -50,6 +48,7 @@ export default function HomeMentalHealth() {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: space.sm,
+    // Folga para o botão de pânico flutuante não cobrir o último item.
     paddingBottom: layout.tabBarHeight + space.xl * 2,
     gap: space.sm,
   },
