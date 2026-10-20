@@ -150,7 +150,7 @@ export default function DesignSystemScreen() {
           <Text style={styles.body}>Alvo de toque mínimo: {touch.min}×{touch.min} · confortável: {touch.comfortable}</Text>
         </Section>
 
-        <Section title="Button" subtitle="4 variantes × 5 estados. Altura mínima 48.">
+        <Section title="Button" subtitle="4 variantes × 6 estados. Altura mínima 48.">
           {VARIANTS.map((variant) => (
             <View key={variant} style={styles.buttonBlock}>
               <Text style={styles.label}>{variant}</Text>
