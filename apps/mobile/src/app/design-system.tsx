@@ -18,9 +18,9 @@ import { ForcedState, useUxDebugStore } from '@/src/store/useUxDebugStore';
 import { contrastRatio, WCAG_AA_TEXT } from '@/src/utils/contrast';
 
 const VARIANTS: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger'];
-const STATES: ButtonVisualState[] = ['default', 'pressed', 'focus', 'disabled', 'loading'];
+const STATES: ButtonVisualState[] = ['default', 'hover', 'pressed', 'focus', 'disabled', 'loading'];
 const STATE_LABEL: Record<ButtonVisualState, string> = {
-  default: 'Default', pressed: 'Pressed', focus: 'Focus', disabled: 'Disabled', loading: 'Loading',
+  default: 'Default', hover: 'Hover (web)', pressed: 'Pressed', focus: 'Focus', disabled: 'Disabled', loading: 'Loading',
 };
 const FORCED: { value: ForcedState; label: string }[] = [
   { value: 'auto', label: 'Real' },
@@ -150,7 +150,7 @@ export default function DesignSystemScreen() {
           <Text style={styles.body}>Alvo de toque mínimo: {touch.min}×{touch.min} · confortável: {touch.comfortable}</Text>
         </Section>
 
-        <Section title="Button" subtitle="4 variantes × 5 estados. Altura mínima 48.">
+        <Section title="Button" subtitle="4 variantes × 6 estados. Altura mínima 48.">
           {VARIANTS.map((variant) => (
             <View key={variant} style={styles.buttonBlock}>
               <Text style={styles.label}>{variant}</Text>

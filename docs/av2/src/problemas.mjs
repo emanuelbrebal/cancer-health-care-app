@@ -1,5 +1,6 @@
 // Avaliação heurística da v1 (commit 92e5d3c). Fonte única para o .md e o .docx.
 // sev: escala de Nielsen 0–4 (0 = não é problema, 1 = cosmético, 2 = menor, 3 = maior, 4 = catástrofe).
+// correcao = o que a v2 fez. v3 (opcional) = como a correção ficou depois da Iteração 2; status padrão 'Corrigido (v2)'.
 
 export const HEURISTICAS = {
   H1: 'Visibilidade do status do sistema',
@@ -29,6 +30,9 @@ export const problemas = [
     evidencia: 'MentalHealth/index.tsx:83 (único uso); print 08-saude-mental',
     correcao: 'Botão "SOS" com rótulo textual fixo no layout das abas (Início, Oncologia, Saúde Mental e subtelas), a 1 toque de qualquer tela pública, com accessibilityLabel "Ajuda urgente".',
     onde: 'components/ds/SosButton.tsx · (Home)/_layout.tsx',
+    status: "Revisado (v3)",
+    v3: "Botão de pânico de volta ao visual original (círculo roxo com \"!\"), agora em todas as telas da área de Saúde Mental e oculto só na lista de contatos, com accessibilityLabel \"Botão de pânico: contatos de emergência\". O SOS global saiu (ver I2-02).",
+    ondeV3: "ui/Buttons/Overlay/PanicButton · MentalHealth/_layout.tsx",
   },
   {
     id: 'P02', tela: 'Início, Oncologia, Saúde Mental', h: ['H1'], sev: 4,
@@ -36,6 +40,9 @@ export const problemas = [
     evidencia: 'HomeNavigationGrid.tsx:40, NavigationGrid.tsx:53; prints 03-inicio, 04-oncologia, 08-saude-mental',
     correcao: 'Grades renderizadas com map + flexWrap (sem lista virtualizada aninhada); funcionam igual no nativo e no web.',
     onde: 'components/ui/Navigation/*.tsx',
+    status: "Corrigido (v3)",
+    v3: "Grades de Oncologia e Saúde Mental com map + flexWrap (v2). Na Home restaurada, a causa raiz (flex:0 vira \"flex: 0 1 0%\" no web) foi removida sem trocar o layout.",
+    ondeV3: "NavigationGrid.tsx · HomeNavigationGrid.tsx",
   },
   {
     id: 'P03', tela: 'Global (botões, links, FAB)', h: ['H4'], sev: 3,
@@ -50,6 +57,9 @@ export const problemas = [
     evidencia: 'CommonScreenOptions.ts:5 (headerTintColor white); prints 05-lazer, 06-livros (sem seta visível), 04-oncologia (título sobre o banner)',
     correcao: 'Seta e título em text.brand #4E56C0 (6.15:1), seta com rótulo acessível "Voltar", e conteúdo das telas do fluxo começando abaixo do header.',
     onde: 'constants/CommonScreenOptions.ts · telas do fluxo',
+    status: "Corrigido (v3)",
+    v3: "Seta e título em text.brand com rótulo \"Voltar\" (v2). Na v3 o header ficou opaco e fixo, e o conteúdo começa sempre abaixo dele, sem compensação manual por tela.",
+    ondeV3: "constants/CommonScreenOptions.ts",
   },
   {
     id: 'P05', tela: 'Início (header)', h: ['H8', 'H1'], sev: 2,
@@ -57,6 +67,9 @@ export const problemas = [
     evidencia: 'HeaderLogo.tsx; (Home)/_layout.tsx:39; print 03-inicio',
     correcao: 'Logo e título em text.brand. O long-press no logo abre o Design System (atalho de dev).',
     onde: 'components/home/HeaderLogo.tsx',
+    status: "Corrigido (v3)",
+    v3: "Logo em text.brand (6.15:1). O atalho de long-press para o Design System saiu com a Home restaurada; a tela continua na rota /design-system.",
+    ondeV3: "components/home/HeaderLogo.tsx",
   },
   {
     id: 'P06', tela: 'Global', h: ['H4'], sev: 2,
@@ -78,6 +91,9 @@ export const problemas = [
     evidencia: 'Leisure/index.tsx:111 (allSettled sem tratar rejected); print evid-lazer-api-falhando',
     correcao: 'Estados explícitos: Skeleton (carregando), conteúdo (sucesso), ErrorState com "Tentar novamente" (erro) e EmptyState (vazio).',
     onde: 'hooks/useAsyncResource.ts · components/ds/States.tsx',
+    status: "Corrigido (v3)",
+    v3: "Na Home de Lazer restaurada: carregando (skeleton), erro com \"Tentar novamente\" quando as quatro buscas falham e vazio quando não há recomendações. Falha parcial mostra o que carregou.",
+    ondeV3: "Oncology/Leisure/index.tsx · hooks/useAsyncResource.ts",
   },
   {
     id: 'P09', tela: 'Livros', h: ['H9', 'H3'], sev: 2,
@@ -120,6 +136,9 @@ export const problemas = [
     evidencia: 'Mascot/index.tsx:43; print 10-mascote-gate',
     correcao: 'Cadeado nas abas restritas enquanto não há login, texto "Entre na sua conta para conversar" e botões empilhados em largura total.',
     onde: '(Home)/_layout.tsx · Mascot/index.tsx · PersonalArea/index.tsx',
+    status: "Revisado (v3)",
+    v3: "Gate com mascote, benefícios e os botões \"Entrar\" e \"Criar conta grátis\" em largura total; texto \"Entre na sua conta para conversar\". Cadeados e \"Continuar sem conta\" saíram na Iteração 2 (I2-01, I2-06).",
+    ondeV3: "components/auth/AuthGate.tsx · Mascot/index.tsx",
   },
   {
     id: 'P15', tela: 'Abas', h: ['H8', 'H4'], sev: 1, ia: true,
@@ -134,6 +153,9 @@ export const problemas = [
     evidencia: '(Home)/index.tsx:17; SoftLoginModal.tsx:116,226; print 01-inicio-modal',
     correcao: 'A escolha é lembrada (AsyncStorage). "Agora não" vira um botão secundário de 48 px com contraste ≥ 4.5:1, mais um botão fechar com rótulo.',
     onde: 'components/home/SoftLoginModal',
+    status: "Corrigido (v3)",
+    v3: "\"Agora não\" lembrado (AsyncStorage), reaplicado na Home restaurada. Botão secundário de 48 px com contraste ≥ 4.5:1 e botão fechar rotulado.",
+    ondeV3: "(Home)/index.tsx · SoftLoginModal",
   },
   {
     id: 'P17', tela: 'Login', h: ['H1'], sev: 2,

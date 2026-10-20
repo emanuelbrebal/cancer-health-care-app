@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 
 base = Path(__file__).resolve().parent.parent / 'prints'
-for stage in ('antes', 'depois'):
+for stage in ('antes', 'v2', 'depois'):
     out = base / 'docx' / stage
     out.mkdir(parents=True, exist_ok=True)
     for png in sorted((base / stage).glob('*.png')):

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "../ui/Images/Avatar";
 import { useAuthStore } from "@/src/store/useAuthStore";
+import { color } from "@/src/constants/tokens";
 
 export function HeaderLogo() {
    
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     appName: {
-        color: 'white',
+        // Branco sobre o topo claro do gradiente ficava ~1.1:1 (P05).
+        color: color.text.brand,
         fontWeight: 'bold',
         fontSize: 14,
         letterSpacing: 1,

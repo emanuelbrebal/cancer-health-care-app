@@ -6,15 +6,31 @@ import { CardItem } from '@/src/interfaces/CardItem';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { globalStyles } from '@/src/styles/global';
 import { Colors } from '@/src/constants/Colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+// Lembra que a pessoa escolheu "Agora não" para não reabrir o modal a cada visita (P16).
+const SOFT_LOGIN_DISMISSED_KEY = 'oncomente:soft-login-dismissed';
 
 export default function HomePage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const [modalVisible, setModalVisible] = useState(!isAuthenticated);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) return;
+    AsyncStorage.getItem(SOFT_LOGIN_DISMISSED_KEY)
+      .then((dismissed) => setModalVisible(!dismissed))
+      .catch(() => setModalVisible(true));
+  }, [isAuthenticated]);
+
+  function dismissModal() {
+    setModalVisible(false);
+    AsyncStorage.setItem(SOFT_LOGIN_DISMISSED_KEY, new Date().toISOString()).catch(() => {});
+  }
 
   const homeNavigationItems: CardItem[] = [
     { id: '1', title: 'Oncologia',       icon: require('@assets/images/Home/oncologyAreaIcon.png'),  route: '/Oncology' },
@@ -39,7 +55,7 @@ export default function HomePage() {
       {!isAuthenticated && (
         <SoftLoginModal
           visible={modalVisible}
-          onDismiss={() => setModalVisible(false)}
+          onDismiss={dismissModal}
         />
       )}
     </SafeAreaView>

@@ -4,7 +4,7 @@ import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, View, ViewSt
 import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-export type ButtonVisualState = 'default' | 'pressed' | 'focus' | 'disabled' | 'loading';
+export type ButtonVisualState = 'default' | 'hover' | 'pressed' | 'focus' | 'disabled' | 'loading';
 
 export interface ButtonProps {
   title: string;
@@ -22,11 +22,12 @@ export interface ButtonProps {
   testID?: string;
 }
 
-const VARIANTS: Record<ButtonVariant, { bg: string; bgPressed: string; fg: string; border: string }> = {
-  primary: { bg: color.action.primary, bgPressed: color.action.primaryPressed, fg: color.text.onAction, border: color.action.primary },
-  secondary: { bg: color.bg.surface, bgPressed: color.bg.brandSubtle, fg: color.text.link, border: color.text.link },
-  ghost: { bg: 'transparent', bgPressed: color.bg.brandSubtle, fg: color.text.link, border: 'transparent' },
-  danger: { bg: color.action.danger, bgPressed: color.action.dangerPressed, fg: color.text.onAction, border: color.action.danger },
+// bgHover só aparece com ponteiro (web); no toque, o estado é pressed.
+const VARIANTS: Record<ButtonVariant, { bg: string; bgHover: string; bgPressed: string; fg: string; border: string }> = {
+  primary: { bg: color.action.primary, bgHover: color.action.primaryHover, bgPressed: color.action.primaryPressed, fg: color.text.onAction, border: color.action.primary },
+  secondary: { bg: color.bg.surface, bgHover: color.bg.subtle, bgPressed: color.bg.brandSubtle, fg: color.text.link, border: color.text.link },
+  ghost: { bg: 'transparent', bgHover: color.bg.subtle, bgPressed: color.bg.brandSubtle, fg: color.text.link, border: 'transparent' },
+  danger: { bg: color.action.danger, bgHover: color.action.dangerHover, bgPressed: color.action.dangerPressed, fg: color.text.onAction, border: color.action.danger },
 };
 
 export function Button({
@@ -44,6 +45,7 @@ export function Button({
   testID,
 }: ButtonProps) {
   const [focused, setFocused] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const v = VARIANTS[variant];
   const isLoading = loading || forceState === 'loading';
   const isDisabled = disabled || forceState === 'disabled';
@@ -55,6 +57,8 @@ export function Button({
       disabled={inactive}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}
@@ -63,10 +67,12 @@ export function Button({
       style={({ pressed }) => {
         const isPressed = forceState ? forceState === 'pressed' : pressed;
         const isFocused = forceState ? forceState === 'focus' : focused;
+        const isHovered = forceState ? forceState === 'hover' : hovered && !inactive;
         return [
           styles.base,
           fullWidth && styles.fullWidth,
           { backgroundColor: v.bg, borderColor: v.border },
+          isHovered && { backgroundColor: v.bgHover },
           isPressed && { backgroundColor: v.bgPressed, transform: [{ scale: 0.98 }] },
           isFocused && styles.focus,
           isDisabled && styles.disabled,

@@ -8,6 +8,7 @@ export const palette = {
   brand200: '#DCC8F5',
   brand500: '#9B5DE0', // identidade (acento): ícones grandes, bordas, foco. Não usar como fundo de texto.
   brand700: '#7A3FC4', // ação primária: fundo de botão, links
+  brand750: '#6A35AF', // hover da ação primária (web)
   brand800: '#5B2E99',
   indigo600: '#4E56C0',
   lilac400: '#D78FEE',
@@ -23,6 +24,7 @@ export const palette = {
 
   danger50: '#FDECEA',
   danger700: '#B3261E',
+  danger750: '#A0221B',
   danger800: '#8C1D18',
   success50: '#E8F5EC',
   success700: '#1E7A3C',
@@ -68,8 +70,10 @@ export const color = {
   },
   action: {
     primary: palette.brand700,
+    primaryHover: palette.brand750,
     primaryPressed: palette.brand800,
     danger: palette.danger700,
+    dangerHover: palette.danger750,
     dangerPressed: palette.danger800,
     disabledBg: palette.neutral200,
   },
@@ -190,9 +194,12 @@ export const contrastPairs: { fg: string; bg: string; uso: string }[] = [
   { fg: color.text.link, bg: color.bg.brandSubtle, uso: 'Link sobre superfície lilás' },
   { fg: color.text.brandStrong, bg: color.bg.brandMuted, uso: 'Chips e cards lilás' },
   { fg: color.text.onAction, bg: color.action.primary, uso: 'Botão primário (default)' },
+  { fg: color.text.onAction, bg: color.action.primaryHover, uso: 'Botão primário (hover, web)' },
   { fg: color.text.onAction, bg: color.action.primaryPressed, uso: 'Botão primário (pressed)' },
   { fg: color.text.onAction, bg: color.action.danger, uso: 'Botão SOS / perigo' },
+  { fg: color.text.onAction, bg: color.action.dangerHover, uso: 'Botão perigo (hover, web)' },
   { fg: color.text.onAction, bg: color.action.dangerPressed, uso: 'Botão SOS (pressed)' },
+  { fg: color.text.link, bg: color.bg.subtle, uso: 'Botão secundário/ghost (hover, web)' },
   { fg: color.text.disabled, bg: color.action.disabledBg, uso: 'Botão desabilitado' },
   { fg: color.text.danger, bg: color.bg.surface, uso: 'Mensagem de erro de campo' },
   { fg: color.text.danger, bg: color.bg.danger, uso: 'ErrorState / toast de erro' },
