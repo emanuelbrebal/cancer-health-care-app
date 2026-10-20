@@ -51,6 +51,7 @@ export default function HomeLayout() {
                 tabBarActiveTintColor: color.action.primary,
                 tabBarInactiveTintColor: color.text.secondary,
                 tabBarItemStyle: { paddingHorizontal: 0 },
+                tabBarHideOnKeyboard: true,
                 tabBarStyle: {
                     backgroundColor: color.bg.surface,
                     height: layout.tabBarHeight,

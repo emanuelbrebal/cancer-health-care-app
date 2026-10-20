@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, KeyboardAvoidingView, Modal } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
@@ -50,6 +51,7 @@ async function createCalendarEvent(nome: string, horaInicio: string, dataFim: st
 }
 
 export default function CreateTreatment() {
+  const headerHeight = useHeaderHeight();
   const router = useRouter();
 
   const [nome, setNome] = useState('');
@@ -111,7 +113,7 @@ export default function CreateTreatment() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding" keyboardVerticalOffset={headerHeight}
       style={globalStyles.startContainer}
     >
       <ScrollView

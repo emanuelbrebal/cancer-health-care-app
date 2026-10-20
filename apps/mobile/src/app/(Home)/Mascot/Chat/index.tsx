@@ -6,7 +6,6 @@ import {
   TextInput,
   Pressable,
   KeyboardAvoidingView,
-  Platform,
   StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -199,9 +198,9 @@ export default function MascotChat() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding"
       style={styles.flex}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? headerHeight : 0}
+      keyboardVerticalOffset={headerHeight}
     >
       {/* v1: sem aviso de escopo e limite só exibido quando faltavam 2 mensagens (P20). */}
       <View style={styles.infoBar} accessibilityRole="text">

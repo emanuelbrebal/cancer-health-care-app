@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { globalStyles, baseText } from '@/src/styles/global';
 import { InputWithIcon } from '@/src/components/ui/Inputs/InputWithIcon';
 import { router } from 'expo-router';
@@ -13,6 +14,7 @@ interface ChangePasswordErrors {
 }
 
 export default function ChangePasswordScreen() {
+  const headerHeight = useHeaderHeight();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,7 +55,7 @@ export default function ChangePasswordScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={headerHeight} style={{ flex: 1 }}>
       <View style={globalStyles.scrollContainer}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 

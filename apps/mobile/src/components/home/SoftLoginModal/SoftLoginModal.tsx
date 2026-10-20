@@ -8,7 +8,7 @@ import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
-  Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View,
+  Image, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, View,
 } from 'react-native';
 
 interface Props {
@@ -59,12 +59,13 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
 
   return (
     <Modal visible={visible} animationType="slide" transparent statusBarTranslucent onRequestClose={onDismiss}>
-      <View style={styles.overlay}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.sheet}
-        >
-          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <KeyboardAvoidingView behavior="padding" style={styles.overlay}>
+        <View style={styles.sheet}>
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <Pressable
               onPress={onDismiss}
               accessibilityRole="button"
@@ -109,8 +110,8 @@ export default function SoftLoginModal({ visible, onDismiss }: Props) {
             <Button title="Agora não" variant="ghost" onPress={onDismiss} fullWidth
               accessibilityHint="Fecha este aviso e não mostra de novo" />
           </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     maxHeight: '92%',
+    flexShrink: 1,
   },
   content: {
     paddingHorizontal: space.md,

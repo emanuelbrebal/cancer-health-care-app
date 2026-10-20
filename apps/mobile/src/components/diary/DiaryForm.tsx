@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {
-    View, Text, Pressable, ScrollView, KeyboardAvoidingView, Platform, StyleSheet, Animated,
+    View, Text, Pressable, ScrollView, KeyboardAvoidingView, StyleSheet, Animated,
 } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { useRouter } from 'expo-router';
 import { EMOTES } from '@/src/constants/Emotes';
 import { TextField } from '@/src/components/ds/TextField';
@@ -64,6 +65,7 @@ function EmoteButton({ emote, isSelected, onPress }: { emote: typeof EMOTES[0]; 
  * e botão sempre legível (v1: desabilitado com 1.3:1 de contraste, P21).
  */
 export function DiaryForm({ heading, subheading, submitLabel, initialValues, onSubmit }: DiaryFormProps) {
+    const headerHeight = useHeaderHeight();
     const router = useRouter();
     const [title, setTitle] = useState(initialValues?.title ?? '');
     const [diaryEntry, setDiaryEntry] = useState(initialValues?.content ?? '');
@@ -91,7 +93,7 @@ export function DiaryForm({ heading, subheading, submitLabel, initialValues, onS
     };
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex}>
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={headerHeight} style={styles.flex}>
             <ScrollView
                 contentContainerStyle={styles.content}
                 keyboardShouldPersistTaps="handled"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform, KeyboardAvoidingView } from 'react-native';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { toastService } from '@/src/services/toastService';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { DateInput } from '@/src/components/ui/Inputs/DateInput';
@@ -16,6 +17,7 @@ const FREQUENCIAS = [
 ];
 
 export default function EditTreatment() {
+  const headerHeight = useHeaderHeight();
   const router = useRouter();
   const { id, currentNome, currentFreq, currentHora, currentFim, currentMedico, currentContato, currentHospital } = useLocalSearchParams<{
     id: string; currentNome: string; currentFreq: string; currentHora: string;
@@ -79,7 +81,7 @@ export default function EditTreatment() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding" keyboardVerticalOffset={headerHeight}
       style={globalStyles.startContainer}
     >
       <ScrollView
