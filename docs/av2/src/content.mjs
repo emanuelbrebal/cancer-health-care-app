@@ -5,11 +5,12 @@ import { HEURISTICAS, SEVERIDADE, problemas } from './problemas.mjs';
 
 const read = (f) => JSON.parse(fs.readFileSync(new URL(f, import.meta.url), 'utf8'));
 const contrastV1 = read('./contrast-v1.json');
-const contrastV2 = read('./contrast-v2.json'); // tokens inalterados na v3: mesmos 25 pares
+const contrastV2 = read('./contrast-v2.json');
+const contrastV3 = read('./contrast-v3.json'); // v2 + 3 pares de hover
 
 const V1 = '92e5d3c';
 const V2 = 'a11b51d';
-const V3 = '6cf7d36';
+const V3 = 'b9d858a';
 const hName = (codes) => codes.map((c) => `${c} ${HEURISTICAS[c]}`).join('; ');
 const sevLabel = (s) => `${s} (${SEVERIDADE[s]})`;
 const ratio = (r) => `${r.toFixed(2)}:1`;
@@ -73,6 +74,7 @@ const iteracao2 = [
   ['I2-09', 'Lazer restaurado ao layout original (banner, título e quatro carrosséis)', 'Decisão da equipe de preservar a visibilidade das capas no carrossel original.', 'H8', '3b62e44'],
   ['I2-10', 'Texto "lorem ipsum" removido da tela de autenticação', 'Texto de preenchimento visível ao usuário.', 'H8', 'dcc3926'],
   ['I2-11', 'Regressões da restauração corrigidas sem mudar o layout: logo legível (P05), "Agora não" lembrado (P16), grade do Início no web (P02) e estados de erro e vazio no Lazer (P08)', 'Detectadas ao refazer prints e smoke test da v3: a restauração tinha trazido de volta 4 problemas da avaliação heurística.', 'H1, H3, H9', '70b61b6, d74772e, 6cf7d36, bc7e947'],
+  ['I2-12', 'Estado hover nos botões (cor mais escura no primário e no perigo; fundo neutro no secundário e no ghost)', 'O requisito pede estados default, hover e focus. No web, o botão não reagia ao ponteiro. Os 3 pares novos passam de 4.5:1.', 'H1', '30dfbd5, b9d858a'],
 ];
 
 const pendencias = [
@@ -93,6 +95,8 @@ const printsEstados = [
   ['16-livro-detalhe', 'Detalhe do livro'],
   ['24-estado-erro-lazer', 'Erro (Lazer, v3)'],
   ['23-home-deslogado', 'Início sem login'],
+  ['25-hover-design-system', 'Hover na vitrine de botões'],
+  ['26-hover-login', 'Hover no "Entrar" (web)'],
 ];
 
 export const doc = {
@@ -126,12 +130,26 @@ export const doc = {
         ['Toque', 'touch.min 44 · touch.comfortable 48 · focusRing 3', 'Alvos ≥ 44×44 (WCAG 2.5.5); botões com 48 de altura'],
       ],
     },
+    { type: 'h2', text: 'Grid e layout' },
+    { type: 'p', text: 'Layout de coluna única para celular, construído sobre a escala de espaçamento de 8. As medidas estruturais ficam em layout.* (tokens.ts).' },
+    {
+      type: 'table', size: 'sm',
+      cols: [{ h: 'Elemento', w: 24 }, { h: 'Regra', w: 46 }, { h: 'Onde', w: 30 }],
+      rows: [
+        ['Margem lateral', '16 (space.sm) nas telas de conteúdo; as linhas de lista ocupam a largura toda entre as margens', 'Oncologia, Saúde Mental, Hub e mais 10 telas'],
+        ['Largura máxima', '560 (layout.maxContentWidth), centralizado. Em tablet e web o conteúdo não se estica', 'Gate de login, modal de login, diálogos, toast'],
+        ['Colunas', '1 coluna para listas e formulários; 2 colunas (48% + espaço entre elas) na grade do Início', 'NavigationGrid · HomeNavigationGrid'],
+        ['Carrossel', 'Cards de 110×160 com 10 de espaço entre eles e encaixe por card (snap)', 'Lazer (RecomendationPager)'],
+        ['Container das áreas', 'Card branco com 93% da altura, cantos superiores de raio 50 e conteúdo recortado nas bordas', 'CommonAreasLayout'],
+        ['Faixas fixas', 'Header opaco no topo e barra de abas de 72 na base; o conteúdo rola entre as duas', '(Home)/_layout.tsx · CommonScreenOptions'],
+      ],
+    },
     { type: 'h2', text: 'Componentes e estados' },
     {
       type: 'table', size: 'sm',
       cols: [{ h: 'Componente', w: 18 }, { h: 'Estados / variantes', w: 42 }, { h: 'Acessibilidade', w: 40 }],
       rows: [
-        ['Button', 'primary, secondary, ghost, danger × default, pressed, focus, disabled, loading', 'role button, accessibilityState (disabled/busy), altura 48, spinner na cor do texto'],
+        ['Button', 'primary, secondary, ghost, danger × default, hover (web), pressed, focus, disabled, loading', 'role button, accessibilityState (disabled/busy), altura 48, spinner na cor do texto; hover só com ponteiro'],
         ['TextField', 'default, focus, preenchido, erro, disabled, senha, multilinha', 'Label sempre visível, erro com ícone e live region, botão olho com label'],
         ['Card / NavItemCard', 'Card: estático ou pressionável. NavItemCard: linha de lista com ícone, subtítulo, chevron e divisória (sem sombra nem escala), pressed', 'Nome acessível = título + subtítulo; alvo ≥ 64'],
         ['Header', 'tela / seção, com ação "Ver todos"', 'role header; ação com hitSlop'],
@@ -143,18 +161,18 @@ export const doc = {
     },
     { type: 'p', text: 'Tudo isso pode ser visto na rota /design-system (fora da navegação; acessada por URL ou deep link), que exibe cores com a razão de contraste ao lado, tipografia, espaçamento, raios, sombras e todos os componentes em todos os estados.' },
     { type: 'h2', text: 'Tabela de contraste (WCAG 2.x, mínimo 4.5:1)' },
-    { type: 'p', text: `Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: ${contrastV1.filter((r) => !r.ok).length} de ${contrastV1.length} pares reprovados. Na v2: ${contrastV2.filter((r) => r.ok).length} de ${contrastV2.length} aprovados. A v3 não alterou tokens e repete o resultado (${contrastV2.length}/${contrastV2.length}, verificado no commit ${V3}).` },
+    { type: 'p', text: `Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: ${contrastV1.filter((r) => !r.ok).length} de ${contrastV1.length} pares reprovados. Na v2: ${contrastV2.filter((r) => r.ok).length} de ${contrastV2.length} aprovados. Na v3, com os 3 pares de hover: ${contrastV3.filter((r) => r.ok).length} de ${contrastV3.length} aprovados.` },
     { type: 'h3', text: 'v1 (antes)' },
     {
       type: 'table', size: 'xs',
       cols: [{ h: 'Uso', w: 48 }, { h: 'Texto', w: 12 }, { h: 'Fundo', w: 12 }, { h: 'Razão', w: 12 }, { h: 'AA', w: 16 }],
       rows: paresTabela(contrastV1),
     },
-    { type: 'h3', text: 'v2 e v3 (depois)' },
+    { type: 'h3', text: 'v3 (atual)' },
     {
       type: 'table', size: 'xs',
       cols: [{ h: 'Uso', w: 48 }, { h: 'Texto', w: 12 }, { h: 'Fundo', w: 12 }, { h: 'Razão', w: 12 }, { h: 'AA', w: 16 }],
-      rows: paresTabela(contrastV2),
+      rows: paresTabela(contrastV3),
     },
     { type: 'p', text: 'Os componentes da Home e do Lazer restaurados na Iteração 2 usam cores do Colors.ts e alguns valores literais. As combinações de cor deles foram medidas à parte:' },
     {
@@ -330,7 +348,7 @@ export const doc = {
     {
       type: 'bullets', items: [
         'O roxo de identidade #9B5DE0 reprovava (4.17:1). Mantivemos a matiz e escurecemos só onde há texto (#7A3FC4, 6.30:1): a identidade fica, a leitura melhora.',
-        'Contraste verificado por script, não a olho: 13 de 15 pares reprovavam na v1; os 25 pares de tokens passam na v2 e na v3, e as 6 combinações dos componentes restaurados também.',
+        'Contraste verificado por script, não a olho: 13 de 15 pares reprovavam na v1; os 25 pares de tokens da v2 e os 28 da v3 (com hover) passam, e as 6 combinações dos componentes restaurados também.',
         'Montserrat de fato carregada (na v1 era declarada e nunca carregada); corpo de 16 px pensando em fadiga e efeitos visuais do tratamento.',
         'Alvos ≥ 44×44, labels visíveis, nomes acessíveis em botões de ícone e roles corretos para leitores de tela.',
       ],
@@ -369,11 +387,11 @@ export const doc = {
       cols: [{ h: 'Bloco (peso)', w: 16 }, { h: 'Requisito', w: 34 }, { h: 'Onde está comprovado', w: 50 }],
       rows: [
         ['Telas (30%)', '5 a 10 telas-chave com transições', 'Seção 1 (10 telas); prints da seção 9'],
-        ['Telas (30%)', 'Estados de botão default / pressed / focus', 'Button.tsx; /design-system → Button (4 variantes × 5 estados)'],
+        ['Telas (30%)', 'Estados de botão default / hover / focus', 'Button.tsx; /design-system → Button (4 variantes × 6 estados: default, hover, pressed, focus, disabled, loading)'],
         ['Telas (30%)', 'Carregando, sucesso, erro e vazio', 'useAsyncResource.ts; States.tsx; prints 17–22 e 24; painel de simulação'],
         ['Telas (30%)', 'Nenhum erro de fluxo / beco sem saída', 'scripts/smoke-flow.mjs na v3: 8/8 passos no Expo Web, sem erros de página; P02, P04, P14 e P21 corrigidos'],
-        ['DS (20%)', 'Tokens com contraste ≥ 4.5:1', 'tokens.ts; check-contrast.ts (25/25 na v3) + 6 combinações dos componentes restaurados; seção 2'],
-        ['DS (20%)', 'Tipografia sem serifa e espaçamento padronizado', 'Montserrat carregada; escala de 8; check-hardcoded.ts: 0 ocorrências na v2, 49 na v3 restritas aos componentes restaurados (PD-02)'],
+        ['DS (20%)', 'Tokens com contraste ≥ 4.5:1', 'tokens.ts; check-contrast.ts (28/28 na v3) + 6 combinações dos componentes restaurados; seção 2'],
+        ['DS (20%)', 'Tipografia sem serifa e espaçamento padronizado', 'Montserrat carregada; escala de 8; grid de coluna única com margem de 16 e largura máxima de 560; check-hardcoded.ts: 0 ocorrências na v2, 49 na v3 restritas aos componentes restaurados (PD-02)'],
         ['DS (20%)', 'Toque ≥ 44×44 e labels visíveis', 'touch.min/comfortable; TextField; labels em Login, Cadastro, Diário, busca'],
         ['Heurísticas (25%)', 'Avaliação pelas 10 heurísticas', `Seção 4 (${problemas.length} problemas, cobertura H1–H10)`],
         ['Heurísticas (25%)', 'Think Aloud com 2–3 usuários', 'Seção 6 (TCLE, roteiro, 5 tarefas, ficha, SUS); resultados a preencher'],

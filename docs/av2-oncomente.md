@@ -2,7 +2,7 @@
 
 _Avaliação heurística, design system, arquitetura da informação e protocolo Think Aloud do app móvel_
 
-Branch ux-av2 · v1 = commit 92e5d3c (tag ux-av2-v1) · v2 = commit a11b51d (tag ux-av2-v2) · v3 (atual) = commit 6cf7d36 (tag ux-av2-v3)
+Branch ux-av2 · v1 = commit 92e5d3c (tag ux-av2-v1) · v2 = commit a11b51d (tag ux-av2-v2) · v3 (atual) = commit b9d858a (tag ux-av2-v3)
 
 ## 1. Introdução e fluxo-roteiro
 
@@ -39,11 +39,24 @@ Os tokens ficam em apps/mobile/src/constants/tokens.ts (arquivo sem dependência
 | Raio / sombra | radius sm 8 · md 12 · lg 16 · xl 24 · pill · shadow sm/md | Superfícies suaves, coerentes com o tom acolhedor |
 | Toque | touch.min 44 · touch.comfortable 48 · focusRing 3 | Alvos ≥ 44×44 (WCAG 2.5.5); botões com 48 de altura |
 
+### Grid e layout
+
+Layout de coluna única para celular, construído sobre a escala de espaçamento de 8. As medidas estruturais ficam em layout.* (tokens.ts).
+
+| Elemento | Regra | Onde |
+|---|---|---|
+| Margem lateral | 16 (space.sm) nas telas de conteúdo; as linhas de lista ocupam a largura toda entre as margens | Oncologia, Saúde Mental, Hub e mais 10 telas |
+| Largura máxima | 560 (layout.maxContentWidth), centralizado. Em tablet e web o conteúdo não se estica | Gate de login, modal de login, diálogos, toast |
+| Colunas | 1 coluna para listas e formulários; 2 colunas (48% + espaço entre elas) na grade do Início | NavigationGrid · HomeNavigationGrid |
+| Carrossel | Cards de 110×160 com 10 de espaço entre eles e encaixe por card (snap) | Lazer (RecomendationPager) |
+| Container das áreas | Card branco com 93% da altura, cantos superiores de raio 50 e conteúdo recortado nas bordas | CommonAreasLayout |
+| Faixas fixas | Header opaco no topo e barra de abas de 72 na base; o conteúdo rola entre as duas | (Home)/_layout.tsx · CommonScreenOptions |
+
 ### Componentes e estados
 
 | Componente | Estados / variantes | Acessibilidade |
 |---|---|---|
-| Button | primary, secondary, ghost, danger × default, pressed, focus, disabled, loading | role button, accessibilityState (disabled/busy), altura 48, spinner na cor do texto |
+| Button | primary, secondary, ghost, danger × default, hover (web), pressed, focus, disabled, loading | role button, accessibilityState (disabled/busy), altura 48, spinner na cor do texto; hover só com ponteiro |
 | TextField | default, focus, preenchido, erro, disabled, senha, multilinha | Label sempre visível, erro com ícone e live region, botão olho com label |
 | Card / NavItemCard | Card: estático ou pressionável. NavItemCard: linha de lista com ícone, subtítulo, chevron e divisória (sem sombra nem escala), pressed | Nome acessível = título + subtítulo; alvo ≥ 64 |
 | Header | tela / seção, com ação "Ver todos" | role header; ação com hitSlop |
@@ -56,7 +69,7 @@ Tudo isso pode ser visto na rota /design-system (fora da navegação; acessada p
 
 ### Tabela de contraste (WCAG 2.x, mínimo 4.5:1)
 
-Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: 13 de 15 pares reprovados. Na v2: 25 de 25 aprovados. A v3 não alterou tokens e repete o resultado (25/25, verificado no commit 6cf7d36).
+Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: 13 de 15 pares reprovados. Na v2: 25 de 25 aprovados. Na v3, com os 3 pares de hover: 28 de 28 aprovados.
 
 #### v1 (antes)
 
@@ -78,7 +91,7 @@ Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) /
 | Títulos em purpleSecondary (v1) | #4E56C0 | #FFFFFF | 6.15:1 | Aprovado |
 | Texto principal (v1) | #1A1A1A | #FFFFFF | 17.40:1 | Aprovado |
 
-#### v2 e v3 (depois)
+#### v3 (atual)
 
 | Uso | Texto | Fundo | Razão | AA |
 |---|---|---|---|---|
@@ -92,9 +105,12 @@ Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) /
 | Link sobre superfície lilás | #7A3FC4 | #F7F1FE | 5.69:1 | Aprovado |
 | Chips e cards lilás | #5B2E99 | #EEE3FB | 7.41:1 | Aprovado |
 | Botão primário (default) | #FFFFFF | #7A3FC4 | 6.30:1 | Aprovado |
+| Botão primário (hover, web) | #FFFFFF | #6A35AF | 7.66:1 | Aprovado |
 | Botão primário (pressed) | #FFFFFF | #5B2E99 | 9.15:1 | Aprovado |
 | Botão SOS / perigo | #FFFFFF | #B3261E | 6.54:1 | Aprovado |
+| Botão perigo (hover, web) | #FFFFFF | #A0221B | 7.67:1 | Aprovado |
 | Botão SOS (pressed) | #FFFFFF | #8C1D18 | 9.11:1 | Aprovado |
+| Botão secundário/ghost (hover, web) | #7A3FC4 | #F4F4F6 | 5.73:1 | Aprovado |
 | Botão desabilitado | #575760 | #E6E6EA | 5.74:1 | Aprovado |
 | Mensagem de erro de campo | #B3261E | #FFFFFF | 6.54:1 | Aprovado |
 | ErrorState / toast de erro | #B3261E | #FDECEA | 5.72:1 | Aprovado |
@@ -205,7 +221,7 @@ Inspeção tela a tela da v1 (commit 92e5d3c) pelas 10 heurísticas de Nielsen, 
 
 ## 5. Matriz de iteração
 
-Cada problema da avaliação heurística recebeu uma correção na v2 (commit a11b51d, tag ux-av2-v2). A coluna "Correção aplicada" mostra o estado atual (v3, commit 6cf7d36, tag ux-av2-v3). "Corrigido (v3)" indica que a Iteração 2 mexeu na correção ou a reaplicou; "Revisado (v3)" indica que a solução mudou de forma, com o motivo na seção 5.1. As linhas TA-xx ficam reservadas para os achados do Think Aloud, a preencher depois das sessões.
+Cada problema da avaliação heurística recebeu uma correção na v2 (commit a11b51d, tag ux-av2-v2). A coluna "Correção aplicada" mostra o estado atual (v3, commit b9d858a, tag ux-av2-v3). "Corrigido (v3)" indica que a Iteração 2 mexeu na correção ou a reaplicou; "Revisado (v3)" indica que a solução mudou de forma, com o motivo na seção 5.1. As linhas TA-xx ficam reservadas para os achados do Think Aloud, a preencher depois das sessões.
 
 | ID | Problema | Heurística | Sev. | Correção aplicada | Tela / componente | Status |
 |---|---|---|---|---|---|---|
@@ -251,6 +267,7 @@ A equipe revisou a v2 navegando pelo app e identificou mudanças que acrescentav
 | I2-09 | Lazer restaurado ao layout original (banner, título e quatro carrosséis) | Decisão da equipe de preservar a visibilidade das capas no carrossel original. | H8 | 3b62e44 |
 | I2-10 | Texto "lorem ipsum" removido da tela de autenticação | Texto de preenchimento visível ao usuário. | H8 | dcc3926 |
 | I2-11 | Regressões da restauração corrigidas sem mudar o layout: logo legível (P05), "Agora não" lembrado (P16), grade do Início no web (P02) e estados de erro e vazio no Lazer (P08) | Detectadas ao refazer prints e smoke test da v3: a restauração tinha trazido de volta 4 problemas da avaliação heurística. | H1, H3, H9 | 70b61b6, d74772e, 6cf7d36, bc7e947 |
+| I2-12 | Estado hover nos botões (cor mais escura no primário e no perigo; fundo neutro no secundário e no ghost) | O requisito pede estados default, hover e focus. No web, o botão não reagia ao ponteiro. Os 3 pares novos passam de 4.5:1. | H1 | 30dfbd5, b9d858a |
 
 ### 5.2 Pendências conhecidas (v3)
 
@@ -341,7 +358,7 @@ Cálculo: itens ímpares = nota − 1; itens pares = 5 − nota; soma × 2,5 = S
 #### Design system e acessibilidade
 
 - O roxo de identidade #9B5DE0 reprovava (4.17:1). Mantivemos a matiz e escurecemos só onde há texto (#7A3FC4, 6.30:1): a identidade fica, a leitura melhora.
-- Contraste verificado por script, não a olho: 13 de 15 pares reprovavam na v1; os 25 pares de tokens passam na v2 e na v3, e as 6 combinações dos componentes restaurados também.
+- Contraste verificado por script, não a olho: 13 de 15 pares reprovavam na v1; os 25 pares de tokens da v2 e os 28 da v3 (com hover) passam, e as 6 combinações dos componentes restaurados também.
 - Montserrat de fato carregada (na v1 era declarada e nunca carregada); corpo de 16 px pensando em fadiga e efeitos visuais do tratamento.
 - Alvos ≥ 44×44, labels visíveis, nomes acessíveis em botões de ícone e roles corretos para leitores de tela.
 
@@ -370,11 +387,11 @@ Cálculo: itens ímpares = nota − 1; itens pares = 5 − nota; soma × 2,5 = S
 | Bloco (peso) | Requisito | Onde está comprovado |
 |---|---|---|
 | Telas (30%) | 5 a 10 telas-chave com transições | Seção 1 (10 telas); prints da seção 9 |
-| Telas (30%) | Estados de botão default / pressed / focus | Button.tsx; /design-system → Button (4 variantes × 5 estados) |
+| Telas (30%) | Estados de botão default / hover / focus | Button.tsx; /design-system → Button (4 variantes × 6 estados: default, hover, pressed, focus, disabled, loading) |
 | Telas (30%) | Carregando, sucesso, erro e vazio | useAsyncResource.ts; States.tsx; prints 17–22 e 24; painel de simulação |
 | Telas (30%) | Nenhum erro de fluxo / beco sem saída | scripts/smoke-flow.mjs na v3: 8/8 passos no Expo Web, sem erros de página; P02, P04, P14 e P21 corrigidos |
-| DS (20%) | Tokens com contraste ≥ 4.5:1 | tokens.ts; check-contrast.ts (25/25 na v3) + 6 combinações dos componentes restaurados; seção 2 |
-| DS (20%) | Tipografia sem serifa e espaçamento padronizado | Montserrat carregada; escala de 8; check-hardcoded.ts: 0 ocorrências na v2, 49 na v3 restritas aos componentes restaurados (PD-02) |
+| DS (20%) | Tokens com contraste ≥ 4.5:1 | tokens.ts; check-contrast.ts (28/28 na v3) + 6 combinações dos componentes restaurados; seção 2 |
+| DS (20%) | Tipografia sem serifa e espaçamento padronizado | Montserrat carregada; escala de 8; grid de coluna única com margem de 16 e largura máxima de 560; check-hardcoded.ts: 0 ocorrências na v2, 49 na v3 restritas aos componentes restaurados (PD-02) |
 | DS (20%) | Toque ≥ 44×44 e labels visíveis | touch.min/comfortable; TextField; labels em Login, Cadastro, Diário, busca |
 | Heurísticas (25%) | Avaliação pelas 10 heurísticas | Seção 4 (21 problemas, cobertura H1–H10) |
 | Heurísticas (25%) | Think Aloud com 2–3 usuários | Seção 6 (TCLE, roteiro, 5 tarefas, ficha, SUS); resultados a preencher |
@@ -434,6 +451,6 @@ Capturados automaticamente (apps/mobile/scripts/capture-screens.mjs, Expo Web + 
 |:---:|:---:|:---:|:---:|:---:|
 | <img src="av2/prints/depois/22-painel-estados.png" width="160"> | <img src="av2/prints/depois/15-design-system.png" width="160"> | <img src="av2/prints/depois/16-livro-detalhe.png" width="160"> | <img src="av2/prints/depois/24-estado-erro-lazer.png" width="160"> | <img src="av2/prints/depois/23-home-deslogado.png" width="160"> |
 
-| v1 · Lazer: seções vazias sem aviso (P08) | v1 · Livros: "nenhum livro" no erro (P09) | v1 · Diário: erro + "nenhuma entrada" (P10) |
-|:---:|:---:|:---:|
-| <img src="av2/prints/antes/evid-lazer-api-falhando.png" width="160"> | <img src="av2/prints/antes/evid-livros-api-falhando.png" width="160"> | <img src="av2/prints/antes/evid-diario-api-falhando.png" width="160"> |
+| Hover na vitrine de botões | Hover no "Entrar" (web) | v1 · Lazer: seções vazias sem aviso (P08) | v1 · Livros: "nenhum livro" no erro (P09) | v1 · Diário: erro + "nenhuma entrada" (P10) |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="av2/prints/depois/25-hover-design-system.png" width="160"> | <img src="av2/prints/depois/26-hover-login.png" width="160"> | <img src="av2/prints/antes/evid-lazer-api-falhando.png" width="160"> | <img src="av2/prints/antes/evid-livros-api-falhando.png" width="160"> | <img src="av2/prints/antes/evid-diario-api-falhando.png" width="160"> |
