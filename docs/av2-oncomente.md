@@ -2,7 +2,7 @@
 
 _Avaliação heurística, design system, arquitetura da informação e protocolo Think Aloud do app móvel_
 
-Branch ux-av2 · v1 = commit 92e5d3c (tag ux-av2-v1) · v2 = commit a11b51d (tag ux-av2-v2) · v3 (atual) = commit b9d858a (tag ux-av2-v3)
+Branch ux-av2 · v1 = commit 92e5d3c (tag ux-av2-v1) · v2 = commit a11b51d (tag ux-av2-v2) · v3 (atual) = commit bf9e5d5 (tag ux-av2-v3)
 
 ## 1. Introdução e fluxo-roteiro
 
@@ -69,7 +69,7 @@ Tudo isso pode ser visto na rota /design-system (fora da navegação; acessada p
 
 ### Tabela de contraste (WCAG 2.x, mínimo 4.5:1)
 
-Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: 13 de 15 pares reprovados. Na v2: 25 de 25 aprovados. Na v3, com os 3 pares de hover: 28 de 28 aprovados.
+Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: 13 de 15 pares reprovados. Na v2: 25 de 25 aprovados. Na v3, com os 3 pares de hover: 28 de 28 aprovados. Na v3 o par do header sobre o degradê passou a usar o lilás real do topo (#D78FEE): o token antigo apontava para um lilás mais claro e aprovava um par que, na tela, ficava em 2.65:1.
 
 #### v1 (antes)
 
@@ -99,8 +99,8 @@ Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) /
 | Texto secundário / descrições | #575760 | #FFFFFF | 7.15:1 | Aprovado |
 | Texto secundário em superfície neutra | #575760 | #F4F4F6 | 6.51:1 | Aprovado |
 | Títulos de header e seções | #4E56C0 | #FFFFFF | 6.15:1 | Aprovado |
-| Header do Início sobre o gradiente | #4E56C0 | #EEE3FB | 4.98:1 | Aprovado |
-| Saudação do Início sobre o gradiente | #1A1A1A | #EEE3FB | 14.10:1 | Aprovado |
+| Logo e título de header sobre o degradê | #3F1F73 | #D78FEE | 5.47:1 | Aprovado |
+| Saudação do Início sobre o gradiente | #1A1A1A | #D78FEE | 7.50:1 | Aprovado |
 | Links e botão secundário | #7A3FC4 | #FFFFFF | 6.30:1 | Aprovado |
 | Link sobre superfície lilás | #7A3FC4 | #F7F1FE | 5.69:1 | Aprovado |
 | Chips e cards lilás | #5B2E99 | #EEE3FB | 7.41:1 | Aprovado |
@@ -128,7 +128,7 @@ Os componentes da Home e do Lazer restaurados na Iteração 2 usam cores do Colo
 
 | Uso (componente restaurado) | Texto | Fundo | Razão | AA |
 |---|---|---|---|---|
-| Logo ONCOMENTE (HeaderLogo) | #4E56C0 | #FFFFFF | 6.15:1 | Aprovado |
+| Logo ONCOMENTE (HeaderLogo) sobre o degradê | #3F1F73 | #D78FEE | 5.47:1 | Aprovado |
 | Rótulo dos cards da grade do Início | #1A1A1A | #FFFFFF | 17.40:1 | Aprovado |
 | Título da Mensagem do Dia | #4E56C0 | #E6FBF5 | 5.70:1 | Aprovado |
 | Botão "Sobre o OncoMente" | #7A3FC4 | #FFFFFF | 6.30:1 | Aprovado |
@@ -221,7 +221,7 @@ Inspeção tela a tela da v1 (commit 92e5d3c) pelas 10 heurísticas de Nielsen, 
 
 ## 5. Matriz de iteração
 
-Cada problema da avaliação heurística recebeu uma correção na v2 (commit a11b51d, tag ux-av2-v2). A coluna "Correção aplicada" mostra o estado atual (v3, commit b9d858a, tag ux-av2-v3). "Corrigido (v3)" indica que a Iteração 2 mexeu na correção ou a reaplicou; "Revisado (v3)" indica que a solução mudou de forma, com o motivo na seção 5.1. As linhas TA-xx ficam reservadas para os achados do Think Aloud, a preencher depois das sessões.
+Cada problema da avaliação heurística recebeu uma correção na v2 (commit a11b51d, tag ux-av2-v2). A coluna "Correção aplicada" mostra o estado atual (v3, commit bf9e5d5, tag ux-av2-v3). "Corrigido (v3)" indica que a Iteração 2 mexeu na correção ou a reaplicou; "Revisado (v3)" indica que a solução mudou de forma, com o motivo na seção 5.1. As linhas TA-xx ficam reservadas para os achados do Think Aloud, a preencher depois das sessões.
 
 | ID | Problema | Heurística | Sev. | Correção aplicada | Tela / componente | Status |
 |---|---|---|---|---|---|---|
@@ -229,7 +229,7 @@ Cada problema da avaliação heurística recebeu uma correção na v2 (commit a1
 | P02 | Os cartões de navegação não aparecem no preview web: o FlatList dentro de um container flex:0 fica com altura 0. | H1 | 4 | Grades de Oncologia e Saúde Mental com map + flexWrap (v2). Na Home restaurada, a causa raiz (flex:0 vira "flex: 0 1 0%" no web) foi removida sem trocar o layout. | NavigationGrid.tsx · HomeNavigationGrid.tsx | Corrigido (v3) |
 | P03 | Texto branco sobre #9B5DE0 tem contraste 4.17:1, e #9B5DE0 sobre branco também. | H4 | 3 | Token action.primary #7A3FC4 (mesma matiz roxa), com 6.30:1 contra branco. O #9B5DE0 fica como acento de marca, só em bordas, ícones grandes e decoração. | constants/tokens.ts · components/ds/Button.tsx | Corrigido (v2) |
 | P04 | A seta "voltar" do header é branca sobre o cartão branco (1:1), ou seja, invisível: o usuário só volta pela barra de abas ou pelo gesto do sistema. | H3, H8 | 3 | Seta e título em text.brand com rótulo "Voltar" (v2). Na v3 o header ficou opaco e fixo, e o conteúdo começa sempre abaixo dele, sem compensação manual por tela. | constants/CommonScreenOptions.ts | Corrigido (v3) |
-| P05 | Logo "ONCOMENTE" e título "Início" brancos sobre fundo claro (#F2F2F2 no web; 1.1:1): praticamente invisíveis, e o usuário não sabe onde está.. | H8, H1 | 2 | Logo em text.brand (6.15:1). O atalho de long-press para o Design System saiu com a Home restaurada; a tela continua na rota /design-system. | components/home/HeaderLogo.tsx | Corrigido (v3) |
+| P05 | Logo "ONCOMENTE" e título "Início" brancos sobre fundo claro (#F2F2F2 no web; 1.1:1): praticamente invisíveis, e o usuário não sabe onde está.. | H8, H1 | 2 | Logo em #3F1F73 sobre o topo lilás do degradê (5.47:1); o título "Início" usa a mesma cor. O atalho de long-press para o Design System saiu com a Home restaurada; a tela continua na rota /design-system. | components/home/HeaderLogo.tsx | Corrigido (v3) |
 | P06 | A fonte Montserrat é declarada em todo o app mas nunca é carregada. | H4 | 2 | Montserrat 400/600/700 carregada no RootLayout (@expo-google-fonts/montserrat). A escala tipográfica fica nos tokens. | app/_layout.tsx · constants/tokens.ts | Corrigido (v2) |
 | P07 | Os campos só têm placeholder ("email@email.com", "senha"). | H6 | 3 | TextField com label visível acima do campo, mensagem de erro associada e accessibilityLabel. | components/ds/TextField.tsx · LoginForm · SoftLoginModal | Corrigido (v2) |
 | P08 | Quando a API falha, o hub de Lazer engole o erro e mostra seções vazias, sem dizer o que aconteceu nem como tentar de novo.. | H1, H9 | 3 | Na Home de Lazer restaurada: carregando (skeleton), erro com "Tentar novamente" quando as quatro buscas falham e vazio quando não há recomendações. Falha parcial mostra o que carregou. | Oncology/Leisure/index.tsx · hooks/useAsyncResource.ts | Corrigido (v3) |
@@ -268,6 +268,7 @@ A equipe revisou a v2 navegando pelo app e identificou mudanças que acrescentav
 | I2-10 | Texto "lorem ipsum" removido da tela de autenticação | Texto de preenchimento visível ao usuário. | H8 | dcc3926 |
 | I2-11 | Regressões da restauração corrigidas sem mudar o layout: logo legível (P05), "Agora não" lembrado (P16), grade do Início no web (P02) e estados de erro e vazio no Lazer (P08) | Detectadas ao refazer prints e smoke test da v3: a restauração tinha trazido de volta 4 problemas da avaliação heurística. | H1, H3, H9 | 70b61b6, d74772e, 6cf7d36, bc7e947 |
 | I2-12 | Estado hover nos botões (cor mais escura no primário e no perigo; fundo neutro no secundário e no ghost) | O requisito pede estados default, hover e focus. No web, o botão não reagia ao ponteiro. Os 3 pares novos passam de 4.5:1. | H1 | 30dfbd5, b9d858a |
+| I2-13 | Fundo em degradê também no web; logo e títulos sobre o degradê em #3F1F73 | No web, o tema padrão da navegação pintava #F2F2F2 por cima do degradê do app. Ao corrigir, apareceu que o logo e os títulos do header ficavam em 2.65:1 sobre o lilás do topo. O token gradientTop passou a ser o lilás real, e o script de contraste mede o par verdadeiro (5.47:1). | H4, H8 | 6e2d6f8, bf9e5d5 |
 
 ### 5.2 Pendências conhecidas (v3)
 
@@ -401,7 +402,7 @@ Cálculo: itens ímpares = nota − 1; itens pares = 5 − nota; soma × 2,5 = S
 
 ## 9. Prints antes / depois
 
-Capturados automaticamente (apps/mobile/scripts/capture-screens.mjs, Expo Web + Playwright, 390×844). "Antes" é a v1 e "depois" é a versão atual (v3). No web, o fundo das telas sai cinza claro em vez do gradiente lilás do app nativo.
+Capturados automaticamente (apps/mobile/scripts/capture-screens.mjs, Expo Web + Playwright, 390×844). "Antes" é a v1 e "depois" é a versão atual (v3). Os prints da v1 e da v2 saíram com fundo cinza claro, porque o tema da navegação cobria o degradê no web. Os da v3 mostram o degradê lilás, como no app (I2-13).
 
 | Início com modal de login: antes | Início com modal de login: depois | Login: antes | Login: depois |
 |:---:|:---:|:---:|:---:|

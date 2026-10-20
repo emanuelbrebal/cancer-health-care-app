@@ -68,7 +68,7 @@ export const problemas = [
     correcao: 'Logo e título em text.brand. O long-press no logo abre o Design System (atalho de dev).',
     onde: 'components/home/HeaderLogo.tsx',
     status: "Corrigido (v3)",
-    v3: "Logo em text.brand (6.15:1). O atalho de long-press para o Design System saiu com a Home restaurada; a tela continua na rota /design-system.",
+    v3: "Logo em #3F1F73 sobre o topo lilás do degradê (5.47:1); o título \"Início\" usa a mesma cor. O atalho de long-press para o Design System saiu com a Home restaurada; a tela continua na rota /design-system.",
     ondeV3: "components/home/HeaderLogo.tsx",
   },
   {
