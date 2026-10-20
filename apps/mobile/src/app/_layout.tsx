@@ -16,7 +16,6 @@ import { toastConfig } from '../components/ds/Toast';
 import { DebugStatePanel } from '../components/ds/DebugStatePanel';
 
 export default function RootLayout() {
-  // 'Montserrat' (sem sufixo) mantém compatível o código legado que usa fontFamily: 'Montserrat'.
   const [fontsLoaded] = useFonts({
     Montserrat: Montserrat_400Regular,
     Montserrat_400Regular,
