@@ -21,27 +21,27 @@ export default function Layout() {
             <Stack.Screen name="index"
                 options={{
                     headerShown: false,
-                    headerRight: () => <ScreenTitle title="" />,
+                    headerRight: () => <ScreenTitle title="" color={color.text.onGradient} />,
                 }}
             />
             <Stack.Screen name="LoginScreen"
                 options={{
-                    headerRight: () => <ScreenTitle title="Login" />,
+                    headerRight: () => <ScreenTitle title="Login" color={color.text.onGradient} />,
                 }}
             />
             <Stack.Screen name="RegisterScreen"
                 options={{
-                    headerRight: () => <ScreenTitle title="Cadastrar" />,
+                    headerRight: () => <ScreenTitle title="Cadastrar" color={color.text.onGradient} />,
                 }}
             />
             <Stack.Screen name="RecoverPassword"
                 options={{
-                    headerRight: () => <ScreenTitle title="Recuperar Senha" />,
+                    headerRight: () => <ScreenTitle title="Recuperar Senha" color={color.text.onGradient} />,
                 }}
             />
             <Stack.Screen name="ResetPassword"
                 options={{
-                    headerRight: () => <ScreenTitle title="Redefinir Senha" />,
+                    headerRight: () => <ScreenTitle title="Redefinir Senha" color={color.text.onGradient} />,
                 }}
             />
         </Stack>

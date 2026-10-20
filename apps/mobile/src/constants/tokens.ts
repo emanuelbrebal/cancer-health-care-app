@@ -10,6 +10,7 @@ export const palette = {
   brand700: '#7A3FC4', // ação primária: fundo de botão, links
   brand750: '#6A35AF', // hover da ação primária (web)
   brand800: '#5B2E99',
+  brand900: '#3F1F73', // texto sobre o topo lilás do degradê
   indigo600: '#4E56C0',
   lilac400: '#D78FEE',
 
@@ -43,6 +44,8 @@ export const color = {
     secondary: palette.neutral600,
     brand: palette.indigo600,
     brandStrong: palette.brand800,
+    /** Texto sobre o topo do degradê (lilac400): logo e títulos de header do Início e da autenticação. */
+    onGradient: palette.brand900,
     link: palette.brand700,
     onAction: palette.neutral0,
     danger: palette.danger700,
@@ -65,7 +68,7 @@ export const color = {
     overlay: 'rgba(26, 26, 26, 0.5)',
     /** Faixa sobre capas/fotos (texto branco). Pior caso composto sobre branco: #474747. */
     scrim: 'rgba(26, 26, 26, 0.78)',
-    gradientTop: palette.brand100,
+    gradientTop: palette.lilac400,
     gradientBottom: palette.neutral0,
   },
   action: {
@@ -188,7 +191,7 @@ export const contrastPairs: { fg: string; bg: string; uso: string }[] = [
   { fg: color.text.secondary, bg: color.bg.surface, uso: 'Texto secundário / descrições' },
   { fg: color.text.secondary, bg: color.bg.subtle, uso: 'Texto secundário em superfície neutra' },
   { fg: color.text.brand, bg: color.bg.surface, uso: 'Títulos de header e seções' },
-  { fg: color.text.brand, bg: color.bg.gradientTop, uso: 'Header do Início sobre o gradiente' },
+  { fg: color.text.onGradient, bg: color.bg.gradientTop, uso: 'Logo e título de header sobre o degradê' },
   { fg: color.text.primary, bg: color.bg.gradientTop, uso: 'Saudação do Início sobre o gradiente' },
   { fg: color.text.link, bg: color.bg.surface, uso: 'Links e botão secundário' },
   { fg: color.text.link, bg: color.bg.brandSubtle, uso: 'Link sobre superfície lilás' },

@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     appName: {
-        // Branco sobre o topo claro do gradiente ficava ~1.1:1 (P05).
-        color: color.text.brand,
+        // Fica sobre o topo lilás do degradê: branco dava 2.3:1 (P05).
+        color: color.text.onGradient,
         fontWeight: 'bold',
         fontSize: 14,
         letterSpacing: 1,

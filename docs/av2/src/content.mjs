@@ -10,7 +10,7 @@ const contrastV3 = read('./contrast-v3.json'); // v2 + 3 pares de hover
 
 const V1 = '92e5d3c';
 const V2 = 'a11b51d';
-const V3 = 'b9d858a';
+const V3 = 'bf9e5d5';
 const hName = (codes) => codes.map((c) => `${c} ${HEURISTICAS[c]}`).join('; ');
 const sevLabel = (s) => `${s} (${SEVERIDADE[s]})`;
 const ratio = (r) => `${r.toFixed(2)}:1`;
@@ -75,6 +75,7 @@ const iteracao2 = [
   ['I2-10', 'Texto "lorem ipsum" removido da tela de autenticação', 'Texto de preenchimento visível ao usuário.', 'H8', 'dcc3926'],
   ['I2-11', 'Regressões da restauração corrigidas sem mudar o layout: logo legível (P05), "Agora não" lembrado (P16), grade do Início no web (P02) e estados de erro e vazio no Lazer (P08)', 'Detectadas ao refazer prints e smoke test da v3: a restauração tinha trazido de volta 4 problemas da avaliação heurística.', 'H1, H3, H9', '70b61b6, d74772e, 6cf7d36, bc7e947'],
   ['I2-12', 'Estado hover nos botões (cor mais escura no primário e no perigo; fundo neutro no secundário e no ghost)', 'O requisito pede estados default, hover e focus. No web, o botão não reagia ao ponteiro. Os 3 pares novos passam de 4.5:1.', 'H1', '30dfbd5, b9d858a'],
+  ['I2-13', 'Fundo em degradê também no web; logo e títulos sobre o degradê em #3F1F73', 'No web, o tema padrão da navegação pintava #F2F2F2 por cima do degradê do app. Ao corrigir, apareceu que o logo e os títulos do header ficavam em 2.65:1 sobre o lilás do topo. O token gradientTop passou a ser o lilás real, e o script de contraste mede o par verdadeiro (5.47:1).', 'H4, H8', '6e2d6f8, bf9e5d5'],
 ];
 
 const pendencias = [
@@ -161,7 +162,7 @@ export const doc = {
     },
     { type: 'p', text: 'Tudo isso pode ser visto na rota /design-system (fora da navegação; acessada por URL ou deep link), que exibe cores com a razão de contraste ao lado, tipografia, espaçamento, raios, sombras e todos os componentes em todos os estados.' },
     { type: 'h2', text: 'Tabela de contraste (WCAG 2.x, mínimo 4.5:1)' },
-    { type: 'p', text: `Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: ${contrastV1.filter((r) => !r.ok).length} de ${contrastV1.length} pares reprovados. Na v2: ${contrastV2.filter((r) => r.ok).length} de ${contrastV2.length} aprovados. Na v3, com os 3 pares de hover: ${contrastV3.filter((r) => r.ok).length} de ${contrastV3.length} aprovados.` },
+    { type: 'p', text: `Script: npx tsx apps/mobile/scripts/check-contrast.ts. Ele calcula (L1 + 0.05) / (L2 + 0.05) para todos os pares registrados em tokens.ts e falha se algum ficar abaixo de 4.5:1. Resultado na v1: ${contrastV1.filter((r) => !r.ok).length} de ${contrastV1.length} pares reprovados. Na v2: ${contrastV2.filter((r) => r.ok).length} de ${contrastV2.length} aprovados. Na v3, com os 3 pares de hover: ${contrastV3.filter((r) => r.ok).length} de ${contrastV3.length} aprovados. Na v3 o par do header sobre o degradê passou a usar o lilás real do topo (#D78FEE): o token antigo apontava para um lilás mais claro e aprovava um par que, na tela, ficava em 2.65:1.` },
     { type: 'h3', text: 'v1 (antes)' },
     {
       type: 'table', size: 'xs',
@@ -179,7 +180,7 @@ export const doc = {
       type: 'table', size: 'xs',
       cols: [{ h: 'Uso (componente restaurado)', w: 48 }, { h: 'Texto', w: 12 }, { h: 'Fundo', w: 12 }, { h: 'Razão', w: 12 }, { h: 'AA', w: 16 }],
       rows: [
-        ['Logo ONCOMENTE (HeaderLogo)', '#4E56C0', '#FFFFFF', '6.15:1', 'Aprovado'],
+        ['Logo ONCOMENTE (HeaderLogo) sobre o degradê', '#3F1F73', '#D78FEE', '5.47:1', 'Aprovado'],
         ['Rótulo dos cards da grade do Início', '#1A1A1A', '#FFFFFF', '17.40:1', 'Aprovado'],
         ['Título da Mensagem do Dia', '#4E56C0', '#E6FBF5', '5.70:1', 'Aprovado'],
         ['Botão "Sobre o OncoMente"', '#7A3FC4', '#FFFFFF', '6.30:1', 'Aprovado'],
@@ -402,7 +403,7 @@ export const doc = {
     },
     // ─── 9 ────────────────────────────────────────────────────────────────
     { type: 'h1', text: '9. Prints antes / depois' },
-    { type: 'p', text: 'Capturados automaticamente (apps/mobile/scripts/capture-screens.mjs, Expo Web + Playwright, 390×844). "Antes" é a v1 e "depois" é a versão atual (v3). No web, o fundo das telas sai cinza claro em vez do gradiente lilás do app nativo.' },
+    { type: 'p', text: 'Capturados automaticamente (apps/mobile/scripts/capture-screens.mjs, Expo Web + Playwright, 390×844). "Antes" é a v1 e "depois" é a versão atual (v3). Os prints da v1 e da v2 saíram com fundo cinza claro, porque o tema da navegação cobria o degradê no web. Os da v3 mostram o degradê lilás, como no app (I2-13).' },
     {
       type: 'images', cols: 4, imgHeightCm: 7.6,
       items: printsPares.flatMap(([f, label]) => [
