@@ -18,9 +18,9 @@ import { ForcedState, useUxDebugStore } from '@/src/store/useUxDebugStore';
 import { contrastRatio, WCAG_AA_TEXT } from '@/src/utils/contrast';
 
 const VARIANTS: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger'];
-const STATES: ButtonVisualState[] = ['default', 'pressed', 'focus', 'disabled', 'loading'];
+const STATES: ButtonVisualState[] = ['default', 'hover', 'pressed', 'focus', 'disabled', 'loading'];
 const STATE_LABEL: Record<ButtonVisualState, string> = {
-  default: 'Default', pressed: 'Pressed', focus: 'Focus', disabled: 'Disabled', loading: 'Loading',
+  default: 'Default', hover: 'Hover (web)', pressed: 'Pressed', focus: 'Focus', disabled: 'Disabled', loading: 'Loading',
 };
 const FORCED: { value: ForcedState; label: string }[] = [
   { value: 'auto', label: 'Real' },
