@@ -9,6 +9,10 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // O seed apaga todas as tabelas e cria contas com senha padrão: nunca em produção.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Seed bloqueado em produção.');
+  }
   console.log('🌱 Iniciando seeding do OncoMente...');
 
   // ─── 0. LIMPEZA COMPLETA ──────────────────────────────────────────────────
