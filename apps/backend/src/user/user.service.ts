@@ -1,8 +1,10 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -54,6 +56,20 @@ export class UsersService {
   // Exclusão definitiva: apaga a conta e todos os dados do titular. Diário, tratamentos,
   // consentimentos e sessões saem por cascade; conversas do mascote e auditoria não têm
   // relação com User e são tratadas aqui. Fica só um registro pseudonimizado da exclusão.
+  // Exclusão pelo próprio titular: exige a senha atual, para que um token vazado não apague a conta.
+  // 403 (e não 401) para o app não tratar senha errada como sessão expirada.
+  async removeOwn(id: string, password: string) {
+    const user = await this.findOne(id);
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new ForbiddenException({
+        message: 'Senha incorreta.',
+        code: 'INVALID_PASSWORD',
+      });
+    }
+    await this.remove(id, 'Solicitada pelo titular');
+  }
+
   async remove(id: string, reason?: string) {
     const user = await this.findOne(id);
     const userRef = pseudonymize(user.id);
