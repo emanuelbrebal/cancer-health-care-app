@@ -13,7 +13,6 @@ const PROMPT_FILES = [
 ] as const;
 
 export interface PromptVariables {
-  nome: string;
   pronome: string;
   papel: string;
   idade: string;
@@ -44,7 +43,6 @@ export class PromptLoaderService implements OnModuleInit {
 
   render(vars: PromptVariables): string {
     return this.template
-      .replace(/\{\{nome\}\}/g, vars.nome)
       .replace(/\{\{pronome\}\}/g, vars.pronome)
       .replace(/\{\{papel\}\}/g, vars.papel)
       .replace(/\{\{idade\}\}/g, vars.idade)

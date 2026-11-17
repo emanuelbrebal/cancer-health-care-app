@@ -34,6 +34,75 @@ describe('MascotService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('payload enviado ao provedor de IA', () => {
+    const user = {
+      name: 'Maria Aparecida Souza',
+      email: 'maria.souza@example.com',
+      phone_number: '82999990000',
+      pronoun: 'SRA',
+      role: 'PATIENT',
+      birthday: null,
+    };
+    const create = jest.fn();
+
+    beforeEach(() => {
+      prismaMock.user.findUnique.mockResolvedValue(user);
+      prismaMock.treatment.findMany.mockResolvedValue([
+        {
+          name: 'Tamoxifeno',
+          frequency: '1x ao dia',
+          startTime: '08:00',
+          endDate: new Date('2027-01-01'),
+        },
+      ]);
+      prismaMock.dailyLog.findMany.mockResolvedValue([
+        { date: new Date('2026-11-15'), emotes: ['sad'] },
+      ]);
+      prismaMock.patientSupportLog.create.mockResolvedValue({});
+      create.mockReset().mockResolvedValue({
+        choices: [
+          {
+            message: {
+              content: 'Esse medo é compreensível e estou aqui com você.',
+            },
+          },
+        ],
+      });
+      (service as unknown as { openai: unknown }).openai = {
+        chat: { completions: { create } },
+      };
+    });
+
+    it('não contém nome, e-mail nem telefone', async () => {
+      await service.generateResponse('user-1', {
+        userQuestion: 'estou com medo da quimio',
+        calendarData: [],
+        treatmentData: [],
+      });
+
+      const payload = JSON.stringify(create.mock.calls[0][0]);
+      expect(payload).not.toContain('Maria');
+      expect(payload).not.toContain('Souza');
+      expect(payload).not.toContain(user.email);
+      expect(payload).not.toContain(user.phone_number);
+      expect(payload).toContain('Tamoxifeno');
+    });
+
+    it('sem consentimento de dados de saúde, não envia tratamentos nem humor', async () => {
+      consentMock.isGranted.mockResolvedValueOnce(false);
+      await service.generateResponse('user-1', {
+        userQuestion: 'estou com medo da quimio',
+        calendarData: [{ injetado: 'texto do cliente' }],
+        treatmentData: [{ name: 'Injetado' }],
+      });
+
+      const payload = JSON.stringify(create.mock.calls[0][0]);
+      expect(payload).not.toContain('Tamoxifeno');
+      expect(payload).not.toContain('Injetado');
+      expect(payload).not.toContain('texto do cliente');
+    });
+  });
+
   describe('validateResponse', () => {
     it('aceita resposta válida em português', () => {
       const result = service.validateResponse(
