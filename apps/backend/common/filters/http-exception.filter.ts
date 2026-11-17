@@ -26,11 +26,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     console.error(`[Error] ${request.method} ${request.url}`, exception);
 
+    // code e purpose identificam bloqueios tratáveis pelo app (ex.: CONSENT_REQUIRED).
+    const { code, purpose } =
+      typeof message === 'object' ? (message as any) : ({} as any);
+
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       message: typeof message === 'object' ? (message as any).message : message,
+      ...(code && { code }),
+      ...(purpose && { purpose }),
     });
   }
 }

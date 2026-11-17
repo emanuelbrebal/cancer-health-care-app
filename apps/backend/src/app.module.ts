@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
 import { TreatmentsModule } from './personal/treatments/treatments.module';
 import { MascotModule } from './mascot/mascot.module';
+import { ConsentModule } from './consent/consent.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -28,6 +29,7 @@ import { APP_GUARD } from '@nestjs/core';
     DailyLogsModule,
     TreatmentsModule,
     MascotModule,
+    ConsentModule,
     //Rate limit
     ThrottlerModule.forRoot([
       {
