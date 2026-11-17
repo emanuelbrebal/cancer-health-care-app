@@ -18,6 +18,6 @@ export class TreatmentMapper {
   }
 
   static toDtoList(treatments: Treatment[]) {
-    return treatments.map(TreatmentMapper.toDto);
+    return treatments.map((t) => TreatmentMapper.toDto(t));
   }
 }
