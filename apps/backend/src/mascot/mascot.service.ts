@@ -9,6 +9,7 @@ import { AskAiDto } from './dto/ask-ai';
 import OpenAI from 'openai';
 import { PromptLoaderService } from './prompt-loader.service';
 import { ConsentService } from '../consent/consent.service';
+import { pseudonymize } from '../shared/utils/pseudonym.util';
 
 interface UserProfile {
   name: string | null;
@@ -151,9 +152,14 @@ export class MascotService {
   }
 
   async generateResponse(userId: string, data: AskAiDto) {
-    if (!(await this.canUseHealthData(userId))) {
-      data = { ...data, treatmentData: [], calendarData: [] };
-    }
+    // O contexto de saúde é montado no servidor: o que o cliente envia nesses campos é
+    // ignorado, para não permitir injetar texto no prompt nem contornar o consentimento.
+    const context = await this.getUserContext(userId);
+    data = {
+      ...data,
+      treatmentData: context.treatments,
+      calendarData: context.emotionSummary,
+    };
     if (this.isEmergency(data.userQuestion)) {
       await this.logInteraction(userId, data, this.EMERGENCY_RESPONSE);
       return { response: this.EMERGENCY_RESPONSE };
@@ -337,7 +343,8 @@ export class MascotService {
       Array.isArray(data.calendarData) && data.calendarData.length > 0;
 
     const systemMessage = this.promptLoader.render({
-      nome: profile?.name ?? '',
+      // Só o primeiro nome vai para o provedor de IA (minimização).
+      nome: profile?.name?.trim().split(/\s+/)[0] ?? '',
       pronome: this.formatPronounLabel(profile?.pronoun ?? null) ?? '',
       papel: profile ? this.formatRole(profile.role) : '',
       idade: profile?.birthday
@@ -387,7 +394,7 @@ export class MascotService {
   ) {
     return this.prisma.patientSupportLog.create({
       data: {
-        userId,
+        userId: pseudonymize(userId),
         prompt: data.userQuestion ?? '',
         response: response ?? '',
         context: { treatment: data.treatmentData, calendar: data.calendarData },
