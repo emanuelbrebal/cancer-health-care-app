@@ -9,8 +9,7 @@ import { Button } from '@/src/components/ds/Button';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { color, space } from '@/src/constants/tokens';
 
-// v1: cada card com uma cor livre (azul, verde, vermelho) — 3 de 5 abaixo de 4.5:1.
-// Agora todos usam o NavItemCard do DS; a diferenciação fica no ícone e no subtítulo.
+// Todos os cards usam o NavItemCard do DS; a diferenciação fica no ícone e no subtítulo.
 const JOURNEY: { title: string; subtitle: string; icon: keyof typeof Feather.glyphMap; route: string }[] = [
   { title: 'Diário', subtitle: 'Registre como você está se sentindo', icon: 'edit-3', route: '/PersonalArea/Diary' },
   { title: 'Tratamentos', subtitle: 'Medicamentos e lembretes', icon: 'plus-circle', route: '/PersonalArea/Treatment' },

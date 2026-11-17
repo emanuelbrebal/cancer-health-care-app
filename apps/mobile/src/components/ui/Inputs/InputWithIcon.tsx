@@ -15,7 +15,6 @@ interface InputWithIconProps extends TextInputProps {
   iconColor?: string;
   isPassword?: boolean;
   error?: string;
-  /** Rótulo visível acima do campo. */
   label?: string;
 }
 

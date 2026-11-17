@@ -12,7 +12,6 @@ import { withConsent } from '@/src/components/auth/ConsentGate';
 function DiaryUpdateScreen() {
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id: string }>();
-    // v1: erro ao carregar mostrava só um toast e deixava o formulário vazio.
     const { status, data: entry, reload } = useAsyncResource<DailyLog | null>(() => diaryService.getOne(id!), [id], {
         isEmpty: (e) => !e,
         emptyValue: null,

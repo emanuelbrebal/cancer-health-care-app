@@ -7,7 +7,6 @@ import { globalStyles } from "@/src/styles/global";
 
 export function SearchBar() {
 
-    // fazer a função para chamar a tela de filtros
     return (
         <View style={[globalStyles.centeredContainer, styles.container]}>
             <View style={{ width: '75%' }}>
