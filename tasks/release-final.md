@@ -211,7 +211,7 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
 8. [x] **`refactor/ReleaseCleanup`** — aplicar somente o aprovado em 03 e 04: um commit por lib removida/grupo coeso, um commit de comentários por app.
    *Validação:* aceites 10 e 11; `npx expo-doctor` e `npx expo start` sobem sem erro de módulo.
 
-9. [ ] **`feat/ReleaseDocs`** — `docs/manual-de-uso.md` (paciente e cuidador, por área, a partir das rotas reais); `docs/requisitos-implementados.md` (o que foi feito, por área, com âncora de código, mais os RNFs novos de sessão, consentimento, exclusão/suspensão e pseudonimização, redigidos para transcrição); collection Postman com os endpoints novos; corrigir CLAUDE.md (Groq, `resolveApiBaseUrl`).
+9. [x] **`feat/ReleaseDocs`** — `docs/manual-de-uso.md` (paciente e cuidador, por área, a partir das rotas reais); `docs/requisitos-implementados.md` (o que foi feito, por área, com âncora de código, mais os RNFs novos de sessão, consentimento, exclusão/suspensão e pseudonimização, redigidos para transcrição); collection Postman com os endpoints novos; corrigir CLAUDE.md (Groq, `resolveApiBaseUrl`).
    *Validação:* aceite 12.
 
 10. [x] **PRDs do painel web** — `docs/prd-web-admin/` (login admin + sessão, CRUD de mídia e lazer, gestão de usuários incluindo suspensão, visão de consentimentos sem expor conteúdo sensível), cada um com objetivo, endpoints consumidos, regras de permissão e critérios de aceite; lacunas de backend listadas.
@@ -264,3 +264,17 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
 - Comentários: 14 alterações no backend e 35 no mobile. Componente órfão `NewPublication` removido.
 - Medição final: lint backend **0 erros** (10 warnings); Jest 7 suítes / 47 testes; tsc backend 0; tsc mobile **0**; `expo export -p android` ok; `expo install --check` ok; `git diff main -- apps/web` vazio.
 - Pendente: lint mobile 10 erros (hooks condicionais em `MediaViewer.tsx`, acesso a ref no render, `no-unescaped-entities`, import não resolvido) — não exigido pelo aceite 11; banco local sem as migrations novas (`consent_records` inexistente) → rodar `npx prisma migrate deploy`.
+
+**2026-11-16 — item 9** (`feat/ReleaseDocs`, empilhada sobre `refactor/ReleaseCleanup`)
+- `docs/manual-de-uso.md`, `docs/requisitos-implementados.md` (RF/RNF com âncora de código e seção de diferenças), `apps/postman/OncoMente.postman_collection.json` (53 requisições, login salva tokens), CLAUDE.md corrigido (Groq, `resolveApiBaseUrl`, módulo `consent`).
+- Correções achadas ao conferir o manual com o código:
+  - Lembretes de tratamento eram agendados sem checar o consentimento `NOTIFICATIONS` → agora exigem o consentimento, e revogar cancela os agendados.
+  - Primeiro nome do usuário ia para a Groq (contrariava o aceite 15) → removido do prompt por decisão do usuário; testes unitários do payload (sem nome/e-mail/telefone; sem saúde sem consentimento). Jest: 49 testes.
+  - Botão SOS só existe nas telas de Saúde Mental (o manual dizia "todas as telas") → texto corrigido.
+
+**Pendências abertas (fora do que foi executado)**
+- Exclusão de conta sem confirmação de senha no servidor (`DELETE /users/:id`); o plano (Bloco 5) previa `DELETE /users/me` com senha.
+- Aceites 5, 13 e 14 cobertos por teste unitário, não e2e com banco.
+- Banco local sem as migrations novas → `npx prisma migrate deploy` em `apps/backend`.
+- Lint mobile: 10 erros; `EXPO_PUBLIC_API_URL` ausente no `eas.json`; rota `/design-system` e `DebugStatePanel` sem guarda de `__DEV__` (relatório 01).
+- Branches empilhadas e não enviadas: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `feat/AccountLifecycle` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs`.
