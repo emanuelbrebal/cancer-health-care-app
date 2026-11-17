@@ -43,6 +43,7 @@ export default function AccountConfigurationIndex() {
   ];
 
   const securityData: BaseActionItem[] = [
+    { id: '0', title: 'Privacidade e consentimentos', route: '/PersonalArea/AccountConfigurations/Privacy' },
     { id: '1', title: 'Mudar senha', route: '/PersonalArea/AccountConfigurations/ChangePassword' },
     { id: '2', title: 'Encerrar sessão', action: handleLogout },
     { id: '3', title: 'Desativar conta', textColor: '#FF4C4C', action: handleDeleteAccount },
