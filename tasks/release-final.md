@@ -192,19 +192,19 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
    *Arquivos:* `auth/guards/roles.guard.ts` (novo), controllers de `media/*`, `leisures`, `user`, `auth.service.ts`, `auth.controller.ts`, `main.ts`, `app.module.ts`, `apps/mobile/eas.json`.
    *Validação:* aceite 9; `npm run lint && npm test`.
 
-4. [ ] **`feat/PersistentSession` (backend, depois mobile + shared, em commits separados)** — backend: migration `RefreshToken`; `login` emite par; `POST /auth/refresh` (rotação + reuso revoga família); `POST /auth/logout`; revogação em troca/redefinição de senha; TTLs por env. Mobile: refresh em SecureStore; interceptor com single-flight e repetição da requisição; logout chama o backend; `setToken` no store compartilhado.
+4. [x] **`feat/PersistentSession` (backend, depois mobile + shared, em commits separados)** — backend: migration `RefreshToken`; `login` emite par; `POST /auth/refresh` (rotação + reuso revoga família); `POST /auth/logout`; revogação em troca/redefinição de senha; TTLs por env. Mobile: refresh em SecureStore; interceptor com single-flight e repetição da requisição; logout chama o backend; `setToken` no store compartilhado.
    *Arquivos:* `prisma/schema/schema.prisma`, `auth/*`, `.env.example`; `apps/mobile/src/services/api.ts`, `services/auth.ts`, `services/sessionStorage.ts` (novo), `store/useAuthStore.ts`, `packages/shared/store/useAuthStore.ts`.
    *Validação:* aceites 7 e 8; `npx tsc --noEmit`; teste manual com TTL de access de 1 min.
 
-5. [ ] **`feat/DataConsent` — backend** — enum + `ConsentRecord` + migration; módulo `consent` (`GET /consents`, `PUT /consents/:purpose`); `ConsentGuard` + `@RequiresConsent`; mascote só monta contexto pessoal com `AI_MASCOT` ativo. Revogar apenas bloqueia.
+5. [x] **`feat/DataConsent` — backend** — enum + `ConsentRecord` + migration; módulo `consent` (`GET /consents`, `PUT /consents/:purpose`); `ConsentGuard` + `@RequiresConsent`; mascote só monta contexto pessoal com `AI_MASCOT` ativo. Revogar apenas bloqueia.
    *Arquivos:* `prisma/schema/schema.prisma`, `src/consent/*` (novo), controllers de `personal/*` e `mascot`, `app.module.ts`.
    *Validação:* aceites 4, 5, 6.
 
-6. [ ] **`feat/DataConsent` — mobile** — tela "Privacidade e consentimentos" em `AccountConfigurations/` (3 chaves desligadas, texto do que/para quê/com quem/como revogar); passo no onboarding; bloqueio explicativo em Diário, Tratamento, Calendário e Mascote ao receber `CONSENT_REQUIRED`; `Notifications` passa a ler do servidor. Botão de emergência **nunca** é bloqueado.
+6. [x] **`feat/DataConsent` — mobile** — tela "Privacidade e consentimentos" em `AccountConfigurations/` (3 chaves desligadas, texto do que/para quê/com quem/como revogar); passo no onboarding; bloqueio explicativo em Diário, Tratamento, Calendário e Mascote ao receber `CONSENT_REQUIRED`; `Notifications` passa a ler do servidor. Botão de emergência **nunca** é bloqueado.
    *Arquivos:* `PersonalArea/AccountConfigurations/Privacy/index.tsx` (novo), `services/consentService.ts` (novo), `OnboardingForm/index.tsx`, `Notifications/index.tsx`, telas de Diary/Treatment/Calendar/Mascot (apenas o estado de bloqueio, com componentes `ds/` existentes).
    *Validação:* `npx tsc --noEmit`; roteiro manual negar → bloquear → conceder → liberar → revogar.
 
-7. [ ] **`feat/AccountLifecycle` (backend, depois mobile)** — backend: `User.status`/`suspendedAt`; `POST /users/me/suspend`; reativação no login; `DELETE /users/me` transacional; `DailyLog` com cascade; pseudonimização (Bloco 5); payload do mascote sem identificadores diretos. Mobile: em `AccountConfigurations`, o item atual "Desativar conta" vira dois itens de lista — "Suspender acesso" e "Excluir conta e dados" — com os diálogos de confirmação existentes (sem estilo novo).
+7. [x] **`feat/AccountLifecycle` (backend, depois mobile)** — backend: `User.status`/`suspendedAt`; `POST /users/me/suspend`; reativação no login; `DELETE /users/me` transacional; `DailyLog` com cascade; pseudonimização (Bloco 5); payload do mascote sem identificadores diretos. Mobile: em `AccountConfigurations`, o item atual "Desativar conta" vira dois itens de lista — "Suspender acesso" e "Excluir conta e dados" — com os diálogos de confirmação existentes (sem estilo novo).
    *Arquivos:* `prisma/schema/schema.prisma`, `user/*`, `auth/auth.service.ts`, `mascot/mascot.service.ts`, `mascot/prompt-loader.service.ts`; `AccountConfigurations/index.tsx`, `LoginScreen.tsx` (mensagem de conta suspensa).
    *Validação:* aceites 13, 14, 15.
 
@@ -245,3 +245,10 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
 - Não feito no item 3, movido para o item 8: unificar lockfile e corrigir Dockerfile/posição de dependências (depende das remoções aprovadas).
 - Pendências novas vindas dos relatórios (fora do checklist original): URL da API em release (`EXPO_PUBLIC_API_URL` ausente no `eas.json`); rota `/design-system` e `DebugStatePanel` sem guarda de `__DEV__`; hooks condicionais em `MediaViewer.tsx`; contexto do mascote vindo do cliente (`treatmentData`/`calendarData` como `any[]`) — tratar no item 7 junto do payload sem identificadores; lint (151 + 11 erros) e 6 erros de tsc no mobile.
 - O e-mail removido do `eas.json` continua no histórico git (desde `1adb84e`); reescrever histórico não foi feito.
+
+**2026-11-16 — itens 4, 5, 6 e 7** (branches empilhadas, não enviadas: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `feat/AccountLifecycle`)
+- Sessão: `RefreshToken` + rotação com detecção de reuso por família, `POST /auth/refresh` e `/auth/logout`; mobile com refresh em SecureStore e interceptor single-flight.
+- Consentimento: `ConsentRecord` append-only, módulo `consent`, `ConsentGuard`/`@RequiresConsent` em diário, tratamentos e mascote; mobile com `ConsentGate`, tela de privacidade e notificações sincronizadas com o servidor.
+- Ciclo de vida: `User.status`/`suspendedAt`, `POST /users/me/suspend`, `DELETE /users/me` transacional, `DailyLog` em cascade, auditoria do diário e `UserDeletionLog` pseudonimizados (HMAC), contexto do mascote montado no servidor e sem identificadores; mobile com "Suspender acesso" × "Excluir conta e dados" e oferta de reativação no login.
+- Medição em `feat/AccountLifecycle`: Jest 7 suítes / 47 testes passando; tsc backend 0; tsc mobile 6 erros (os mesmos da linha de base); lint backend 194 erros (linha de base 151 — sobe com os arquivos novos, tratar no item 8); `git diff main -- apps/web` vazio.
+- Lacuna: aceites 5, 13 e 14 pedem teste **e2e**; hoje estão cobertos por testes unitários com Prisma mockado (`test/app.e2e-spec.ts` é scaffold e exige banco).
