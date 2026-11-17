@@ -14,12 +14,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserMapper } from './user.mapper';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UsersService } from './user.service';
+import { UserRole } from '@prisma/client';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Get()
   async findAll(@Query('limit') limit?: string) {
     const take = limit ? Math.min(parseInt(limit, 10) || 100, 500) : 100;
@@ -28,7 +33,10 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Req() req: any) {
+    if (req.user.userId !== id && req.user.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Sem permissão para ver este usuário.');
+    }
     const user = await this.usersService.findOne(id);
     return UserMapper.toDto(user);
   }
