@@ -208,7 +208,7 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
    *Arquivos:* `prisma/schema/schema.prisma`, `user/*`, `auth/auth.service.ts`, `mascot/mascot.service.ts`, `mascot/prompt-loader.service.ts`; `AccountConfigurations/index.tsx`, `LoginScreen.tsx` (mensagem de conta suspensa).
    *Validação:* aceites 13, 14, 15.
 
-8. [ ] **`refactor/ReleaseCleanup`** — aplicar somente o aprovado em 03 e 04: um commit por lib removida/grupo coeso, um commit de comentários por app.
+8. [x] **`refactor/ReleaseCleanup`** — aplicar somente o aprovado em 03 e 04: um commit por lib removida/grupo coeso, um commit de comentários por app.
    *Validação:* aceites 10 e 11; `npx expo-doctor` e `npx expo start` sobem sem erro de módulo.
 
 9. [ ] **`feat/ReleaseDocs`** — `docs/manual-de-uso.md` (paciente e cuidador, por área, a partir das rotas reais); `docs/requisitos-implementados.md` (o que foi feito, por área, com âncora de código, mais os RNFs novos de sessão, consentimento, exclusão/suspensão e pseudonimização, redigidos para transcrição); collection Postman com os endpoints novos; corrigir CLAUDE.md (Groq, `resolveApiBaseUrl`).
@@ -252,3 +252,15 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
 - Ciclo de vida: `User.status`/`suspendedAt`, `POST /users/me/suspend`, `DELETE /users/me` transacional, `DailyLog` em cascade, auditoria do diário e `UserDeletionLog` pseudonimizados (HMAC), contexto do mascote montado no servidor e sem identificadores; mobile com "Suspender acesso" × "Excluir conta e dados" e oferta de reativação no login.
 - Medição em `feat/AccountLifecycle`: Jest 7 suítes / 47 testes passando; tsc backend 0; tsc mobile 6 erros (os mesmos da linha de base); lint backend 194 erros (linha de base 151 — sobe com os arquivos novos, tratar no item 8); `git diff main -- apps/web` vazio.
 - Lacuna: aceites 5, 13 e 14 pedem teste **e2e**; hoje estão cobertos por testes unitários com Prisma mockado (`test/app.e2e-spec.ts` é scaffold e exige banco).
+
+**2026-11-16 — item 8** (`refactor/ReleaseCleanup`, empilhada sobre `feat/AccountLifecycle`)
+- Aprovado pelo usuário: todas as remoções e reposicionamentos do relatório 03; comentários conforme recomendações do 04 (G1 removido; G2, G3, G4 e G5 mantidos); zerar lint do backend.
+- Libs removidas: mobile (`lodash`, `expo-module-scripts`, `react-test-renderer`, `@expo/ngrok`, `expo-web-browser`), backend (`@nestjs/schedule`, `ts-loader`, `source-map-support`, `@eslint/eslintrc`), raiz (`typescript`). Lock: só remoções, nenhuma versão alterada.
+- Reposicionamentos: `dotenv`, `pg`, `@prisma/adapter-pg` (7.8 → 6.19.3, alinhado ao client), `prisma`, `express` e `@nestjs/mapped-types@^2.1.1` em `dependencies`; `@types/nodemailer` e `@nestjs/testing@^11` em dev; `playwright` no workspace mobile; override de `@nestjs/swagger` removido; `expo install --fix` (8 patches).
+- **Desvio:** `apps/backend/package-lock.json` foi **regenerado**, não removido — o `Dockerfile` faz `npm ci` com contexto `apps/backend` e quebraria sem ele. As diretas resolvem com patch/minor mais novos que o lock da raiz (ex.: `@nestjs/core` 11.2.10 × 11.1.19).
+- Achado 4.3 do relatório 01 corrigido: `start:prod` e `Dockerfile` apontavam para `dist/main`, mas o build gera `dist/src/main.js`.
+- Simulação do Dockerfile em cópia limpa: `npm ci` → `prisma generate` → `build` → `npm ci --omit=dev` → `node dist/src/main` → "Nest application successfully started".
+- Bug encontrado pela tipagem: `PATCH /series/:id` mapeava a resposta duas vezes (`imagePath` vazio, gênero "Sem gênero", detalhes nulos) — corrigido.
+- Comentários: 14 alterações no backend e 35 no mobile. Componente órfão `NewPublication` removido.
+- Medição final: lint backend **0 erros** (10 warnings); Jest 7 suítes / 47 testes; tsc backend 0; tsc mobile **0**; `expo export -p android` ok; `expo install --check` ok; `git diff main -- apps/web` vazio.
+- Pendente: lint mobile 10 erros (hooks condicionais em `MediaViewer.tsx`, acesso a ref no render, `no-unescaped-entities`, import não resolvido) — não exigido pelo aceite 11; banco local sem as migrations novas (`consent_records` inexistente) → rodar `npx prisma migrate deploy`.
