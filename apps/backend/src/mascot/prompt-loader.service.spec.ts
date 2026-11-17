@@ -71,8 +71,6 @@ describe('PromptLoaderService', () => {
 
     expect(rendered).toContain('Não tenho essa informação.');
     expect(rendered).toContain('Só consigo ajudar com o OncoMente');
-    expect(rendered).toContain(
-      'Isso precisa ser avaliado pelo seu médico',
-    );
+    expect(rendered).toContain('Isso precisa ser avaliado pelo seu médico');
   });
 });

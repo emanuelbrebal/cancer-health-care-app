@@ -96,6 +96,7 @@ export class MascotService {
   private readonly INFO_FALLBACK =
     'Não tenho essa informação por aqui — mas se quiser falar sobre como você está, estou ao seu lado.';
 
+  // prettier-ignore
   private readonly EMOTIONAL_CUES = [
     'medo', 'triste', 'tristeza', 'cansad', 'exaust', 'sozinh',
     'chorar', 'choro', 'chorei', 'ansios', 'angústia', 'angustia',
@@ -107,6 +108,7 @@ export class MascotService {
     'não aguento', 'nao aguento', 'sente saudade', 'saudade',
   ];
 
+  // prettier-ignore
   private readonly INFO_CUES = [
     'como', 'onde', 'qual', 'quais', 'quando', 'o que', 'pra que',
     'para que', 'tem', 'existe', 'funciona', 'cadastrar', 'registrar',
@@ -128,6 +130,7 @@ export class MascotService {
 
   private readonly MARKDOWN_NOISE_PATTERN = /(\*\*|^#|^\s*[-*]\s|^\s*\d+\.\s)/m;
 
+  // prettier-ignore
   private readonly ENGLISH_WORDS = [
     'the', 'you', 'are', 'is', 'with', 'for', 'and', 'or', 'in',
     'to', 'on', 'at', 'medication', 'medications', 'dose', 'dosage',
@@ -180,7 +183,7 @@ export class MascotService {
       const { systemMessage, userMessage } = this.buildMessages(data, profile);
 
       const historyMessages = (data.history ?? []).map((h) => ({
-        role: h.role as 'user' | 'assistant',
+        role: h.role,
         content: h.content,
       }));
 

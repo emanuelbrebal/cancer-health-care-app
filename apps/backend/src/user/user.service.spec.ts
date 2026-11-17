@@ -63,7 +63,9 @@ describe('UsersService — ciclo de vida da conta', () => {
       where: { userId: 'user-1' },
       data: { userId: userRef },
     });
-    expect(prisma.user.delete).toHaveBeenCalledWith({ where: { id: 'user-1' } });
+    expect(prisma.user.delete).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+    });
   });
 
   it('registro de exclusão não guarda e-mail, nome nem o id em claro', async () => {
@@ -75,6 +77,8 @@ describe('UsersService — ciclo de vida da conta', () => {
       role: 'PATIENT',
       reason: 'pedido do titular',
     });
-    expect(JSON.stringify(data)).not.toMatch(/ana@exemplo\.com|Ana Souza|user-1/);
+    expect(JSON.stringify(data)).not.toMatch(
+      /ana@exemplo\.com|Ana Souza|user-1/,
+    );
   });
 });

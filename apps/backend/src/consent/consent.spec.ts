@@ -43,7 +43,7 @@ const contextFor = (userId?: string) =>
     switchToHttp: () => ({
       getRequest: () => ({ user: userId ? { userId } : undefined }),
     }),
-  } as unknown as ExecutionContext);
+  }) as unknown as ExecutionContext;
 
 describe('Consentimento', () => {
   let prisma: ReturnType<typeof fakePrisma>;
