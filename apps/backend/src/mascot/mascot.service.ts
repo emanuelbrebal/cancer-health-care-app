@@ -256,7 +256,7 @@ export class MascotService {
           }
         : null,
       treatments,
-      emotionSummary: logs.map((l) => ({
+      emotionSummary: logs.map((l: { date: Date; emotes: string[] }) => ({
         date: l.date.toISOString().slice(0, 10),
         emotes: l.emotes,
       })),

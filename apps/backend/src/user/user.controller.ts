@@ -20,6 +20,7 @@ import { UsersService } from './user.service';
 import { UserRole } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import type { AuthenticatedRequest } from 'src/auth/types/authenticated-request';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -32,17 +33,17 @@ export class UsersController {
   async findAll(@Query('limit') limit?: string) {
     const take = limit ? Math.min(parseInt(limit, 10) || 100, 500) : 100;
     const users = await this.usersService.findAll(take);
-    return users.map(UserMapper.toDto);
+    return users.map((u) => UserMapper.toDto(u));
   }
 
   @Post('me/suspend')
   @HttpCode(HttpStatus.OK)
-  async suspend(@Req() req: any) {
+  async suspend(@Req() req: AuthenticatedRequest) {
     return this.usersService.suspend(req.user.userId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: any) {
+  async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     if (req.user.userId !== id && req.user.role !== UserRole.ADMIN) {
       throw new ForbiddenException('Sem permissão para ver este usuário.');
     }
@@ -54,7 +55,7 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
   ) {
     if (req.user.userId !== id && req.user.role !== 'ADMIN') {
       throw new ForbiddenException('Sem permissão para editar este usuário.');
@@ -64,7 +65,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: any) {
+  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     if (req.user.userId !== id && req.user.role !== 'ADMIN') {
       throw new ForbiddenException('Sem permissão para remover este usuário.');
     }

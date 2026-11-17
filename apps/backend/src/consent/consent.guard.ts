@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ConsentPurpose } from '@prisma/client';
 import { ConsentService } from './consent.service';
+import type { AuthenticatedRequest } from 'src/auth/types/authenticated-request';
 
 export const CONSENT_KEY = 'consent_purpose';
 export const RequiresConsent = (purpose: ConsentPurpose) =>
@@ -29,7 +30,9 @@ export class ConsentGuard implements CanActivate {
     );
     if (!purpose) return true;
 
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context
+      .switchToHttp()
+      .getRequest<Partial<AuthenticatedRequest>>();
     if (user && (await this.consentService.isGranted(user.userId, purpose))) {
       return true;
     }
