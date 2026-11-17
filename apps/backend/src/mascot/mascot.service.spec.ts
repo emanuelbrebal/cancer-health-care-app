@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MascotService } from './mascot.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { PromptLoaderService } from './prompt-loader.service';
+import { ConsentService } from '../consent/consent.service';
 
 describe('MascotService', () => {
   let service: MascotService;
@@ -13,12 +14,15 @@ describe('MascotService', () => {
     patientSupportLog: { create: jest.fn() },
   };
 
+  const consentMock = { isGranted: jest.fn().mockResolvedValue(true) };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MascotService,
         PromptLoaderService,
         { provide: PrismaService, useValue: prismaMock },
+        { provide: ConsentService, useValue: consentMock },
       ],
     }).compile();
 

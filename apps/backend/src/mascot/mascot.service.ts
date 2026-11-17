@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AskAiDto } from './dto/ask-ai';
 import OpenAI from 'openai';
 import { PromptLoaderService } from './prompt-loader.service';
+import { ConsentService } from '../consent/consent.service';
 
 interface UserProfile {
   name: string | null;
@@ -24,6 +25,7 @@ export class MascotService {
   constructor(
     private prisma: PrismaService,
     private promptLoader: PromptLoaderService,
+    private consentService: ConsentService,
   ) {
     const apiKey = process.env.GROQ_API_KEY?.trim();
     if (apiKey) {
@@ -143,7 +145,15 @@ export class MascotService {
     );
   }
 
+  // Tratamentos e emoções só entram no contexto da IA com o consentimento de dados de saúde.
+  private canUseHealthData(userId: string) {
+    return this.consentService.isGranted(userId, 'HEALTH_DATA');
+  }
+
   async generateResponse(userId: string, data: AskAiDto) {
+    if (!(await this.canUseHealthData(userId))) {
+      data = { ...data, treatmentData: [], calendarData: [] };
+    }
     if (this.isEmergency(data.userQuestion)) {
       await this.logInteraction(userId, data, this.EMERGENCY_RESPONSE);
       return { response: this.EMERGENCY_RESPONSE };
@@ -198,23 +208,33 @@ export class MascotService {
   }
 
   async getUserContext(userId: string) {
+    const withHealthData = await this.canUseHealthData(userId);
     const [user, treatments, logs] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
         select: { name: true, pronoun: true, role: true, birthday: true },
       }),
-      this.prisma.treatment.findMany({
-        where: { userId, status: 'ACTIVE' },
-        select: { name: true, frequency: true, startTime: true, endDate: true },
-      }),
-      this.prisma.dailyLog.findMany({
-        where: {
-          userId,
-          date: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        },
-        select: { date: true, emotes: true },
-        orderBy: { date: 'desc' },
-      }),
+      withHealthData
+        ? this.prisma.treatment.findMany({
+            where: { userId, status: 'ACTIVE' },
+            select: {
+              name: true,
+              frequency: true,
+              startTime: true,
+              endDate: true,
+            },
+          })
+        : [],
+      withHealthData
+        ? this.prisma.dailyLog.findMany({
+            where: {
+              userId,
+              date: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+            },
+            select: { date: true, emotes: true },
+            orderBy: { date: 'desc' },
+          })
+        : [],
     ]);
 
     return {
