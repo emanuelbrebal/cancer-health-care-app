@@ -19,7 +19,7 @@
 | RF-A05 | Encerrar sessão invalidando-a no servidor | Implementado | `POST /auth/logout`; `apps/mobile/src/services/auth.ts` |
 | RF-A06 | Edição de perfil: nome, pronome, telefone, nascimento e foto | Implementado | `PersonalArea/OnboardingForm`; `PATCH /users/:id` (dono ou ADMIN) |
 | RF-A07 | Suspender acesso preservando os dados; reativar no login com confirmação | Implementado | `AccountConfigurations/index.tsx`; `POST /users/me/suspend`; `auth.service.ts` (`ACCOUNT_SUSPENDED`, `reactivate`) |
-| RF-A08 | Excluir conta e todos os dados do titular de forma definitiva | Implementado | `AccountConfigurations/index.tsx`; `DELETE /users/:id` (dono ou ADMIN); `user/user.service.ts` (`remove`) |
+| RF-A08 | Excluir conta e todos os dados do titular de forma definitiva, com confirmação de senha | Implementado | `AccountConfigurations/index.tsx`; `DELETE /users/me` (senha; `403 INVALID_PASSWORD`); `DELETE /users/:id` só ADMIN; `user/user.service.ts` (`remove`) |
 
 ### 1.2 Área Oncológica (pública)
 
@@ -112,7 +112,6 @@
 
 | Item | Situação |
 |---|---|
-| Exclusão de conta | Rota é `DELETE /users/:id` (dono ou ADMIN), **sem confirmação de senha** — o plano previa `DELETE /users/me` com senha |
 | Testes e2e | Aceites de consentimento, exclusão e suspensão estão cobertos por **testes unitários** com Prisma simulado, não por e2e com banco |
 | Criptografia do diário em repouso | Não implementada (backlog `tasks/tcc-final`) |
 | Consentimento parental, portabilidade, ROPA/RIPD | Fora deste corte (`tasks/tcc-final/10`) |

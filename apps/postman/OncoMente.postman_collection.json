@@ -613,18 +613,50 @@
           "name": "Excluir conta e dados",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
+              "raw": "{{baseUrl}}/users/me",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{userId}}"
+                "me"
               ]
             },
-            "description": "Definitivo. Dono ou ADMIN."
+            "description": "Definitivo. Exige a senha atual; senha errada → 403 INVALID_PASSWORD.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Excluir usuário (ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "description": "Somente ADMIN.",
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            }
           }
         }
       ]
