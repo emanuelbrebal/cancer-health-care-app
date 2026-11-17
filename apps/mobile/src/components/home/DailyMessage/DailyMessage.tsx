@@ -57,7 +57,7 @@ export default function DailyMessage({
     }
   }
 
-  const shouldShowImage = !noImg && imageSource !== null && imageSource !== '';
+  const shouldShowImage = !noImg && imageSource !== null;
   const finalImageSource = imageSource || require('@assets/images/Home/purpleMascotPlaceholder.png');
 
   return (
