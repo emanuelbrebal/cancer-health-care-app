@@ -48,17 +48,14 @@ async function main() {
 
   // ─── 2. GÊNEROS ───────────────────────────────────────────────────────────
   const genres = [
-    // BOOK
     { name: 'Saúde e Bem-estar',  type: 'BOOK'   as MediaType },
     { name: 'Autoajuda',          type: 'BOOK'   as MediaType },
     { name: 'Biografia',          type: 'BOOK'   as MediaType },
     { name: 'Informativo',        type: 'BOOK'   as MediaType },
-    // MOVIE
     { name: 'Drama',              type: 'MOVIE'  as MediaType },
     { name: 'Comédia',            type: 'MOVIE'  as MediaType },
     { name: 'Documentário',       type: 'MOVIE'  as MediaType },
     { name: 'Superação',          type: 'MOVIE'  as MediaType },
-    // SERIES
     { name: 'Minissérie',         type: 'SERIES' as MediaType },
     { name: 'Sitcom',             type: 'SERIES' as MediaType },
     { name: 'Bem-estar',          type: 'SERIES' as MediaType },
@@ -75,7 +72,7 @@ async function main() {
   const genreMovie  = await prisma.genre.findFirst({ where: { name: 'Drama' } });
   const genreSeries = await prisma.genre.findFirst({ where: { name: 'Minissérie' } });
 
-  // ─── 4. LIVROS ────────────────────────────────────────────────────────────
+  // ─── 3. LIVROS ────────────────────────────────────────────────────────────
   const books = [
     {
       title: 'Além da Cura',
@@ -164,7 +161,7 @@ async function main() {
     });
   }
 
-  // ─── 5. FILMES ────────────────────────────────────────────────────────────
+  // ─── 4. FILMES ────────────────────────────────────────────────────────────
   const movies = [
     {
       title: 'Love Story - Uma História de Amor',
@@ -312,7 +309,7 @@ async function main() {
     });
   }
 
-  // ─── 6. SÉRIES ────────────────────────────────────────────────────────────
+  // ─── 5. SÉRIES ────────────────────────────────────────────────────────────
   const series = [
     {
       title: 'Alexa e Katie',
@@ -389,7 +386,7 @@ async function main() {
     });
   }
 
-  // ─── 7. ATIVIDADES DE LAZER ───────────────────────────────────────────────
+  // ─── 6. ATIVIDADES DE LAZER ───────────────────────────────────────────────
   const activities = [
     {
       name: 'Yoga Leve',

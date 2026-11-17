@@ -5,12 +5,6 @@ import { Injectable } from '@nestjs/common';
 export class CascadeManager {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Soft deletes everything that's in a cascade by its model name and their foreign key.
-   * @param parentModel prisma model
-   * @param parentId parent's ID
-   * @param children children element configuration { modelName: string, foreignKey: string }
-   */
   async softDeleteCascade(
     parentModel: string,
     parentId: string,
