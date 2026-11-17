@@ -18,7 +18,7 @@ O app tem 5 abas na parte de baixo da tela:
 | **Mascote** | Conversa com o mascote (inteligência artificial) | Sim |
 | **Meu Perfil** | Diário, tratamentos, calendário e configurações | Sim |
 
-O **botão de emergência** (SOS) fica disponível em todas as telas e **nunca** pede login nem consentimento.
+O **botão de emergência** (SOS) fica fixo em todas as telas da aba **Saúde Mental** e **nunca** pede login nem consentimento.
 
 ### 1.2 Criar conta
 1. Toque em **Meu Perfil** ou **Mascote** e escolha **Criar conta grátis**.
@@ -63,7 +63,7 @@ No **Lazer**, toque em um item para ver sinopse, onde encontrar e, nos livros, o
 O conteúdo de pacientes e de cuidadores fica sempre visível; o do seu tipo de conta aparece primeiro.
 
 ### 3.1 Emergência
-Toque no botão **SOS** e escolha o serviço. O app abre o discador do celular com o número:
+Em qualquer tela de **Saúde Mental**, toque no botão **SOS** e escolha o serviço. O app abre o discador do celular com o número:
 
 | Serviço | Número |
 |---|---|
