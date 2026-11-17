@@ -19,6 +19,7 @@ import { Button } from '@/src/components/ds/Button';
 import { ConfirmDialog } from '@/src/components/ds/ConfirmDialog';
 import { useUxDebugStore } from '@/src/store/useUxDebugStore';
 import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 const DAILY_LIMIT = 30;
 const CHAT_LIMIT_KEY = 'oncomente:chat-daily-limit';
@@ -71,7 +72,7 @@ async function incrementTodayCount(): Promise<number> {
   return count;
 }
 
-export default function MascotChat() {
+function MascotChat() {
   const headerHeight = useHeaderHeight();
   const forced = useUxDebugStore((s) => s.forced);
   const setForced = useUxDebugStore((s) => s.setForced);
@@ -490,3 +491,5 @@ const styles = StyleSheet.create({
     backgroundColor: color.action.primaryPressed,
   },
 });
+
+export default withConsent('AI_MASCOT', MascotChat);
