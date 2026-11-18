@@ -13,12 +13,14 @@ export class DailyLogsReportService {
   ): Promise<Buffer> {
     const logs = await this.repository.findByPeriod(userId, start, end);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ margin: 50, size: 'A4' });
       const chunks: Buffer[] = [];
 
-      doc.on('data', (chunk) => chunks.push(chunk));
+      doc.on('data', (chunk: Buffer) => chunks.push(chunk));
       doc.on('end', () => resolve(Buffer.concat(chunks)));
+      // Sem isso, um erro na geração deixa a requisição pendurada até o timeout do cliente.
+      doc.on('error', reject);
 
       doc
         .fillColor('#2c3e50')
