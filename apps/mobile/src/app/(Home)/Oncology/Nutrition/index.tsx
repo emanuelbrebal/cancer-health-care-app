@@ -107,7 +107,7 @@ export default function Nutrition() {
 
                 <View style={styles.motivationCard}>
                     <Text style={styles.motivationText}>
-                        "Alimentar-se é uma forma de cuidado e fortalecimento."
+                        &quot;Alimentar-se é uma forma de cuidado e fortalecimento.&quot;
                     </Text>
                 </View>
             </View>

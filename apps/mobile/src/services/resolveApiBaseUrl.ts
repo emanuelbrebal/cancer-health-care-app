@@ -39,5 +39,9 @@ export function resolveApiBaseUrl(): string {
 
   if (fromEnv) return fromEnv.replace(/\/$/, '');
   if (__DEV__ && devHost) return `http://${devHost}:${DEFAULT_PORT}`;
+  if (!__DEV__) {
+    // O app.config.ts já barra builds de release sem URL; isto só cobre builds feitos fora do EAS.
+    console.error('[api] EXPO_PUBLIC_API_URL ausente no build de release; usando localhost.');
+  }
   return fallback;
 }

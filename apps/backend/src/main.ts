@@ -1,27 +1,17 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { AllExceptionsFilter } from 'common/filters/http-exception.filter';
+import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as express from 'express';
+import { configureApp } from './bootstrap/configure-app';
 
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
   assertStrongJwtSecret(isProduction);
+  assertPseudonymKey(isProduction);
 
   const app = await NestFactory.create(AppModule);
-  // Autenticação é por Bearer token (sem cookies). Em produção só entram as origens de
-  // CORS_ORIGINS (Expo Web e painel admin); o app nativo não depende de CORS.
-  const corsOrigins = process.env.CORS_ORIGINS?.split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean);
-  app.enableCors({ origin: corsOrigins?.length ? corsOrigins : !isProduction });
-  app.use(express.json({ limit: '5mb' }));
-  app.use(express.urlencoded({ limit: '5mb', extended: true }));
-  // whitelist descarta campos fora do DTO: impede alterar role, password ou userId pelo corpo.
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  app.useGlobalFilters(new AllExceptionsFilter());
+  configureApp(app, isProduction);
 
   if (!isProduction) setupSwagger(app);
 
@@ -34,6 +24,18 @@ function assertStrongJwtSecret(isProduction: boolean) {
   if (secret.length < 32 || secret.startsWith('change-this')) {
     throw new Error(
       'JWT_SECRET fraco ou de exemplo. Em produção use um valor aleatório com 32+ caracteres.',
+    );
+  }
+}
+
+// Em produção a chave do pseudônimo é obrigatória e separada do JWT_SECRET: trocar o segredo
+// do JWT (rotação de sessão) não pode quebrar o vínculo dos registros pseudonimizados.
+function assertPseudonymKey(isProduction: boolean) {
+  if (!isProduction) return;
+  const key = process.env.PSEUDONYM_KEY ?? '';
+  if (key.length < 32 || key === process.env.JWT_SECRET) {
+    throw new Error(
+      'PSEUDONYM_KEY ausente, curta ou igual ao JWT_SECRET. Em produção use um valor aleatório próprio com 32+ caracteres.',
     );
   }
 }
@@ -51,4 +53,7 @@ function setupSwagger(app: INestApplication) {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 }
-bootstrap();
+bootstrap().catch((error: unknown) => {
+  console.error('Falha ao iniciar o servidor:', error);
+  process.exit(1);
+});

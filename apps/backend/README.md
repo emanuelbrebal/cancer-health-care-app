@@ -50,8 +50,9 @@ $ npm run start:prod
 # unit tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
+# e2e tests (Postgres descartável na porta 5433; rodar o compose a partir da raiz do repo)
+$ docker compose -f ../../docker-compose.test.yml up -d --wait
+$ npm run test:e2e        # aplica as migrations e usa test/e2e.env; recusa banco sem "_test" no nome
 
 # test coverage
 $ npm run test:cov

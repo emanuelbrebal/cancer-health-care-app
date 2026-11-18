@@ -21,28 +21,29 @@ export interface MediaViewerProps {
 export const MediaViewer = ({ url, width = '100%', height = 200, play = false }: MediaViewerProps) => {
   const [isReady, setIsReady] = useState(false);
 
-  if (!url) return null;
-
   const isGif = typeof url === 'string' && url.toLowerCase().endsWith('.gif');
-
   const isLocalVideo = typeof url === 'number';
   const isRemoteVideo = typeof url === 'string' && url.toLowerCase().endsWith('.mp4');
+  const isVideo = isLocalVideo || isRemoteVideo;
 
-  const player = useVideoPlayer(url, (player) => {
+  // Hooks antes de qualquer return: a ordem precisa ser a mesma em todo render.
+  // Fonte null para o que não é vídeo, assim nenhum player é carregado à toa.
+  const player = useVideoPlayer(isVideo ? url : null, (player) => {
     player.loop = true;
     player.muted = true;
     if (play) player.play();
   });
 
   useEffect(() => {
-    if (isLocalVideo || isRemoteVideo) {
-      if (play) {
-        player.play();
-      } else {
-        player.pause();
-      }
+    if (!isVideo) return;
+    if (play) {
+      player.play();
+    } else {
+      player.pause();
     }
-  }, [play, player]);
+  }, [isVideo, play, player]);
+
+  if (!url) return null;
 
   if (isGif) {
     return (

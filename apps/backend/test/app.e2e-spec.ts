@@ -1,25 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { PrismaService } from '../src/prisma/prisma.service';
+import { api, closeApp, createApp, resetDatabase } from './helpers';
 
-describe('AppController (e2e)', () => {
+// Fumaça da infraestrutura: app sobe com a configuração de produção e fala com o banco de teste.
+describe('Infraestrutura e2e', () => {
   let app: INestApplication<App>;
+  let prisma: PrismaService;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  beforeAll(async () => {
+    ({ app, prisma } = await createApp());
+    await resetDatabase(prisma);
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await closeApp(app, prisma);
   });
+
+  it('GET / responde', () => api(app).get('/').expect(200));
+
+  it('banco de teste está migrado e vazio', async () => {
+    expect(await prisma.user.count()).toBe(0);
+  });
+
+  it('ValidationPipe global está ativo', () =>
+    api(app).post('/auth/login').send({}).expect(400));
 });
