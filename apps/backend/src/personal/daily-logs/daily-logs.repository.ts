@@ -1,3 +1,4 @@
+import { pseudonymize } from 'src/shared/utils/pseudonym.util';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -36,7 +37,7 @@ export class DailyLogsRepository {
       await tx.dailyLogAudit.create({
         data: {
           logId: log.id,
-          userId: log.userId,
+          userId: pseudonymize(log.userId),
           action: 'CREATE',
         },
       });
@@ -52,7 +53,7 @@ export class DailyLogsRepository {
         data,
       });
       await tx.dailyLogAudit.create({
-        data: { logId: id, userId: userId, action: 'UPDATE' },
+        data: { logId: id, userId: pseudonymize(userId), action: 'UPDATE' },
       });
       return log;
     });
@@ -61,7 +62,7 @@ export class DailyLogsRepository {
   async hardDeleteWithAudit(id: string, userId: string) {
     return this.prisma.$transaction(async (tx) => {
       await tx.dailyLogAudit.create({
-        data: { logId: id, userId, action: 'DELETE' },
+        data: { logId: id, userId: pseudonymize(userId), action: 'DELETE' },
       });
       return tx.dailyLog.delete({ where: { id } });
     });

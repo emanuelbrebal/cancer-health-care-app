@@ -57,6 +57,11 @@ model User {
   profile_picture String?
 
   lastAiAnalysis DateTime?
+
+  // INACTIVE = acesso suspenso pelo titular ou por ADMIN; os dados ficam preservados.
+  status      StatusEnum @default(ACTIVE)
+  suspendedAt DateTime?
+
   logs          DailyLog[]
   treatments    Treatment[]
   refreshTokens RefreshToken[]
@@ -104,12 +109,11 @@ model ConsentRecord {
   @@map("consent_records")
 }
 
+// Registro de exclusão de conta sem dado pessoal: userRef é o id pseudonimizado.
 model UserDeletionLog {
   id        String   @id @default(uuid())
-  userId    String
-  email     String
+  userRef   String   @map("userId")
   role      String
-  name      String?
   reason    String?
   deletedAt DateTime @default(now())
 
@@ -249,7 +253,7 @@ model DailyLog {
   updatedAt DateTime @updatedAt
   
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])
 }

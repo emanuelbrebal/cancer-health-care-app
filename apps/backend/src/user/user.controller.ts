@@ -1,6 +1,9 @@
 import {
   Controller,
   Get,
+  Post,
+  HttpCode,
+  HttpStatus,
   Body,
   Patch,
   Param,
@@ -30,6 +33,12 @@ export class UsersController {
     const take = limit ? Math.min(parseInt(limit, 10) || 100, 500) : 100;
     const users = await this.usersService.findAll(take);
     return users.map(UserMapper.toDto);
+  }
+
+  @Post('me/suspend')
+  @HttpCode(HttpStatus.OK)
+  async suspend(@Req() req: any) {
+    return this.usersService.suspend(req.user.userId);
   }
 
   @Get(':id')

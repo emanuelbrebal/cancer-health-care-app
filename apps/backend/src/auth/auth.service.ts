@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -39,7 +40,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const { email, password, reactivate } = loginDto;
 
     if (!email) {
       throw new BadRequestException('E-mail é obrigatório para o login');
@@ -59,6 +60,19 @@ export class AuthService {
       throw new UnauthorizedException('E-mail ou senha incorretos');
     }
 
+    if (user.status !== 'ACTIVE') {
+      if (user.status !== 'INACTIVE' || !reactivate) {
+        throw new ForbiddenException({
+          message: 'Esta conta está com o acesso suspenso.',
+          code: 'ACCOUNT_SUSPENDED',
+        });
+      }
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { status: 'ACTIVE', suspendedAt: null },
+      });
+    }
+
     return {
       access_token: this.signAccessToken(user),
       refresh_token: await this.sessionService.issue(user.id),
@@ -71,7 +85,10 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: { id: rotated.userId },
     });
-    if (!user) throw new UnauthorizedException('Usuário não encontrado');
+    if (!user || user.status !== 'ACTIVE') {
+      await this.sessionService.revokeAllForUser(rotated.userId);
+      throw new UnauthorizedException('Sessão expirada. Entre novamente.');
+    }
 
     return {
       access_token: this.signAccessToken(user),
