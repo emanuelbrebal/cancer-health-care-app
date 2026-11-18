@@ -94,7 +94,7 @@ export default function OnboardingProfileScreen() {
       login(token, response.data);
       toastService.success('Perfil atualizado com sucesso!');
       if (firstTime === '1') {
-        router.replace('/(Home)/PersonalArea/Hub');
+        router.replace({ pathname: '/PersonalArea/AccountConfigurations/Privacy', params: { firstTime: '1' } });
       } else {
         router.back();
       }

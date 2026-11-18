@@ -15,8 +15,11 @@ import { TreatmentsService } from './treatments.service';
 import { CreateTreatmentDto } from './dto/create-treatment.dto';
 import { UpdateTreatmentDto } from './dto/update-treatment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ConsentPurpose } from '@prisma/client';
+import { ConsentGuard, RequiresConsent } from 'src/consent/consent.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConsentGuard)
+@RequiresConsent(ConsentPurpose.HEALTH_DATA)
 @Controller('personal/treatments')
 export class TreatmentsController {
   constructor(private readonly service: TreatmentsService) {}

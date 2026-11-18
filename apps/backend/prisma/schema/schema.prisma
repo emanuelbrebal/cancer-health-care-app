@@ -60,6 +60,7 @@ model User {
   logs          DailyLog[]
   treatments    Treatment[]
   refreshTokens RefreshToken[]
+  consents      ConsentRecord[]
 
 }
 
@@ -79,6 +80,28 @@ model RefreshToken {
   @@index([userId])
   @@index([familyId])
   @@map("refresh_tokens")
+}
+
+enum ConsentPurpose {
+  HEALTH_DATA
+  AI_MASCOT
+  NOTIFICATIONS
+}
+
+// Consentimento LGPD por finalidade. Só inserção: cada mudança é uma linha nova e o
+// estado atual é a mais recente por finalidade. Sem linha = negado.
+model ConsentRecord {
+  id          String         @id @default(uuid())
+  purpose     ConsentPurpose
+  granted     Boolean
+  termVersion String         @db.VarChar(20)
+  createdAt   DateTime       @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, createdAt])
+  @@map("consent_records")
 }
 
 model UserDeletionLog {

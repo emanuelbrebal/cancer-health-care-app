@@ -16,6 +16,7 @@ const screensConfig: ScreenConfig[] = [
     { name: "Treatment/index", title: "Gerenciar tratamentos" },
     { name: "AccountConfigurations/index", title: "Configurações" },
     { name: "AccountConfigurations/ChangePassword/index", title: "Mudar Senha" },
+    { name: "AccountConfigurations/Privacy/index", title: "Privacidade" },
     { name: "OnboardingForm/index", title: "Editar Perfil" },
 ];
 

@@ -14,12 +14,15 @@ import { DailyLogsService } from './daily-logs.service';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ConsentPurpose } from '@prisma/client';
+import { ConsentGuard, RequiresConsent } from 'src/consent/consent.guard';
 import { DailyLogsReportService } from './daily-logs-report.service';
 import type { Response } from 'express';
 import { Res } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConsentGuard)
+@RequiresConsent(ConsentPurpose.HEALTH_DATA)
 @Controller('daily-logs')
 export class DailyLogsController {
   constructor(

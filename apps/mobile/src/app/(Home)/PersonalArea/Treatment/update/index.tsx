@@ -9,6 +9,7 @@ import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
 import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService from '@/src/services/treatmentService';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 const FREQUENCIAS = [
   '8 em 8 horas (3x ao dia)',
@@ -16,7 +17,7 @@ const FREQUENCIAS = [
   '24 em 24 horas (1x ao dia)',
 ];
 
-export default function EditTreatment() {
+function EditTreatment() {
   const headerHeight = useHeaderHeight();
   const router = useRouter();
   const { id, currentNome, currentFreq, currentHora, currentFim, currentMedico, currentContato, currentHospital } = useLocalSearchParams<{
@@ -201,3 +202,5 @@ const styles = StyleSheet.create({
   inputError: { borderColor: '#FF4C4C', borderWidth: 1.5 },
   errorText: { fontFamily: 'Montserrat', fontSize: 12, color: '#FF4C4C', marginTop: 4, marginLeft: 4 },
 });
+
+export default withConsent('HEALTH_DATA', EditTreatment);

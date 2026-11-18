@@ -14,6 +14,7 @@ import { DateInput } from '@/src/components/ui/Inputs/DateInput';
 import { TimeInput } from '@/src/components/ui/Inputs/TimeInput';
 import { PhoneInput } from '@/src/components/ui/Inputs/PhoneInput';
 import { toastService } from '@/src/services/toastService';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 const FREQUENCIAS = [
   '8 em 8 horas (3x ao dia)',
@@ -50,7 +51,7 @@ async function createCalendarEvent(nome: string, horaInicio: string, dataFim: st
   }
 }
 
-export default function CreateTreatment() {
+function CreateTreatment() {
   const headerHeight = useHeaderHeight();
   const router = useRouter();
 
@@ -259,3 +260,5 @@ const styles = StyleSheet.create({
   modalBtnPrimary: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: Colors.purplePrimary, alignItems: 'center' },
   modalBtnPrimaryText: { fontFamily: 'Montserrat', fontSize: 14, color: '#FFF', fontWeight: '700' },
 });
+
+export default withConsent('HEALTH_DATA', CreateTreatment);
