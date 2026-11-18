@@ -12,7 +12,6 @@ import { ConsentService } from '../consent/consent.service';
 import { pseudonymize } from '../shared/utils/pseudonym.util';
 
 interface UserProfile {
-  name: string | null;
   pronoun: string | null;
   role: string;
   birthday: Date | null;
@@ -175,9 +174,10 @@ export class MascotService {
     }
 
     try {
+      // Nome, e-mail e telefone nunca vão para o provedor de IA (minimização, LGPD art. 6º III).
       const profile = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { name: true, pronoun: true, role: true, birthday: true },
+        select: { pronoun: true, role: true, birthday: true },
       });
 
       const { systemMessage, userMessage } = this.buildMessages(data, profile);
@@ -346,8 +346,6 @@ export class MascotService {
       Array.isArray(data.calendarData) && data.calendarData.length > 0;
 
     const systemMessage = this.promptLoader.render({
-      // Só o primeiro nome vai para o provedor de IA (minimização).
-      nome: profile?.name?.trim().split(/\s+/)[0] ?? '',
       pronome: this.formatPronounLabel(profile?.pronoun ?? null) ?? '',
       papel: profile ? this.formatRole(profile.role) : '',
       idade: profile?.birthday
