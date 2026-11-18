@@ -50,11 +50,7 @@
         "serviceAccountKeyPath": "./google-service-account.json",
         "track": "internal"
       },
-      "ios": {
-        "appleId": "manu.brebal@gmail.com",
-        "ascAppId": "",
-        "appleTeamId": ""
-      }
+      "ios": {}
     }
   }
 }

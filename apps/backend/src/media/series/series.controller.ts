@@ -6,17 +6,24 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
   BadRequestException,
 } from '@nestjs/common';
 import { SeriesService } from './series.service';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { UpdateSeriesDto } from './dto/update-series.dto';
 import { SeriesMapper } from '../mappers/series-mapper';
+import { UserRole } from '@prisma/client';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
 
 @Controller('series')
 export class SeriesController {
   constructor(private readonly seriesService: SeriesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() createSeriesDto: CreateSeriesDto) {
     const serie = await this.seriesService.create(createSeriesDto);
@@ -38,6 +45,8 @@ export class SeriesController {
     return SeriesMapper.toDto(serie);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -55,6 +64,8 @@ export class SeriesController {
     };
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.seriesService.remove(id);

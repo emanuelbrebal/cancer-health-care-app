@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -93,7 +94,11 @@ export class AuthService {
     }
 
     const token = this.jwtService.sign(
-      { sub: user.id, purpose: 'reset-password' },
+      {
+        sub: user.id,
+        purpose: 'reset-password',
+        pwd: this.passwordFingerprint(user.password),
+      },
       { expiresIn: '15m' },
     );
 
@@ -102,9 +107,12 @@ export class AuthService {
     return {
       message:
         'Se o e-mail estiver cadastrado, você receberá as instruções em breve.',
-      // token exposto apenas em ambiente de desenvolvimento para facilitar testes
-      ...(process.env.NODE_ENV !== 'production' && { debug_token: token }),
     };
+  }
+
+  // Amarra o token de redefinição à senha vigente: depois de usado, deixa de valer.
+  private passwordFingerprint(passwordHash: string) {
+    return createHash('sha256').update(passwordHash).digest('hex').slice(0, 16);
   }
 
   async resetPassword(dto: ResetPasswordDto) {
@@ -117,6 +125,13 @@ export class AuthService {
 
     if (payload.purpose !== 'reset-password') {
       throw new BadRequestException('Token inválido.');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+    if (!user || payload.pwd !== this.passwordFingerprint(user.password)) {
+      throw new BadRequestException('Token inválido ou expirado.');
     }
 
     const hashed = await bcrypt.hash(dto.newPassword, 10);

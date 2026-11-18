@@ -20,7 +20,7 @@ export const authService = {
 
     async forgotPassword(email: string) {
         const response = await api.post('/auth/forgot-password', { email });
-        return response.data as { message: string; debug_token?: string };
+        return response.data as { message: string };
     },
 
     async resetPassword(token: string, newPassword: string) {

@@ -6,17 +6,24 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
   BadRequestException,
 } from '@nestjs/common';
 import { LeisuresService } from './leisures.service';
 import { CreateLeisureDto } from './dto/create-leisure.dto';
 import { UpdateLeisureDto } from './dto/update-leisure.dto';
 import { LeisureMapper } from './mappers/leisureMapper';
+import { UserRole } from '@prisma/client';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('leisures')
 export class LeisuresController {
   constructor(private readonly leisuresService: LeisuresService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() createLeisureDto: CreateLeisureDto) {
     const leisure = await this.leisuresService.create(createLeisureDto);
@@ -38,6 +45,8 @@ export class LeisuresController {
     return LeisureMapper.toDto(leisure);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -55,6 +64,8 @@ export class LeisuresController {
     return LeisureMapper.toDto(updatedLeisure);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.leisuresService.remove(id);

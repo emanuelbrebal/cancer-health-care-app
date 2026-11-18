@@ -7,6 +7,7 @@ const LOCAL_DATA_KEYS = [
   'oncomente:notification-history',
   'oncomente:notifications:consent',
   'oncomente-treatment-local-ids',
+  'oncomente:chat-history',
 ];
 
 export const useAuthStore = createAuthStore(
