@@ -45,7 +45,8 @@ export default function BreathingExercises() {
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [countdown, setCountdown] = useState(selectedTech.phases[0].duration);
 
-  const scaleAnim = useRef(new Animated.Value(MIN_SCALE)).current;
+  // Valor criado uma vez no primeiro render (ler ref.current durante o render quebra o React Compiler).
+  const [scaleAnim] = useState(() => new Animated.Value(MIN_SCALE));
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const animRef = useRef<Animated.CompositeAnimation | null>(null);
 
@@ -73,16 +74,19 @@ export default function BreathingExercises() {
     }
 
     animatePhase(currentPhase);
-    setCountdown(currentPhase.duration);
 
+    // O countdown da fase atual já foi definido por quem iniciou a fase (handleStart ou a virada abaixo).
     let remaining = currentPhase.duration;
     timerRef.current = setInterval(() => {
       remaining -= 1;
-      setCountdown(remaining);
-      if (remaining <= 0) {
-        clearInterval(timerRef.current!);
-        setPhaseIdx((prev) => prev + 1);
+      if (remaining > 0) {
+        setCountdown(remaining);
+        return;
       }
+      clearInterval(timerRef.current!);
+      const nextPhase = selectedTech.phases[(phaseIdx + 1) % selectedTech.phases.length];
+      setCountdown(nextPhase.duration);
+      setPhaseIdx((prev) => prev + 1);
     }, 1000);
 
     return () => {
@@ -92,6 +96,7 @@ export default function BreathingExercises() {
 
   const handleStart = () => {
     setPhaseIdx(0);
+    setCountdown(selectedTech.phases[0].duration);
     setIsRunning(true);
   };
 
