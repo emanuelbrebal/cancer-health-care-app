@@ -170,7 +170,7 @@ Ordem: 2–5 (mobile, independentes) → 6 → 7 (refactor antes do e2e) → 8 �
 6. `.env.prod.example` na raiz não foi criado: o `.gitignore` da raiz ignora `.env.*`. O modelo ficou no checklist (seção 1).
 
 **Pendência aberta (decisão do usuário)**
-- `prisma migrate diff --from-migrations … --to-schema-datamodel …` ainda mostra drift: as migrations criam `Comment`, `Post`, `Topic`, `Community` (Área Social, removida do escopo), ausentes no schema e no banco local. A migration `DROP TABLE IF EXISTS … CASCADE` foi bloqueada pelo classificador de ações destrutivas e aguarda aprovação. Sem ela, um banco novo nasce com 4 tabelas órfãs vazias (não quebra o deploy).
+- `prisma migrate diff --from-migrations … --to-schema-datamodel …` ainda mostra drift: as migrations criam `Comment`, `Post`, `Topic`, `Community` (Área Social, removida do escopo), ausentes no schema e no banco local. Resolvido após aprovação do usuário (2026-11-18): migration `20261118000000_drop_social_area` (`DROP TABLE IF EXISTS`, sem `CASCADE`, dependentes primeiro). Validado no Postgres descartável: banco recriado do zero, `migrate deploy` ok, `migrate diff --from-url … --to-schema-datamodel prisma/schema` vazio, e2e 19/19. Não aplicada no banco local de dev (no-op lá: as tabelas já não existem).
 
 **Stage de Execução — Validação**
 

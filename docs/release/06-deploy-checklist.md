@@ -77,4 +77,4 @@ Gerar segredos: `node -e "console.log(require('crypto').randomBytes(48).toString
 
 - Código: subir a imagem/tag anterior (`docker compose up -d` com o commit anterior).
 - Banco: as migrations não têm `down`; restaurar o backup anterior ao deploy. A migration retroativa desta rodada (`20260424000001_add_user_deletion_logs`) é idempotente (`IF NOT EXISTS`).
-- Pendente (decisão do usuário): banco novo ainda cria as tabelas órfãs da Área Social (`Comment`, `Post`, `Topic`, `Community`), removidas do schema sem migration. Ver `tasks/release-dod.md`.
+- `20261118000000_drop_social_area` remove as tabelas da Área Social (`Comment`, `Post`, `Topic`, `Community`). É destrutiva: se o banco de produção tiver dados nelas, fazer backup antes do deploy. Em banco novo, migrations e schema ficam sem drift.
