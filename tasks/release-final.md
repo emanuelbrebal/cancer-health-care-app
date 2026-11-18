@@ -154,7 +154,7 @@ Detalhes: tabela `RefreshToken` (tokenHash, familyId, expiresAt, revokedAt, repl
 
 **Vencedora: C** (corretude 5, blast radius 5, prazo 5). A viola a política de commits/PRs e dificulta reverter; B desperdiça tempo, pois as cinco varreduras não tocam código.
 
-Branches: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs`.
+Branches: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs` → `fix/AccountDeletionPassword`.
 
 ### Bloco 4 — Remoção de comentários
 
@@ -273,8 +273,12 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
   - Botão SOS só existe nas telas de Saúde Mental (o manual dizia "todas as telas") → texto corrigido.
 
 **Pendências abertas (fora do que foi executado)**
-- Exclusão de conta sem confirmação de senha no servidor (`DELETE /users/:id`); o plano (Bloco 5) previa `DELETE /users/me` com senha.
 - Aceites 5, 13 e 14 cobertos por teste unitário, não e2e com banco.
 - Banco local sem as migrations novas → `npx prisma migrate deploy` em `apps/backend`.
 - Lint mobile: 10 erros; `EXPO_PUBLIC_API_URL` ausente no `eas.json`; rota `/design-system` e `DebugStatePanel` sem guarda de `__DEV__` (relatório 01).
-- Branches empilhadas e não enviadas: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `feat/AccountLifecycle` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs`.
+- Branches empilhadas e não enviadas: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `feat/AccountLifecycle` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs` → `fix/AccountDeletionPassword`.
+
+**2026-11-16 — exclusão com senha** (`fix/AccountDeletionPassword`)
+- `DELETE /users/me` exige a senha atual (`403 INVALID_PASSWORD`, não 401, para o interceptor do app não encerrar a sessão); throttle 5/min. `DELETE /users/:id` passa a ser só ADMIN.
+- Mobile: campo de senha (`TextField` do DS) no diálogo "Excluir conta e dados"; senha errada mantém o diálogo aberto.
+- Jest: 50 testes. Docs, PRD 04 e Postman atualizados.

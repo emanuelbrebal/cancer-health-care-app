@@ -138,7 +138,7 @@ Em **Meu Perfil → Configurações da conta**:
 | **Mudar senha** | Pede a senha atual e a nova; encerra as outras sessões |
 | **Encerrar sessão** | Sai deste aparelho e invalida a sessão no servidor |
 | **Suspender acesso** | Bloqueia a conta e sai de todos os aparelhos. **Nada é apagado.** Para voltar, entre com e-mail e senha e confirme **Reativar** |
-| **Excluir conta e dados** | Apaga de forma **permanente** conta, diário, tratamentos, conversas com o mascote e consentimentos. Fica só um registro anônimo de que uma exclusão ocorreu |
+| **Excluir conta e dados** | Pede sua **senha** e apaga de forma **permanente** conta, diário, tratamentos, conversas com o mascote e consentimentos. Fica só um registro anônimo de que uma exclusão ocorreu |
 
 Ambas as ações pedem confirmação antes de executar.
 

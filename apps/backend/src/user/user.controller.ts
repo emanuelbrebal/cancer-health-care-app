@@ -14,6 +14,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
+import { Throttle } from '@nestjs/throttler';
 import { UserMapper } from './user.mapper';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UsersService } from './user.service';
@@ -42,6 +44,17 @@ export class UsersController {
     return this.usersService.suspend(req.user.userId);
   }
 
+  // Exclusão definitiva pelo próprio titular, com confirmação de senha.
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Delete('me')
+  async removeMe(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: DeleteAccountDto,
+  ) {
+    await this.usersService.removeOwn(req.user.userId, dto.password);
+    return { message: 'Conta e dados excluídos.' };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     if (req.user.userId !== id && req.user.role !== UserRole.ADMIN) {
@@ -64,12 +77,11 @@ export class UsersController {
     return UserMapper.toDto(user);
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
-    if (req.user.userId !== id && req.user.role !== 'ADMIN') {
-      throw new ForbiddenException('Sem permissão para remover este usuário.');
-    }
-    await this.usersService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(id, 'Removida por administrador');
     return { message: 'Usuário removido com sucesso' };
   }
 }

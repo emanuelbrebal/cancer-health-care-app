@@ -9,6 +9,7 @@ import { router } from 'expo-router';
 import api from '@/src/services/api';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
+import { TextField } from '@/src/components/ds/TextField';
 
 type AccountAction = 'suspend' | 'delete';
 
@@ -39,8 +40,16 @@ export default function AccountConfigurationIndex() {
   // Suspender preserva os dados e pode ser desfeito no login; excluir apaga tudo.
   const [accountAction, setAccountAction] = useState<AccountAction | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | undefined>();
   const showDeactivateModal = accountAction !== null;
-  const setShowDeactivateModal = (open: boolean) => { if (!open) setAccountAction(null); };
+  const setShowDeactivateModal = (open: boolean) => {
+    if (open) return;
+    setAccountAction(null);
+    setPassword('');
+    setPasswordError(undefined);
+  };
+  const needsPassword = accountAction === 'delete';
   const copy = ACCOUNT_ACTION_COPY[accountAction ?? 'delete'];
 
   const handleLogout = () => {
@@ -50,15 +59,24 @@ export default function AccountConfigurationIndex() {
 
   const confirmDeactivate = async () => {
     if (!user?.id || !accountAction) return;
+    if (needsPassword && !password) {
+      setPasswordError('Informe sua senha para confirmar.');
+      return;
+    }
     setDeleting(true);
     try {
       if (accountAction === 'suspend') await api.post('/users/me/suspend');
-      else await api.delete(`/users/${user.id}`);
+      else await api.delete('/users/me', { data: { password } });
       logout();
       router.replace('/(auth)/LoginScreen');
       toastService.success(copy.done);
-    } catch {
+    } catch (error: any) {
       setDeleting(false);
+      // Senha errada: mantém o diálogo aberto para tentar de novo.
+      if (error?.response?.data?.code === 'INVALID_PASSWORD') {
+        setPasswordError('Senha incorreta.');
+        return;
+      }
       setShowDeactivateModal(false);
       toastService.error(copy.failed);
     }
@@ -99,6 +117,19 @@ export default function AccountConfigurationIndex() {
             <Text style={styles.modalTitle}>{copy.title}</Text>
             <Text style={styles.modalWarning}>{copy.warning}</Text>
             <Text style={styles.modalBody}>{copy.body}</Text>
+            {needsPassword && (
+              <TextField
+                label="Sua senha"
+                icon="lock"
+                isPassword
+                value={password}
+                onChangeText={(v) => { setPassword(v); setPasswordError(undefined); }}
+                error={passwordError}
+                editable={!deleting}
+                autoCapitalize="none"
+                containerStyle={styles.passwordField}
+              />
+            )}
             <TouchableOpacity
               style={[styles.modalBtn, styles.modalBtnDestructive, deleting && { opacity: 0.6 }]}
               onPress={confirmDeactivate}
@@ -191,6 +222,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 24,
+  },
+  passwordField: {
+    width: '100%',
+    marginBottom: 16,
   },
   modalBtn: {
     width: '100%',
