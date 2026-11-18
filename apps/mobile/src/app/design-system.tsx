@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -50,7 +50,14 @@ function RatioBadge({ ratio }: { ratio: number }) {
   );
 }
 
+// Ferramenta de desenvolvimento (catálogo do DS + estados forçados da AV2): fora de __DEV__
+// a rota existe pelo roteamento por arquivo, mas redireciona para o início.
 export default function DesignSystemScreen() {
+  if (!__DEV__) return <Redirect href="/" />;
+  return <DesignSystemCatalog />;
+}
+
+function DesignSystemCatalog() {
   const { panelVisible, setPanelVisible, forced, setForced } = useUxDebugStore();
 
   return (

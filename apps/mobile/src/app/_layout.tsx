@@ -57,11 +57,12 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ animation: 'none' }} />
         <Stack.Screen name="(Home)" />
         <Stack.Screen name="(auth)" />
-        <Stack.Screen name="design-system" options={{ animation: 'slide_from_bottom' }} />
+        {__DEV__ && <Stack.Screen name="design-system" options={{ animation: 'slide_from_bottom' }} />}
       </Stack>
       </ThemeProvider>
       <Toast config={toastConfig} />
-      <DebugStatePanel />
+      {/* Painel de estados forçados (AV2): só em desenvolvimento. */}
+      {__DEV__ && <DebugStatePanel />}
     </LinearGradient>
   );
 }
