@@ -57,9 +57,28 @@ model User {
   profile_picture String?
 
   lastAiAnalysis DateTime?
-  logs       DailyLog[]
-  treatments Treatment[]
+  logs          DailyLog[]
+  treatments    Treatment[]
+  refreshTokens RefreshToken[]
 
+}
+
+// Sessão persistente: só o hash do refresh token é guardado. A cada uso o token é
+// trocado por outro da mesma família; reuso de um token já trocado revoga a família.
+model RefreshToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  familyId  String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
 }
 
 model UserDeletionLog {

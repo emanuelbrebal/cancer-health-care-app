@@ -1,4 +1,7 @@
 import api from './api'
+import { sessionStorage } from './sessionStorage';
+
+import { User } from '../../../../packages/shared/types/user';
 
 export interface RegisterData {
     email: string;
@@ -15,7 +18,9 @@ export const authService = {
 
     async login(email: string, password: string) {
         const response = await api.post('/auth/login', { email, password });
-        return response.data;
+        const { refresh_token, ...session } = response.data;
+        if (refresh_token) await sessionStorage.set(refresh_token);
+        return session as { access_token: string; user: User };
     },
 
     async forgotPassword(email: string) {
