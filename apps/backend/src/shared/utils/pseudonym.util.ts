@@ -5,7 +5,12 @@ import { createHmac } from 'crypto';
 // Usado em registros que não precisam saber quem é o titular: auditoria do diário,
 // conversas com o mascote e registro de exclusão de conta.
 export function pseudonymize(userId: string): string {
-  const key = process.env.PSEUDONYM_KEY || process.env.JWT_SECRET;
+  // Fallback para o JWT_SECRET só fora de produção; em produção o bootstrap exige a chave própria.
+  const key =
+    process.env.PSEUDONYM_KEY ||
+    (process.env.NODE_ENV === 'production'
+      ? undefined
+      : process.env.JWT_SECRET);
   if (!key) {
     throw new Error('PSEUDONYM_KEY não definido.');
   }

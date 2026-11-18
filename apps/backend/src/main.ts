@@ -8,6 +8,7 @@ import { configureApp } from './bootstrap/configure-app';
 async function bootstrap() {
   const isProduction = process.env.NODE_ENV === 'production';
   assertStrongJwtSecret(isProduction);
+  assertPseudonymKey(isProduction);
 
   const app = await NestFactory.create(AppModule);
   configureApp(app, isProduction);
@@ -27,6 +28,18 @@ function assertStrongJwtSecret(isProduction: boolean) {
   }
 }
 
+// Em produção a chave do pseudônimo é obrigatória e separada do JWT_SECRET: trocar o segredo
+// do JWT (rotação de sessão) não pode quebrar o vínculo dos registros pseudonimizados.
+function assertPseudonymKey(isProduction: boolean) {
+  if (!isProduction) return;
+  const key = process.env.PSEUDONYM_KEY ?? '';
+  if (key.length < 32 || key === process.env.JWT_SECRET) {
+    throw new Error(
+      'PSEUDONYM_KEY ausente, curta ou igual ao JWT_SECRET. Em produção use um valor aleatório próprio com 32+ caracteres.',
+    );
+  }
+}
+
 function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('OncoMente Backend API')
@@ -40,4 +53,7 @@ function setupSwagger(app: INestApplication) {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 }
-bootstrap();
+bootstrap().catch((error: unknown) => {
+  console.error('Falha ao iniciar o servidor:', error);
+  process.exit(1);
+});
