@@ -8,8 +8,9 @@ import { Ionicons } from '@expo/vector-icons';
 import treatmentService, { Treatment, getDaysRemaining, getProgress } from '@/src/services/treatmentService';
 import { cancelTreatmentNotifications, removeHistoryByTreatmentId } from '@/src/services/notificationService';
 import { toastService } from '@/src/services/toastService';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
-export default function TreatmentIndex() {
+function TreatmentIndex() {
   const router = useRouter();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [treatments, setTreatments] = useState<Treatment[]>([]);
@@ -288,3 +289,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
 });
+
+export default withConsent('HEALTH_DATA', TreatmentIndex);

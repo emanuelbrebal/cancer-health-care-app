@@ -9,8 +9,7 @@ interface NavigationGridProps {
   singleElement?: boolean
 }
 
-// v1 usava FlatList (scrollEnabled=false) dentro de container flex:0; no web a lista
-// ficava com altura 0 e os cartões sumiam (P02). Lista curta → map simples.
+// map simples em vez de FlatList: dentro de container flex:0 ela fica com altura 0 no web.
 export default function NavigationGrid({ data }: NavigationGridProps) {
   const router = useRouter();
 

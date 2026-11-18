@@ -1,17 +1,22 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SessionService } from '../auth/session.service';
+import { pseudonymize } from '../shared/utils/pseudonym.util';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly prisma: PrismaService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async findAll(take = 100) {
@@ -37,17 +42,50 @@ export class UsersService {
     return this.usersRepository.update(id, updateUserDto);
   }
 
+  // Suspensão: bloqueia o login e encerra as sessões; nenhum dado é apagado.
+  async suspend(id: string) {
+    await this.findOne(id);
+    await this.prisma.user.update({
+      where: { id },
+      data: { status: 'INACTIVE', suspendedAt: new Date() },
+    });
+    await this.sessionService.revokeAllForUser(id);
+    return { message: 'Acesso suspenso. Seus dados continuam guardados.' };
+  }
+
+  // Exclusão definitiva: apaga a conta e todos os dados do titular. Diário, tratamentos,
+  // consentimentos e sessões saem por cascade; conversas do mascote e auditoria não têm
+  // relação com User e são tratadas aqui. Fica só um registro pseudonimizado da exclusão.
+  // Exclusão pelo próprio titular: exige a senha atual, para que um token vazado não apague a conta.
+  // 403 (e não 401) para o app não tratar senha errada como sessão expirada.
+  async removeOwn(id: string, password: string) {
+    const user = await this.findOne(id);
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new ForbiddenException({
+        message: 'Senha incorreta.',
+        code: 'INVALID_PASSWORD',
+      });
+    }
+    await this.remove(id, 'Solicitada pelo titular');
+  }
+
   async remove(id: string, reason?: string) {
     const user = await this.findOne(id);
-    await this.prisma.userDeletionLog.create({
-      data: {
-        userId: user.id,
-        email: user.email,
-        role: user.role,
-        name: user.name ?? null,
-        reason: reason ?? null,
-      },
-    });
-    return this.usersRepository.delete(id);
+    const userRef = pseudonymize(user.id);
+
+    await this.prisma.$transaction([
+      this.prisma.patientSupportLog.deleteMany({
+        where: { userId: { in: [user.id, userRef] } },
+      }),
+      this.prisma.dailyLogAudit.updateMany({
+        where: { userId: user.id },
+        data: { userId: userRef },
+      }),
+      this.prisma.userDeletionLog.create({
+        data: { userRef, role: user.role, reason: reason ?? null },
+      }),
+      this.prisma.user.delete({ where: { id: user.id } }),
+    ]);
   }
 }

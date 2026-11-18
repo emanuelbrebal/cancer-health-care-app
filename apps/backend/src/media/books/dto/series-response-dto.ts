@@ -1,8 +1,8 @@
-import { MediaResponseDto } from './media-response-dto';
+import { MediaResponseDto } from '../../common/dto/media-response-dto';
 
 export class SeriesResponseDto extends MediaResponseDto {
-  showrunner: string;
-  externalLink: string;
-  seasons: number;
-  episodes: number;
+  showrunner?: string | null;
+  externalLink?: string | null;
+  seasons?: number | null;
+  episodes?: number | null;
 }

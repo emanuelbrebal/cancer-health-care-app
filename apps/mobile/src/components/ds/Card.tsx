@@ -36,7 +36,6 @@ interface NavItemCardProps {
   subtitle?: string;
   icon: keyof typeof Feather.glyphMap;
   onPress: () => void;
-  /** Linha divisória abaixo do item (desligue no último da lista). */
   divider?: boolean;
   forcePressed?: boolean;
 }

@@ -2,8 +2,7 @@ import { ImageSourcePropType } from 'react-native';
 
 const PLACEHOLDER = require('@assets/images/Placeholders/ImagePlaceholder.png');
 
-// Keys must match exactly the `image_path` values stored in the DB seed.
-// Verified against: apps/backend/prisma/seed.ts  ↔  assets/images/
+// As chaves devem ser idênticas aos image_path do seed (apps/backend/prisma/seed.ts).
 const IMAGE_MAP: Record<string, ImageSourcePropType> = {
   // ── LIVROS ─────────────────────────────────────────────────────────────────
   'books/alem_da_cura.jpg':           require('@assets/images/Books/alem_da_cura.jpg'),

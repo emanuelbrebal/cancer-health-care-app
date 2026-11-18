@@ -20,7 +20,6 @@ interface SelectWithIconProps {
   value: string;
   onChange: (item: ItemProps) => void;
   error?: string;
-  /** Rótulo visível acima do campo. */
   label?: string;
 }
 

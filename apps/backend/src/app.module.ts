@@ -11,6 +11,7 @@ import { AppService } from './app.service';
 import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
 import { TreatmentsModule } from './personal/treatments/treatments.module';
 import { MascotModule } from './mascot/mascot.module';
+import { ConsentModule } from './consent/consent.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -19,16 +20,17 @@ import { APP_GUARD } from '@nestjs/core';
     PrismaModule,
     AuthModule,
     UsersModule,
-    // Media Modules
+    // Mídia e lazer
     BooksModule,
     MoviesModule,
     SeriesModule,
     LeisuresModule,
-    //Personal Modules,
+    // Área pessoal, mascote e consentimento
     DailyLogsModule,
     TreatmentsModule,
     MascotModule,
-    //Rate limit
+    ConsentModule,
+    // Rate limit global: 120 requisições por minuto
     ThrottlerModule.forRoot([
       {
         ttl: 60000,

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateLeisureDto } from './dto/create-leisure.dto';
+import { UpdateLeisureDto } from './dto/update-leisure.dto';
 
 @Injectable()
 export class LeisureRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: any) {
+  async create(data: CreateLeisureDto) {
     return this.prisma.leisureActivity.create({
       data: {
         ...data,
@@ -27,7 +29,7 @@ export class LeisureRepository {
     });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: UpdateLeisureDto) {
     return this.prisma.leisureActivity.update({
       where: { id },
       data,

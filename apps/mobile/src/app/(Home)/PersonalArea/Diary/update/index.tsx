@@ -7,11 +7,11 @@ import { useAsyncResource } from '@/src/hooks/useAsyncResource';
 import { ErrorState, LoadingState } from '@/src/components/ds/States';
 import { Button } from '@/src/components/ds/Button';
 import { space } from '@/src/constants/tokens';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
-export default function DiaryUpdateScreen() {
+function DiaryUpdateScreen() {
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id: string }>();
-    // v1: erro ao carregar mostrava só um toast e deixava o formulário vazio.
     const { status, data: entry, reload } = useAsyncResource<DailyLog | null>(() => diaryService.getOne(id!), [id], {
         isEmpty: (e) => !e,
         emptyValue: null,
@@ -63,3 +63,5 @@ const styles = StyleSheet.create({
         gap: space.md,
     },
 });
+
+export default withConsent('HEALTH_DATA', DiaryUpdateScreen);

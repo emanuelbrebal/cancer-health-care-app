@@ -36,7 +36,7 @@ O **OncoMente** é um sistema de apoio a pacientes oncológicos e cuidadores, fo
 - **Diário virtual** com registro de humor e emoções.
 - **Calendário interativo** e gerenciamento de tratamento gamificado.
 - **Canal de denúncias** de preconceito e abusos.
-- **Mascote customizável** com IA via OpenAI integrado a notificações.
+- **Mascote** com IA via Groq (`llama-3.3-70b-versatile`, SDK `openai` com `baseURL` da Groq) integrado a notificações.
 
 ---
 
@@ -98,7 +98,7 @@ npm run lint
 
 **State Management**: Zustand v5 com persist middleware. Auth store: `packages/shared/store/useAuthStore.ts`, persistido via AsyncStorage. Store key: `'oncomente-auth'`.
 
-**HTTP Client**: Axios em `src/services/api.ts` com baseURL `http://192.168.0.5:3000` e interceptor JWT. Atualizar IP para desenvolvimento local.
+**HTTP Client**: Axios em `src/services/api.ts`. A baseURL vem de `src/services/resolveApiBaseUrl.ts`: `EXPO_PUBLIC_API_URL` ou, em `__DEV__`, o IP da LAN exposto pelo Metro (porta 3000). Interceptor envia o access token e, em 401, renova a sessão uma vez (refresh token em `expo-secure-store`, `src/services/sessionStorage.ts`).
 
 **Styling**: React Native StyleSheet. Estilos globais em `src/styles/global.ts`, paleta em `src/constants/Colors.ts`. Fonte: Montserrat. Cores: `purplePrimary` (#9B5DE0), `purpleSecondary` (#4E56C0).
 
@@ -115,8 +115,9 @@ Módulos NestJS em `apps/backend/src/`:
 - `user/` — CRUD de usuários e gestão de roles
 - `media/` — Livros, Filmes, Séries (gerenciados via admin web)
 - `leisures/` — Atividades de lazer
-- `personal/` — Diário virtual / mood tracking
-- `mascot/` — Respostas do mascote IA via OpenAI
+- `personal/` — Diário virtual / mood tracking e tratamentos
+- `mascot/` — Respostas do mascote IA via Groq
+- `consent/` — Consentimento LGPD por finalidade (`HEALTH_DATA`, `AI_MASCOT`, `NOTIFICATIONS`), `ConsentGuard` + `@RequiresConsent`
 - `prisma/` — Prisma client service
 
 Patterns: DTOs, Mappers, Strategy pattern. User roles: `PATIENT`, `CAREGIVER`, `ADMIN`.
@@ -131,7 +132,7 @@ Patterns: DTOs, Mappers, Strategy pattern. User roles: `PATIENT`, `CAREGIVER`, `
 |---|---|
 | Área Oncológica | `apps/mobile/src/app/(Home)/Oncology/` + `backend/media`, `backend/leisures` |
 | Área Saúde Mental | `apps/mobile/src/app/(Home)/MentalHealth/` |
-| Mascote Virtual | `apps/mobile/src/app/(Home)/Mascot/` + `backend/mascot` (OpenAI) |
+| Mascote Virtual | `apps/mobile/src/app/(Home)/Mascot/` + `backend/mascot` (Groq) |
 | Área Pessoal | `apps/mobile/src/app/(Home)/PersonalArea/` + `backend/personal` |
 | Autenticação / Perfil | `backend/auth`, `backend/user`, `packages/shared/store` |
 | Conteúdo moderado | `apps/web` (admin) → `backend/media` |

@@ -12,7 +12,6 @@ export default function HomeMascot() {
         }, [isAuthenticated])
     );
 
-    // v1: "É necessário autenticação para conversar!" + botões lado a lado quebrando o texto (P14).
     return (
         <AuthGate
             image={require('@/assets/images/Home/blueMascotPlaceholder.png')}

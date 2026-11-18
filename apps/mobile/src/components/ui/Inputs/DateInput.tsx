@@ -28,9 +28,9 @@ function dateToDDMMYYYY(date: Date): string {
 
 export function DateInput({ value, onChangeText, label, placeholder = 'DD/MM/AAAA', error }: DateInputProps) {
   const [show, setShow] = useState(false);
-  // pickerDate controls the initial position of the spinner (set once on open)
+  // Posição inicial do spinner; definida uma vez ao abrir.
   const [pickerDate, setPickerDate] = useState<Date>(new Date());
-  // ref tracks the currently selected date without triggering re-renders on each scroll tick
+  // Guarda a data selecionada sem re-renderizar a cada passo da rolagem.
   const selectedDateRef = useRef<Date>(new Date());
 
   const openPicker = () => {
@@ -45,7 +45,7 @@ export function DateInput({ value, onChangeText, label, placeholder = 'DD/MM/AAA
       setShow(false);
       if (selected) onChangeText(dateToDDMMYYYY(selected));
     } else {
-      // update ref only — no setState so the spinner doesn't freeze on re-render
+      // iOS: atualiza só o ref; setState aqui trava o spinner no re-render.
       if (selected) selectedDateRef.current = selected;
     }
   };

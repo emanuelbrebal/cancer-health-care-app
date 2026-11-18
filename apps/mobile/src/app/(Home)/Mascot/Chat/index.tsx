@@ -19,6 +19,7 @@ import { Button } from '@/src/components/ds/Button';
 import { ConfirmDialog } from '@/src/components/ds/ConfirmDialog';
 import { useUxDebugStore } from '@/src/store/useUxDebugStore';
 import { color, iconSize, layout, radius, space, touch, typography } from '@/src/constants/tokens';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 const DAILY_LIMIT = 30;
 const CHAT_LIMIT_KEY = 'oncomente:chat-daily-limit';
@@ -71,7 +72,7 @@ async function incrementTodayCount(): Promise<number> {
   return count;
 }
 
-export default function MascotChat() {
+function MascotChat() {
   const headerHeight = useHeaderHeight();
   const forced = useUxDebugStore((s) => s.forced);
   const setForced = useUxDebugStore((s) => s.setForced);
@@ -85,7 +86,6 @@ export default function MascotChat() {
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    // Carregar contagem diária e histórico em paralelo
     Promise.all([
       getTodayCount(),
       AsyncStorage.getItem(CHAT_HISTORY_KEY),
@@ -97,13 +97,11 @@ export default function MascotChat() {
       }
     });
 
-    // Buscar contexto do paciente uma vez por sessão
     mascotService.getContext()
       .then(setUserContext)
       .catch(() => {}); // chat funciona normalmente sem contexto
   }, []);
 
-  // Persistir histórico sempre que as mensagens mudarem
   useEffect(() => {
     const slice = messages.slice(0, MAX_HISTORY);
     AsyncStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(slice));
@@ -202,7 +200,6 @@ export default function MascotChat() {
       style={styles.flex}
       keyboardVerticalOffset={headerHeight}
     >
-      {/* v1: sem aviso de escopo e limite só exibido quando faltavam 2 mensagens (P20). */}
       <View style={styles.infoBar} accessibilityRole="text">
         <Feather name="info" size={iconSize.sm} color={color.text.info} />
         <Text style={styles.infoText}>
@@ -490,3 +487,5 @@ const styles = StyleSheet.create({
     backgroundColor: color.action.primaryPressed,
   },
 });
+
+export default withConsent('AI_MASCOT', MascotChat);

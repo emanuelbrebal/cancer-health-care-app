@@ -12,6 +12,7 @@ import { TextField } from '@/src/components/ds/TextField';
 import { ConfirmDialog } from '@/src/components/ds/ConfirmDialog';
 import { EmptyState, ErrorState, LoadingState } from '@/src/components/ds/States';
 import { color, iconSize, layout, radius, shadow, space, touch, typography } from '@/src/constants/tokens';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -40,7 +41,7 @@ async function fetchEntries(): Promise<DailyLog[]> {
 const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-export default function DiaryIndex() {
+function DiaryIndex() {
   const router = useRouter();
   const { status, data, setData, reload, refresh, revalidate, refreshing } = useAsyncResource(fetchEntries, [], {
     emptyValue: [] as DailyLog[],
@@ -78,7 +79,6 @@ export default function DiaryIndex() {
     }
   };
 
-  // v1: Alert.alert (sem botões no web). Agora ConfirmDialog do DS.
   const confirmDelete = async () => {
     if (!toDelete) return;
     setDeleting(true);
@@ -130,7 +130,6 @@ export default function DiaryIndex() {
           {header}
           {status === 'loading' && <LoadingState variant="list" count={4} label="Carregando seu diário" />}
           {status === 'error' && (
-            // v1: toast de erro + "Nenhuma entrada ainda" ao mesmo tempo (P10).
             <ErrorState
               title="Não conseguimos abrir seu diário"
               message="Seus registros estão seguros. Verifique a conexão e tente de novo."
@@ -340,3 +339,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default withConsent('HEALTH_DATA', DiaryIndex);

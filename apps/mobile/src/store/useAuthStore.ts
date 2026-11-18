@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createJSONStorage } from 'zustand/middleware';
 import { createAuthStore } from '../../../../packages/shared/store/useAuthStore'
+import { revokeSession } from '../services/session';
 
 const LOCAL_DATA_KEYS = [
   'oncomente-treatments',
@@ -12,5 +13,7 @@ const LOCAL_DATA_KEYS = [
 
 export const useAuthStore = createAuthStore(
     createJSONStorage(() => AsyncStorage) as any,
-    () => AsyncStorage.multiRemove(LOCAL_DATA_KEYS),
+    async () => {
+        await Promise.all([AsyncStorage.multiRemove(LOCAL_DATA_KEYS), revokeSession()]);
+    },
 );

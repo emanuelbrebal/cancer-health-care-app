@@ -14,12 +14,16 @@ import { DailyLogsService } from './daily-logs.service';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ConsentPurpose } from '@prisma/client';
+import { ConsentGuard, RequiresConsent } from 'src/consent/consent.guard';
 import { DailyLogsReportService } from './daily-logs-report.service';
 import type { Response } from 'express';
 import { Res } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import type { AuthenticatedRequest } from 'src/auth/types/authenticated-request';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConsentGuard)
+@RequiresConsent(ConsentPurpose.HEALTH_DATA)
 @Controller('daily-logs')
 export class DailyLogsController {
   constructor(
@@ -28,14 +32,17 @@ export class DailyLogsController {
   ) {}
 
   @Post()
-  async create(@Req() req: any, @Body() dto: CreateDailyLogDto) {
+  async create(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: CreateDailyLogDto,
+  ) {
     const userId = req.user.userId;
     return this.service.create(userId, dto);
   }
 
   @Get('search')
   async search(
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Query('term') term?: string,
     @Query('date') date?: string,
     @Query('emote') emote?: string,
@@ -50,7 +57,7 @@ export class DailyLogsController {
   @Throttle({ default: { limit: 2, ttl: 60000 } })
   @Get('report/pdf')
   async exportPdf(
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Query('start') start: string,
     @Query('end') end: string,
     @Res() res: Response,
@@ -71,19 +78,19 @@ export class DailyLogsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: any) {
+  async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.service.findOne(id, req.user.userId);
   }
 
   @Get()
-  async findAll(@Req() req: any) {
+  async findAll(@Req() req: AuthenticatedRequest) {
     return this.service.findAllByUser(req.user.userId);
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateDailyLogDto,
   ) {
     const userId = req.user.userId;
@@ -91,7 +98,7 @@ export class DailyLogsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: any) {
+  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     const userId = req.user.userId;
     await this.service.remove(id, userId);
     return {

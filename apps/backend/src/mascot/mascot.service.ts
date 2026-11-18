@@ -8,9 +8,10 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AskAiDto } from './dto/ask-ai';
 import OpenAI from 'openai';
 import { PromptLoaderService } from './prompt-loader.service';
+import { ConsentService } from '../consent/consent.service';
+import { pseudonymize } from '../shared/utils/pseudonym.util';
 
 interface UserProfile {
-  name: string | null;
   pronoun: string | null;
   role: string;
   birthday: Date | null;
@@ -24,6 +25,7 @@ export class MascotService {
   constructor(
     private prisma: PrismaService,
     private promptLoader: PromptLoaderService,
+    private consentService: ConsentService,
   ) {
     const apiKey = process.env.GROQ_API_KEY?.trim();
     if (apiKey) {
@@ -93,6 +95,7 @@ export class MascotService {
   private readonly INFO_FALLBACK =
     'Não tenho essa informação por aqui — mas se quiser falar sobre como você está, estou ao seu lado.';
 
+  // prettier-ignore
   private readonly EMOTIONAL_CUES = [
     'medo', 'triste', 'tristeza', 'cansad', 'exaust', 'sozinh',
     'chorar', 'choro', 'chorei', 'ansios', 'angústia', 'angustia',
@@ -104,6 +107,7 @@ export class MascotService {
     'não aguento', 'nao aguento', 'sente saudade', 'saudade',
   ];
 
+  // prettier-ignore
   private readonly INFO_CUES = [
     'como', 'onde', 'qual', 'quais', 'quando', 'o que', 'pra que',
     'para que', 'tem', 'existe', 'funciona', 'cadastrar', 'registrar',
@@ -125,6 +129,7 @@ export class MascotService {
 
   private readonly MARKDOWN_NOISE_PATTERN = /(\*\*|^#|^\s*[-*]\s|^\s*\d+\.\s)/m;
 
+  // prettier-ignore
   private readonly ENGLISH_WORDS = [
     'the', 'you', 'are', 'is', 'with', 'for', 'and', 'or', 'in',
     'to', 'on', 'at', 'medication', 'medications', 'dose', 'dosage',
@@ -143,7 +148,20 @@ export class MascotService {
     );
   }
 
+  // Tratamentos e emoções só entram no contexto da IA com o consentimento de dados de saúde.
+  private canUseHealthData(userId: string) {
+    return this.consentService.isGranted(userId, 'HEALTH_DATA');
+  }
+
   async generateResponse(userId: string, data: AskAiDto) {
+    // O contexto de saúde é montado no servidor: o que o cliente envia nesses campos é
+    // ignorado, para não permitir injetar texto no prompt nem contornar o consentimento.
+    const context = await this.getUserContext(userId);
+    data = {
+      ...data,
+      treatmentData: context.treatments,
+      calendarData: context.emotionSummary,
+    };
     if (this.isEmergency(data.userQuestion)) {
       await this.logInteraction(userId, data, this.EMERGENCY_RESPONSE);
       return { response: this.EMERGENCY_RESPONSE };
@@ -156,15 +174,16 @@ export class MascotService {
     }
 
     try {
+      // Nome, e-mail e telefone nunca vão para o provedor de IA (minimização, LGPD art. 6º III).
       const profile = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { name: true, pronoun: true, role: true, birthday: true },
+        select: { pronoun: true, role: true, birthday: true },
       });
 
       const { systemMessage, userMessage } = this.buildMessages(data, profile);
 
       const historyMessages = (data.history ?? []).map((h) => ({
-        role: h.role as 'user' | 'assistant',
+        role: h.role,
         content: h.content,
       }));
 
@@ -198,23 +217,33 @@ export class MascotService {
   }
 
   async getUserContext(userId: string) {
+    const withHealthData = await this.canUseHealthData(userId);
     const [user, treatments, logs] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: userId },
         select: { name: true, pronoun: true, role: true, birthday: true },
       }),
-      this.prisma.treatment.findMany({
-        where: { userId, status: 'ACTIVE' },
-        select: { name: true, frequency: true, startTime: true, endDate: true },
-      }),
-      this.prisma.dailyLog.findMany({
-        where: {
-          userId,
-          date: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        },
-        select: { date: true, emotes: true },
-        orderBy: { date: 'desc' },
-      }),
+      withHealthData
+        ? this.prisma.treatment.findMany({
+            where: { userId, status: 'ACTIVE' },
+            select: {
+              name: true,
+              frequency: true,
+              startTime: true,
+              endDate: true,
+            },
+          })
+        : [],
+      withHealthData
+        ? this.prisma.dailyLog.findMany({
+            where: {
+              userId,
+              date: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+            },
+            select: { date: true, emotes: true },
+            orderBy: { date: 'desc' },
+          })
+        : [],
     ]);
 
     return {
@@ -227,7 +256,7 @@ export class MascotService {
           }
         : null,
       treatments,
-      emotionSummary: logs.map((l) => ({
+      emotionSummary: logs.map((l: { date: Date; emotes: string[] }) => ({
         date: l.date.toISOString().slice(0, 10),
         emotes: l.emotes,
       })),
@@ -317,7 +346,6 @@ export class MascotService {
       Array.isArray(data.calendarData) && data.calendarData.length > 0;
 
     const systemMessage = this.promptLoader.render({
-      nome: profile?.name ?? '',
       pronome: this.formatPronounLabel(profile?.pronoun ?? null) ?? '',
       papel: profile ? this.formatRole(profile.role) : '',
       idade: profile?.birthday
@@ -367,7 +395,7 @@ export class MascotService {
   ) {
     return this.prisma.patientSupportLog.create({
       data: {
-        userId,
+        userId: pseudonymize(userId),
         prompt: data.userQuestion ?? '',
         response: response ?? '',
         context: { treatment: data.treatmentData, calendar: data.calendarData },

@@ -15,31 +15,38 @@ import { TreatmentsService } from './treatments.service';
 import { CreateTreatmentDto } from './dto/create-treatment.dto';
 import { UpdateTreatmentDto } from './dto/update-treatment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ConsentPurpose } from '@prisma/client';
+import { ConsentGuard, RequiresConsent } from 'src/consent/consent.guard';
+import type { AuthenticatedRequest } from 'src/auth/types/authenticated-request';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ConsentGuard)
+@RequiresConsent(ConsentPurpose.HEALTH_DATA)
 @Controller('personal/treatments')
 export class TreatmentsController {
   constructor(private readonly service: TreatmentsService) {}
 
   @Post()
-  async create(@Req() req: any, @Body() dto: CreateTreatmentDto) {
+  async create(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: CreateTreatmentDto,
+  ) {
     return this.service.create(req.user.userId, dto);
   }
 
   @Get()
-  async findAll(@Req() req: any) {
+  async findAll(@Req() req: AuthenticatedRequest) {
     return this.service.findAll(req.user.userId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: any) {
+  async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.service.findOne(id, req.user.userId);
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Body() dto: UpdateTreatmentDto,
   ) {
     return this.service.update(id, req.user.userId, dto);
@@ -47,7 +54,7 @@ export class TreatmentsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string, @Req() req: any) {
+  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.service.remove(id, req.user.userId);
   }
 }

@@ -6,6 +6,7 @@ import { Colors } from '@/src/constants/Colors';
 import { globalStyles } from '@/src/styles/global';
 import treatmentService, { Treatment, getTreatmentDates, getDaysRemaining, getProgress } from '@/src/services/treatmentService';
 import { Ionicons } from '@expo/vector-icons';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
 LocaleConfig.locales['pt-br'] = {
   monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
@@ -55,7 +56,7 @@ function getDayNotificationTimes(treatment: Treatment): string[] {
 
 type MarkedDates = Record<string, { dots: { color: string }[]; selected?: boolean; selectedColor?: string }>;
 
-export default function CalendarioInterativo() {
+function CalendarioInterativo() {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [markedDates, setMarkedDates] = useState<MarkedDates>({});
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -79,7 +80,6 @@ export default function CalendarioInterativo() {
         });
       });
 
-      // Mark today
       marks[today] = {
         ...(marks[today] ?? { dots: [] }),
         selected: true,
@@ -401,3 +401,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+export default withConsent('HEALTH_DATA', CalendarioInterativo);

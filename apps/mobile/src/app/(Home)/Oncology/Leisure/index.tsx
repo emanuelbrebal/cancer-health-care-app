@@ -17,7 +17,6 @@ interface LeisureData {
 
 const EMPTY_LEISURE: LeisureData = { books: [], movies: [], series: [], activities: [] };
 
-// v1 engolia a falha da API e mostrava as seções vazias, sem aviso (P08).
 // Só vira erro quando as quatro buscas falham; falha parcial mostra o que carregou.
 async function fetchLeisure(): Promise<LeisureData> {
   const results = await Promise.allSettled([

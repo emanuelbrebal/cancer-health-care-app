@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import type { AuthUser, JwtPayload } from '../types/authenticated-request';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
+  validate(payload: JwtPayload): AuthUser {
     // Tokens de finalidade específica (ex.: redefinição de senha) não valem como sessão.
     if (payload.purpose) throw new UnauthorizedException();
     return { userId: payload.sub, email: payload.email, role: payload.role };

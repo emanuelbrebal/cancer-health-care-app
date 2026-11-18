@@ -60,7 +60,7 @@ export class SeriesController {
     const updatedSerie = await this.seriesService.update(id, updateSeriesDto);
     return {
       message: 'Série atualizada com sucesso!',
-      data: SeriesMapper.toDto(updatedSerie),
+      data: updatedSerie,
     };
   }
 

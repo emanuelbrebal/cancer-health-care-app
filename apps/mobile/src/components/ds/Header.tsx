@@ -6,7 +6,6 @@ interface HeaderProps {
   title: string;
   subtitle?: string;
   icon?: keyof typeof Feather.glyphMap;
-  /** Nível semântico: 'screen' para o título da tela, 'section' para blocos internos. */
   level?: 'screen' | 'section';
   actionLabel?: string;
   onAction?: () => void;

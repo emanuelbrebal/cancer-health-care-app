@@ -12,7 +12,6 @@ import { color, iconSize, layout, radius, space, typography } from '@/src/consta
 
 export default function BookDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  // v1: sem tratamento de erro; uma falha deixava a tela em branco (return null).
   const { status, data: book, reload } = useAsyncResource<Book | null>(() => leisureService.getBook(id!), [id], {
     isEmpty: (b) => !b,
     emptyValue: null,

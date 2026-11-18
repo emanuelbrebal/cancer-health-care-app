@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -14,6 +15,8 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { MailerService } from '../mailer/mailer.service';
+import { SessionService } from './session.service';
+import type { JwtPayload } from './types/authenticated-request';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +24,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private mailerService: MailerService,
+    private sessionService: SessionService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -37,7 +41,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const { email, password, reactivate } = loginDto;
 
     if (!email) {
       throw new BadRequestException('E-mail é obrigatório para o login');
@@ -57,12 +61,53 @@ export class AuthService {
       throw new UnauthorizedException('E-mail ou senha incorretos');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    if (user.status !== 'ACTIVE') {
+      if (user.status !== 'INACTIVE' || !reactivate) {
+        throw new ForbiddenException({
+          message: 'Esta conta está com o acesso suspenso.',
+          code: 'ACCOUNT_SUSPENDED',
+        });
+      }
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { status: 'ACTIVE', suspendedAt: null },
+      });
+    }
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.signAccessToken(user),
+      refresh_token: await this.sessionService.issue(user.id),
       user: user,
     };
+  }
+
+  async refresh(refreshToken: string) {
+    const rotated = await this.sessionService.rotate(refreshToken);
+    const user = await this.prisma.user.findUnique({
+      where: { id: rotated.userId },
+    });
+    if (!user || user.status !== 'ACTIVE') {
+      await this.sessionService.revokeAllForUser(rotated.userId);
+      throw new UnauthorizedException('Sessão expirada. Entre novamente.');
+    }
+
+    return {
+      access_token: this.signAccessToken(user),
+      refresh_token: rotated.refreshToken,
+    };
+  }
+
+  async logout(refreshToken: string) {
+    await this.sessionService.revoke(refreshToken);
+    return { message: 'Sessão encerrada.' };
+  }
+
+  private signAccessToken(user: { id: string; email: string; role: string }) {
+    return this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    });
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {
@@ -77,6 +122,7 @@ export class AuthService {
       where: { id: userId },
       data: { password: hashed },
     });
+    await this.sessionService.revokeAllForUser(userId);
     return { message: 'Senha alterada com sucesso' };
   }
 
@@ -116,9 +162,9 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto) {
-    let payload: any;
+    let payload: JwtPayload;
     try {
-      payload = this.jwtService.verify(dto.token);
+      payload = this.jwtService.verify<JwtPayload>(dto.token);
     } catch {
       throw new BadRequestException('Token inválido ou expirado.');
     }
@@ -139,6 +185,7 @@ export class AuthService {
       where: { id: payload.sub },
       data: { password: hashed },
     });
+    await this.sessionService.revokeAllForUser(user.id);
 
     return { message: 'Senha redefinida com sucesso.' };
   }

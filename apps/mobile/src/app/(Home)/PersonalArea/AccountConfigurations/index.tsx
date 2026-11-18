@@ -9,31 +9,76 @@ import { router } from 'expo-router';
 import api from '@/src/services/api';
 import { toastService } from '@/src/services/toastService';
 import { Ionicons } from '@expo/vector-icons';
+import { TextField } from '@/src/components/ds/TextField';
+
+type AccountAction = 'suspend' | 'delete';
+
+const ACCOUNT_ACTION_COPY: Record<AccountAction, {
+  title: string; warning: string; body: string; confirm: string; done: string; failed: string;
+}> = {
+  suspend: {
+    title: 'Suspender acesso',
+    warning: 'Seus dados ficam guardados',
+    body: 'Sua conta fica bloqueada e você sai de todos os aparelhos. Nada é apagado: para voltar, basta entrar de novo com seu e-mail e senha e confirmar a reativação.',
+    confirm: 'Sim, suspender meu acesso',
+    done: 'Acesso suspenso. Seus dados continuam guardados.',
+    failed: 'Não foi possível suspender o acesso. Tente novamente.',
+  },
+  delete: {
+    title: 'Excluir conta e dados',
+    warning: '⚠️ Ação irreversível',
+    body: 'Sua conta, seu diário, seus tratamentos, suas conversas com o mascote e seus consentimentos serão apagados de forma permanente e não poderão ser recuperados.',
+    confirm: 'Sim, excluir minha conta e meus dados',
+    done: 'Conta e dados excluídos.',
+    failed: 'Não foi possível excluir a conta. Tente novamente.',
+  },
+};
 
 export default function AccountConfigurationIndex() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  // Suspender preserva os dados e pode ser desfeito no login; excluir apaga tudo.
+  const [accountAction, setAccountAction] = useState<AccountAction | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | undefined>();
+  const showDeactivateModal = accountAction !== null;
+  const setShowDeactivateModal = (open: boolean) => {
+    if (open) return;
+    setAccountAction(null);
+    setPassword('');
+    setPasswordError(undefined);
+  };
+  const needsPassword = accountAction === 'delete';
+  const copy = ACCOUNT_ACTION_COPY[accountAction ?? 'delete'];
 
   const handleLogout = () => {
     logout();
     router.replace('/(auth)/LoginScreen');
   };
 
-  const handleDeleteAccount = () => setShowDeactivateModal(true);
-
   const confirmDeactivate = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !accountAction) return;
+    if (needsPassword && !password) {
+      setPasswordError('Informe sua senha para confirmar.');
+      return;
+    }
     setDeleting(true);
     try {
-      await api.delete(`/users/${user.id}`);
+      if (accountAction === 'suspend') await api.post('/users/me/suspend');
+      else await api.delete('/users/me', { data: { password } });
       logout();
       router.replace('/(auth)/LoginScreen');
-    } catch {
+      toastService.success(copy.done);
+    } catch (error: any) {
       setDeleting(false);
+      // Senha errada: mantém o diálogo aberto para tentar de novo.
+      if (error?.response?.data?.code === 'INVALID_PASSWORD') {
+        setPasswordError('Senha incorreta.');
+        return;
+      }
       setShowDeactivateModal(false);
-      toastService.error('Não foi possível desativar a conta. Tente novamente.');
+      toastService.error(copy.failed);
     }
   };
 
@@ -43,9 +88,11 @@ export default function AccountConfigurationIndex() {
   ];
 
   const securityData: BaseActionItem[] = [
+    { id: '0', title: 'Privacidade e consentimentos', route: '/PersonalArea/AccountConfigurations/Privacy' },
     { id: '1', title: 'Mudar senha', route: '/PersonalArea/AccountConfigurations/ChangePassword' },
     { id: '2', title: 'Encerrar sessão', action: handleLogout },
-    { id: '3', title: 'Desativar conta', textColor: '#FF4C4C', action: handleDeleteAccount },
+    { id: '3', title: 'Suspender acesso', action: () => setAccountAction('suspend') },
+    { id: '4', title: 'Excluir conta e dados', textColor: '#FF4C4C', action: () => setAccountAction('delete') },
   ];
 
   return (
@@ -67,11 +114,22 @@ export default function AccountConfigurationIndex() {
                 <Ionicons name="warning-outline" size={32} color="#FF4C4C" />
               </View>
             </View>
-            <Text style={styles.modalTitle}>Desativar conta</Text>
-            <Text style={styles.modalWarning}>⚠️ Ação irreversível</Text>
-            <Text style={styles.modalBody}>
-              Ao desativar sua conta, todos os seus dados serão permanentemente removidos e não poderão ser recuperados.
-            </Text>
+            <Text style={styles.modalTitle}>{copy.title}</Text>
+            <Text style={styles.modalWarning}>{copy.warning}</Text>
+            <Text style={styles.modalBody}>{copy.body}</Text>
+            {needsPassword && (
+              <TextField
+                label="Sua senha"
+                icon="lock"
+                isPassword
+                value={password}
+                onChangeText={(v) => { setPassword(v); setPasswordError(undefined); }}
+                error={passwordError}
+                editable={!deleting}
+                autoCapitalize="none"
+                containerStyle={styles.passwordField}
+              />
+            )}
             <TouchableOpacity
               style={[styles.modalBtn, styles.modalBtnDestructive, deleting && { opacity: 0.6 }]}
               onPress={confirmDeactivate}
@@ -80,7 +138,7 @@ export default function AccountConfigurationIndex() {
             >
               {deleting
                 ? <ActivityIndicator color="#FFF" />
-                : <Text style={styles.modalBtnTextDestructive}>Sim, desativar minha conta</Text>
+                : <Text style={styles.modalBtnTextDestructive}>{copy.confirm}</Text>
               }
             </TouchableOpacity>
             <TouchableOpacity
@@ -164,6 +222,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 24,
+  },
+  passwordField: {
+    width: '100%',
+    marginBottom: 16,
   },
   modalBtn: {
     width: '100%',

@@ -2,8 +2,9 @@ import { useRouter } from 'expo-router';
 import diaryService from '@/src/services/diaryService';
 import { toastService } from '@/src/services/toastService';
 import { DiaryForm, DiaryFormValues } from '@/src/components/diary/DiaryForm';
+import { withConsent } from '@/src/components/auth/ConsentGate';
 
-export default function DiaryCreateScreen() {
+function DiaryCreateScreen() {
     const router = useRouter();
 
     const handleCreate = async ({ title, content, emote }: DiaryFormValues) => {
@@ -27,3 +28,5 @@ export default function DiaryCreateScreen() {
         />
     );
 }
+
+export default withConsent('HEALTH_DATA', DiaryCreateScreen);

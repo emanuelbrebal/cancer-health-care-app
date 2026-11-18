@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '@prisma/client';
 import { ROLES_KEY } from '../decorators/roles.decorator';
+import type { AuthenticatedRequest } from '../types/authenticated-request';
 
 // Deve vir depois do JwtAuthGuard: depende de req.user já preenchido.
 @Injectable()
@@ -20,7 +21,9 @@ export class RolesGuard implements CanActivate {
     ]);
     if (!required?.length) return true;
 
-    const { user } = context.switchToHttp().getRequest();
+    const { user } = context
+      .switchToHttp()
+      .getRequest<Partial<AuthenticatedRequest>>();
     if (!user || !required.includes(user.role)) {
       throw new ForbiddenException('Acesso restrito a administradores.');
     }

@@ -7,7 +7,7 @@ const workspaceRoot = path.resolve(projectRoot, '../..');
 
 const config = getDefaultConfig(projectRoot);
 
-// Preserve Expo's default watchFolders and add the monorepo root.
+// Mantém os watchFolders padrão do Expo e acrescenta a raiz do monorepo.
 config.watchFolders = [...(config.watchFolders ?? []), workspaceRoot];
 
 config.resolver.nodeModulesPaths = [

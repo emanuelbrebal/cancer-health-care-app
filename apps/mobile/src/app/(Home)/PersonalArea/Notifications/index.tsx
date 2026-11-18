@@ -20,6 +20,8 @@ import {
   type NotificationRecord,
 } from '@/src/services/notificationService';
 import { toastService } from '@/src/services/toastService';
+import { useAuthStore } from '@/src/store/useAuthStore';
+import { useConsentStore } from '@/src/store/useConsentStore';
 
 const CONSENT_KEY = 'oncomente:notifications:consent';
 
@@ -138,8 +140,12 @@ export default function NotificationsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      AsyncStorage.getItem(CONSENT_KEY).then(async (value) => {
-        const given = value === 'true';
+      // O servidor é a fonte da verdade do consentimento; a chave local só espelha.
+      const userId = useAuthStore.getState().user?.id;
+      const sync = userId ? useConsentStore.getState().load(userId, true) : Promise.resolve();
+      sync.then(async () => {
+        const given = useConsentStore.getState().granted.NOTIFICATIONS;
+        if (!given) await AsyncStorage.removeItem(CONSENT_KEY);
         setConsentGiven(given);
         if (given) await loadData();
         setLoading(false);
@@ -148,6 +154,12 @@ export default function NotificationsScreen() {
   );
 
   async function handleAccept() {
+    try {
+      await useConsentStore.getState().setConsent('NOTIFICATIONS', true);
+    } catch {
+      toastService.error('Não foi possível registrar seu consentimento. Tente novamente.');
+      return;
+    }
     await requestPermissions();
     await AsyncStorage.setItem(CONSENT_KEY, 'true');
     setConsentGiven(true);

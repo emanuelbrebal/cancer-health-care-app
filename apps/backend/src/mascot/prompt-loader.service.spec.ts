@@ -19,7 +19,6 @@ describe('PromptLoaderService', () => {
 
   it('deve carregar conteúdo de todos os módulos do prompt', () => {
     const rendered = service.render({
-      nome: '',
       pronome: '',
       papel: '',
       idade: '',
@@ -38,7 +37,6 @@ describe('PromptLoaderService', () => {
 
   it('deve substituir placeholders com dados do usuário', () => {
     const rendered = service.render({
-      nome: 'João',
       pronome: 'Senhor',
       papel: 'paciente oncológico',
       idade: '45',
@@ -46,12 +44,12 @@ describe('PromptLoaderService', () => {
       historico_emocional: '[]',
     });
 
-    expect(rendered).toContain('João');
     expect(rendered).toContain('Senhor');
     expect(rendered).toContain('paciente oncológico');
     expect(rendered).toContain('45');
     expect(rendered).toContain('Quimio');
     expect(rendered).not.toContain('{{nome}}');
+    expect(rendered).not.toContain('Nome:');
     expect(rendered).not.toContain('{{pronome}}');
     expect(rendered).not.toContain('{{papel}}');
     expect(rendered).not.toContain('{{idade}}');
@@ -61,7 +59,6 @@ describe('PromptLoaderService', () => {
 
   it('deve incluir as frases canônicas no template', () => {
     const rendered = service.render({
-      nome: '',
       pronome: '',
       papel: '',
       idade: '',
@@ -71,8 +68,6 @@ describe('PromptLoaderService', () => {
 
     expect(rendered).toContain('Não tenho essa informação.');
     expect(rendered).toContain('Só consigo ajudar com o OncoMente');
-    expect(rendered).toContain(
-      'Isso precisa ser avaliado pelo seu médico',
-    );
+    expect(rendered).toContain('Isso precisa ser avaliado pelo seu médico');
   });
 });

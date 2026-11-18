@@ -2,20 +2,20 @@ import { Colors } from "@/src/constants/Colors";
 import { InputStyles } from "@/src/styles/Inputs";
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View } from "react-native";
+import { StyleProp, StyleSheet, Text, TextInput, TextInputProps, TouchableOpacity, View, ViewStyle } from "react-native";
 import { color, space, typography } from "@/src/constants/tokens";
 
 const labelStyles = StyleSheet.create({
   label: { ...typography.smallStrong, color: color.text.primary, marginBottom: space.xs },
 });
 
-interface InputWithIconProps extends TextInputProps {
+interface InputWithIconProps extends Omit<TextInputProps, 'style'> {
+  style?: StyleProp<ViewStyle>;
   iconLeftName?: keyof typeof Feather.glyphMap;
   iconRightName?: keyof typeof Feather.glyphMap;
   iconColor?: string;
   isPassword?: boolean;
   error?: string;
-  /** Rótulo visível acima do campo. */
   label?: string;
 }
 
