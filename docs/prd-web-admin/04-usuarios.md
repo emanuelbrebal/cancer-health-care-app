@@ -29,7 +29,7 @@ Minimização (LGPD art. 6º III): o painel mostra apenas o necessário para o s
 | GET | `/users?limit=` | Existe, **aberto a qualquer usuário logado** (G2) | Passa a exigir ADMIN; precisa de paginação, busca e filtros |
 | GET | `/users/:id` | Existe, **aberto a qualquer usuário logado** (G2) | Passa a exigir ADMIN ou dono |
 | PATCH | `/users/:id` | Existe | Já restrito a dono ou ADMIN |
-| DELETE | `/users/:id` | Existe | Já restrito a dono ou ADMIN; **falha para quem tem diário** (FK restritiva) — corrigido no item 7 |
+| DELETE | `/users/:id` | Existe | Restrito a ADMIN; exclusão em cascata funciona com diário (item 7). O titular usa `DELETE /users/me` com senha |
 | POST | `/admin/users/:id/suspend` | **A criar** (item 7) | Corpo: `{ reason }` |
 | POST | `/admin/users/:id/reactivate` | **A criar** (item 7) | — |
 

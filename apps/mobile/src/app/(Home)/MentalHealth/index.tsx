@@ -23,8 +23,7 @@ const caregiverItem: CardItem = {
 export default function HomeMentalHealth() {
   const user = useAuthStore((s) => s.user);
 
-  // v1 escondia o conteúdo de cuidadores de quem não tinha login (P13).
-  // Agora os dois ficam visíveis; o do papel do usuário aparece primeiro.
+  // Conteúdo de paciente e de cuidador sempre visível; o do papel do usuário vem primeiro.
   const motivationalItems = user?.role === UserRole.CAREGIVER
     ? [caregiverItem, patientItem]
     : [patientItem, caregiverItem];

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { AccordionMedia } from './MediaAccordion';
 
 export interface MediaItem {
-  id: string;
+  id: string | number;
   title: string;
   url: any;
   description?: string;

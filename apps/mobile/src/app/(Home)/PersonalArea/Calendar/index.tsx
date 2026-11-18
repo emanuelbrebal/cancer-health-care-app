@@ -80,7 +80,6 @@ function CalendarioInterativo() {
         });
       });
 
-      // Mark today
       marks[today] = {
         ...(marks[today] ?? { dots: [] }),
         selected: true,

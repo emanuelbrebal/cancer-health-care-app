@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { useConsentStore } from '../store/useConsentStore';
 
 const HISTORY_KEY = 'oncomente:notification-history';
 
@@ -37,6 +38,16 @@ export async function requestPermissions(): Promise<boolean> {
   return status === 'granted';
 }
 
+// Lembrete só com consentimento NOTIFICATIONS ativo no servidor e permissão do sistema.
+async function canNotify(): Promise<boolean> {
+  if (!useConsentStore.getState().granted.NOTIFICATIONS) return false;
+  return requestPermissions();
+}
+
+export async function cancelAllScheduledNotifications(): Promise<void> {
+  await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
 function intervalOffsets(frequencia: string): number[] {
   if (frequencia.includes('8 em 8')) return [0, 8, 16];
   if (frequencia.includes('12 em 12')) return [0, 12];
@@ -49,8 +60,7 @@ export async function scheduleTreatmentNotifications(
   horaInicio: string,
   frequencia: string,
 ): Promise<string[]> {
-  const granted = await requestPermissions();
-  if (!granted) return [];
+  if (!(await canNotify())) return [];
 
   const parts = horaInicio.split(':').map(Number);
   const h = parts[0];
@@ -108,8 +118,7 @@ export async function scheduleEndOfTreatmentNotification(
     endDate.setHours(9, 0, 0, 0);
     if (endDate <= new Date()) return undefined;
 
-    const granted = await requestPermissions();
-    if (!granted) return undefined;
+    if (!(await canNotify())) return undefined;
 
     return await Notifications.scheduleNotificationAsync({
       content: {

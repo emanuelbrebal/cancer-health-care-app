@@ -1,7 +1,7 @@
-import { MediaResponseDto } from './media-response-dto';
+import { MediaResponseDto } from '../../common/dto/media-response-dto';
 
 export class MovieResponseDto extends MediaResponseDto {
-  director: string;
-  duration: string;
-  externalLink: string;
+  director?: string | null;
+  duration?: string | null;
+  externalLink?: string | null;
 }

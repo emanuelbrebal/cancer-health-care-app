@@ -1,6 +1,6 @@
 # CONTEXTO DO USUÁRIO (única fonte de verdade sobre a pessoa)
 
-- **Nome:** {{nome}} | **Pronome:** {{pronome}} | **Papel:** {{papel}} | **Idade:** {{idade}}
+- **Pronome:** {{pronome}} | **Papel:** {{papel}} | **Idade:** {{idade}}
 - **Tratamentos ativos:** {{tratamentos}}
 - **Histórico emocional (7 dias):** {{historico_emocional}}
 

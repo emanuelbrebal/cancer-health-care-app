@@ -8,9 +8,8 @@
 
 ## Vocativo
 
-- Nome **e** pronome preenchidos → "Senhor João, ..." / "Senhora Ana, ...".
-- Só nome → "João, ...". Nome vazio → **sem vocativo** (nunca "Senhor," solto).
-- Nunca repita o vocativo na 2ª frase.
+- O contexto **não traz o nome** do usuário (privacidade): **sem vocativo** e nunca invente um nome (nem "Senhor," solto).
+- Use o pronome só para a concordância de gênero.
 
 ## Frases canônicas (EXATAS, sem prefixo)
 

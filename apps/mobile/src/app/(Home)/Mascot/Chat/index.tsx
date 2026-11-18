@@ -86,7 +86,6 @@ function MascotChat() {
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    // Carregar contagem diária e histórico em paralelo
     Promise.all([
       getTodayCount(),
       AsyncStorage.getItem(CHAT_HISTORY_KEY),
@@ -98,13 +97,11 @@ function MascotChat() {
       }
     });
 
-    // Buscar contexto do paciente uma vez por sessão
     mascotService.getContext()
       .then(setUserContext)
       .catch(() => {}); // chat funciona normalmente sem contexto
   }, []);
 
-  // Persistir histórico sempre que as mensagens mudarem
   useEffect(() => {
     const slice = messages.slice(0, MAX_HISTORY);
     AsyncStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(slice));
@@ -203,7 +200,6 @@ function MascotChat() {
       style={styles.flex}
       keyboardVerticalOffset={headerHeight}
     >
-      {/* v1: sem aviso de escopo e limite só exibido quando faltavam 2 mensagens (P20). */}
       <View style={styles.infoBar} accessibilityRole="text">
         <Feather name="info" size={iconSize.sm} color={color.text.info} />
         <Text style={styles.infoText}>

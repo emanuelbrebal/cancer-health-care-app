@@ -16,6 +16,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { MailerService } from '../mailer/mailer.service';
 import { SessionService } from './session.service';
+import type { JwtPayload } from './types/authenticated-request';
 
 @Injectable()
 export class AuthService {
@@ -161,9 +162,9 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto) {
-    let payload: any;
+    let payload: JwtPayload;
     try {
-      payload = this.jwtService.verify(dto.token);
+      payload = this.jwtService.verify<JwtPayload>(dto.token);
     } catch {
       throw new BadRequestException('Token inválido ou expirado.');
     }

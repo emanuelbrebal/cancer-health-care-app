@@ -4,7 +4,6 @@ interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
-  /** Rótulo visível do campo. */
   label?: string;
 }
 

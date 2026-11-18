@@ -154,7 +154,7 @@ Detalhes: tabela `RefreshToken` (tokenHash, familyId, expiresAt, revokedAt, repl
 
 **Vencedora: C** (corretude 5, blast radius 5, prazo 5). A viola a política de commits/PRs e dificulta reverter; B desperdiça tempo, pois as cinco varreduras não tocam código.
 
-Branches: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs`.
+Branches: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs` → `fix/AccountDeletionPassword`.
 
 ### Bloco 4 — Remoção de comentários
 
@@ -208,10 +208,10 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
    *Arquivos:* `prisma/schema/schema.prisma`, `user/*`, `auth/auth.service.ts`, `mascot/mascot.service.ts`, `mascot/prompt-loader.service.ts`; `AccountConfigurations/index.tsx`, `LoginScreen.tsx` (mensagem de conta suspensa).
    *Validação:* aceites 13, 14, 15.
 
-8. [ ] **`refactor/ReleaseCleanup`** — aplicar somente o aprovado em 03 e 04: um commit por lib removida/grupo coeso, um commit de comentários por app.
+8. [x] **`refactor/ReleaseCleanup`** — aplicar somente o aprovado em 03 e 04: um commit por lib removida/grupo coeso, um commit de comentários por app.
    *Validação:* aceites 10 e 11; `npx expo-doctor` e `npx expo start` sobem sem erro de módulo.
 
-9. [ ] **`feat/ReleaseDocs`** — `docs/manual-de-uso.md` (paciente e cuidador, por área, a partir das rotas reais); `docs/requisitos-implementados.md` (o que foi feito, por área, com âncora de código, mais os RNFs novos de sessão, consentimento, exclusão/suspensão e pseudonimização, redigidos para transcrição); collection Postman com os endpoints novos; corrigir CLAUDE.md (Groq, `resolveApiBaseUrl`).
+9. [x] **`feat/ReleaseDocs`** — `docs/manual-de-uso.md` (paciente e cuidador, por área, a partir das rotas reais); `docs/requisitos-implementados.md` (o que foi feito, por área, com âncora de código, mais os RNFs novos de sessão, consentimento, exclusão/suspensão e pseudonimização, redigidos para transcrição); collection Postman com os endpoints novos; corrigir CLAUDE.md (Groq, `resolveApiBaseUrl`).
    *Validação:* aceite 12.
 
 10. [x] **PRDs do painel web** — `docs/prd-web-admin/` (login admin + sessão, CRUD de mídia e lazer, gestão de usuários incluindo suspensão, visão de consentimentos sem expor conteúdo sensível), cada um com objetivo, endpoints consumidos, regras de permissão e critérios de aceite; lacunas de backend listadas.
@@ -252,3 +252,33 @@ Ordem por dependência. Cada item: entregável · arquivos · validação.
 - Ciclo de vida: `User.status`/`suspendedAt`, `POST /users/me/suspend`, `DELETE /users/me` transacional, `DailyLog` em cascade, auditoria do diário e `UserDeletionLog` pseudonimizados (HMAC), contexto do mascote montado no servidor e sem identificadores; mobile com "Suspender acesso" × "Excluir conta e dados" e oferta de reativação no login.
 - Medição em `feat/AccountLifecycle`: Jest 7 suítes / 47 testes passando; tsc backend 0; tsc mobile 6 erros (os mesmos da linha de base); lint backend 194 erros (linha de base 151 — sobe com os arquivos novos, tratar no item 8); `git diff main -- apps/web` vazio.
 - Lacuna: aceites 5, 13 e 14 pedem teste **e2e**; hoje estão cobertos por testes unitários com Prisma mockado (`test/app.e2e-spec.ts` é scaffold e exige banco).
+
+**2026-11-16 — item 8** (`refactor/ReleaseCleanup`, empilhada sobre `feat/AccountLifecycle`)
+- Aprovado pelo usuário: todas as remoções e reposicionamentos do relatório 03; comentários conforme recomendações do 04 (G1 removido; G2, G3, G4 e G5 mantidos); zerar lint do backend.
+- Libs removidas: mobile (`lodash`, `expo-module-scripts`, `react-test-renderer`, `@expo/ngrok`, `expo-web-browser`), backend (`@nestjs/schedule`, `ts-loader`, `source-map-support`, `@eslint/eslintrc`), raiz (`typescript`). Lock: só remoções, nenhuma versão alterada.
+- Reposicionamentos: `dotenv`, `pg`, `@prisma/adapter-pg` (7.8 → 6.19.3, alinhado ao client), `prisma`, `express` e `@nestjs/mapped-types@^2.1.1` em `dependencies`; `@types/nodemailer` e `@nestjs/testing@^11` em dev; `playwright` no workspace mobile; override de `@nestjs/swagger` removido; `expo install --fix` (8 patches).
+- **Desvio:** `apps/backend/package-lock.json` foi **regenerado**, não removido — o `Dockerfile` faz `npm ci` com contexto `apps/backend` e quebraria sem ele. As diretas resolvem com patch/minor mais novos que o lock da raiz (ex.: `@nestjs/core` 11.2.10 × 11.1.19).
+- Achado 4.3 do relatório 01 corrigido: `start:prod` e `Dockerfile` apontavam para `dist/main`, mas o build gera `dist/src/main.js`.
+- Simulação do Dockerfile em cópia limpa: `npm ci` → `prisma generate` → `build` → `npm ci --omit=dev` → `node dist/src/main` → "Nest application successfully started".
+- Bug encontrado pela tipagem: `PATCH /series/:id` mapeava a resposta duas vezes (`imagePath` vazio, gênero "Sem gênero", detalhes nulos) — corrigido.
+- Comentários: 14 alterações no backend e 35 no mobile. Componente órfão `NewPublication` removido.
+- Medição final: lint backend **0 erros** (10 warnings); Jest 7 suítes / 47 testes; tsc backend 0; tsc mobile **0**; `expo export -p android` ok; `expo install --check` ok; `git diff main -- apps/web` vazio.
+- Pendente: lint mobile 10 erros (hooks condicionais em `MediaViewer.tsx`, acesso a ref no render, `no-unescaped-entities`, import não resolvido) — não exigido pelo aceite 11; banco local sem as migrations novas (`consent_records` inexistente) → rodar `npx prisma migrate deploy`.
+
+**2026-11-16 — item 9** (`feat/ReleaseDocs`, empilhada sobre `refactor/ReleaseCleanup`)
+- `docs/manual-de-uso.md`, `docs/requisitos-implementados.md` (RF/RNF com âncora de código e seção de diferenças), `apps/postman/OncoMente.postman_collection.json` (53 requisições, login salva tokens), CLAUDE.md corrigido (Groq, `resolveApiBaseUrl`, módulo `consent`).
+- Correções achadas ao conferir o manual com o código:
+  - Lembretes de tratamento eram agendados sem checar o consentimento `NOTIFICATIONS` → agora exigem o consentimento, e revogar cancela os agendados.
+  - Primeiro nome do usuário ia para a Groq (contrariava o aceite 15) → removido do prompt por decisão do usuário; testes unitários do payload (sem nome/e-mail/telefone; sem saúde sem consentimento). Jest: 49 testes.
+  - Botão SOS só existe nas telas de Saúde Mental (o manual dizia "todas as telas") → texto corrigido.
+
+**Pendências abertas (fora do que foi executado)**
+- Aceites 5, 13 e 14 cobertos por teste unitário, não e2e com banco.
+- Banco local sem as migrations novas → `npx prisma migrate deploy` em `apps/backend`.
+- Lint mobile: 10 erros; `EXPO_PUBLIC_API_URL` ausente no `eas.json`; rota `/design-system` e `DebugStatePanel` sem guarda de `__DEV__` (relatório 01).
+- Branches empilhadas e não enviadas: `fix/ReleaseSecurityHardening` → `feat/PersistentSession` → `feat/DataConsent` → `feat/AccountLifecycle` → `refactor/ReleaseCleanup` → `feat/ReleaseDocs` → `fix/AccountDeletionPassword`.
+
+**2026-11-16 — exclusão com senha** (`fix/AccountDeletionPassword`)
+- `DELETE /users/me` exige a senha atual (`403 INVALID_PASSWORD`, não 401, para o interceptor do app não encerrar a sessão); throttle 5/min. `DELETE /users/:id` passa a ser só ADMIN.
+- Mobile: campo de senha (`TextField` do DS) no diálogo "Excluir conta e dados"; senha errada mantém o diálogo aberto.
+- Jest: 50 testes. Docs, PRD 04 e Postman atualizados.

@@ -60,10 +60,7 @@ function EmoteButton({ emote, isSelected, onPress }: { emote: typeof EMOTES[0]; 
     );
 }
 
-/**
- * Formulário do diário (criar e editar). Labels visíveis, validação no envio
- * e botão sempre legível (v1: desabilitado com 1.3:1 de contraste, P21).
- */
+/** Formulário do diário (criar e editar): labels visíveis, validação no envio e botão sempre legível. */
 export function DiaryForm({ heading, subheading, submitLabel, initialValues, onSubmit }: DiaryFormProps) {
     const headerHeight = useHeaderHeight();
     const router = useRouter();

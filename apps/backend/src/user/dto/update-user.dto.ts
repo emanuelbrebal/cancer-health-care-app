@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsString,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PronounEnum } from '@prisma/client';

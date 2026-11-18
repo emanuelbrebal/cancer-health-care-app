@@ -12,7 +12,6 @@ import { color, layout, radius, shadow, space, typography } from '@/src/constant
 export default function BooksListScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  // v1: Alert bloqueante + "Nenhum livro disponível" na falha de rede (P09).
   const { status, data, reload, refresh, refreshing } = useAsyncResource(() => leisureService.getBooks(), [], {
     emptyValue: [] as Book[],
   });

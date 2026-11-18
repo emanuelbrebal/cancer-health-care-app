@@ -1,6 +1,19 @@
 import { pseudonymize } from 'src/shared/utils/pseudonym.util';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+import { CreateDailyLogDto } from './dto/create-daily-log.dto';
+
+export type CreateDailyLogData = Omit<CreateDailyLogDto, 'date'> & {
+  userId: string;
+  date?: Date;
+};
+
+export interface DailyLogFilters {
+  term?: string;
+  date?: Date;
+  emote?: string;
+}
 
 @Injectable()
 export class DailyLogsRepository {
@@ -16,7 +29,7 @@ export class DailyLogsRepository {
     return this.prisma.dailyLog.findUnique({ where: { id } });
   }
 
-  async createWithAudit(data: any) {
+  async createWithAudit(data: CreateDailyLogData) {
     const { userId, title, content, emotes, date } = data;
 
     if (!userId) {
@@ -46,7 +59,11 @@ export class DailyLogsRepository {
     });
   }
 
-  async updateWithAudit(id: string, userId: string, data: any) {
+  async updateWithAudit(
+    id: string,
+    userId: string,
+    data: Prisma.DailyLogUpdateInput,
+  ) {
     return this.prisma.$transaction(async (tx) => {
       const log = await tx.dailyLog.update({
         where: { id },
@@ -75,7 +92,7 @@ export class DailyLogsRepository {
     });
   }
 
-  async searchLogs(userId: string, filters: any) {
+  async searchLogs(userId: string, filters: DailyLogFilters) {
     return this.prisma.dailyLog.findMany({
       where: {
         userId,

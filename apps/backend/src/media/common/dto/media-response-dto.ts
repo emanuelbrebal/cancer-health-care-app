@@ -2,7 +2,7 @@ export class MediaResponseDto {
   id: string;
   title: string;
   type: string;
-  releaseYear: number;
+  releaseYear: number | null;
   status: string;
   isFree: boolean;
   whereToFind: string[];

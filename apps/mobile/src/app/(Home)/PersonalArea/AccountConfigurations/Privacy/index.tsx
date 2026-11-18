@@ -8,6 +8,7 @@ import { ErrorState, LoadingState } from '@/src/components/ds/States';
 import { CONSENTS, type ConsentInfo, type ConsentPurpose } from '@/src/constants/consents';
 import { color, space, typography } from '@/src/constants/tokens';
 import { toastService } from '@/src/services/toastService';
+import { cancelAllScheduledNotifications } from '@/src/services/notificationService';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { useConsentStore } from '@/src/store/useConsentStore';
 import { globalStyles } from '@/src/styles/global';
@@ -71,6 +72,7 @@ export default function PrivacyScreen() {
       await setConsent(purpose, value);
       if (purpose === 'NOTIFICATIONS' && !value) {
         await AsyncStorage.removeItem(NOTIFICATIONS_LOCAL_KEY);
+        await cancelAllScheduledNotifications();
       }
       toastService.success(value ? 'Consentimento registrado.' : 'Consentimento revogado.');
     } catch {

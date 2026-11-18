@@ -79,7 +79,6 @@ function DiaryIndex() {
     }
   };
 
-  // v1: Alert.alert (sem botões no web). Agora ConfirmDialog do DS.
   const confirmDelete = async () => {
     if (!toDelete) return;
     setDeleting(true);
@@ -131,7 +130,6 @@ function DiaryIndex() {
           {header}
           {status === 'loading' && <LoadingState variant="list" count={4} label="Carregando seu diário" />}
           {status === 'error' && (
-            // v1: toast de erro + "Nenhuma entrada ainda" ao mesmo tempo (P10).
             <ErrorState
               title="Não conseguimos abrir seu diário"
               message="Seus registros estão seguros. Verifique a conexão e tente de novo."

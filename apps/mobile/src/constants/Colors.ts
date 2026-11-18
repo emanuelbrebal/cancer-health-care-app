@@ -1,8 +1,7 @@
 import { color, palette } from './tokens';
 
-// API legada de cores, agora derivada dos tokens (src/constants/tokens.ts).
-// purplePrimary passou a ser o roxo de ação acessível (6.3:1 com branco);
-// o roxo de identidade #9B5DE0 continua disponível como brandAccent.
+// API legada de cores, derivada dos tokens (src/constants/tokens.ts). purplePrimary é o roxo
+// de ação acessível (6.3:1 com branco); o roxo de identidade #9B5DE0 é brandAccent.
 export const Colors = {
     purplePrimary: color.action.primary,
     purpleSecondary: color.text.brand,

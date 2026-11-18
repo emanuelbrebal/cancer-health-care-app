@@ -20,17 +20,17 @@ import { APP_GUARD } from '@nestjs/core';
     PrismaModule,
     AuthModule,
     UsersModule,
-    // Media Modules
+    // Mídia e lazer
     BooksModule,
     MoviesModule,
     SeriesModule,
     LeisuresModule,
-    //Personal Modules,
+    // Área pessoal, mascote e consentimento
     DailyLogsModule,
     TreatmentsModule,
     MascotModule,
     ConsentModule,
-    //Rate limit
+    // Rate limit global: 120 requisições por minuto
     ThrottlerModule.forRoot([
       {
         ttl: 60000,

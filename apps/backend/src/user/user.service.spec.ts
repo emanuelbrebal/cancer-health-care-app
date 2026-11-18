@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+import { ForbiddenException } from '@nestjs/common';
 import { UsersService } from './user.service';
 import { pseudonymize } from '../shared/utils/pseudonym.util';
 
@@ -7,6 +9,7 @@ describe('UsersService — ciclo de vida da conta', () => {
     email: 'ana@exemplo.com',
     name: 'Ana Souza',
     role: 'PATIENT',
+    password: bcrypt.hashSync('Senha@123', 4),
   };
 
   let prisma: any;
@@ -63,7 +66,9 @@ describe('UsersService — ciclo de vida da conta', () => {
       where: { userId: 'user-1' },
       data: { userId: userRef },
     });
-    expect(prisma.user.delete).toHaveBeenCalledWith({ where: { id: 'user-1' } });
+    expect(prisma.user.delete).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+    });
   });
 
   it('registro de exclusão não guarda e-mail, nome nem o id em claro', async () => {
@@ -75,6 +80,20 @@ describe('UsersService — ciclo de vida da conta', () => {
       role: 'PATIENT',
       reason: 'pedido do titular',
     });
-    expect(JSON.stringify(data)).not.toMatch(/ana@exemplo\.com|Ana Souza|user-1/);
+    expect(JSON.stringify(data)).not.toMatch(
+      /ana@exemplo\.com|Ana Souza|user-1/,
+    );
+  });
+
+  it('titular só exclui a própria conta com a senha correta', async () => {
+    await expect(service.removeOwn('user-1', 'errada')).rejects.toBeInstanceOf(
+      ForbiddenException,
+    );
+    expect(prisma.user.delete).not.toHaveBeenCalled();
+
+    await service.removeOwn('user-1', 'Senha@123');
+    expect(prisma.user.delete).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+    });
   });
 });

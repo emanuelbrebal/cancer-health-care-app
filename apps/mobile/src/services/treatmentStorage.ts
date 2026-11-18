@@ -52,7 +52,6 @@ async function setNotificationIds(id: string, notificationIds: string[]): Promis
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 }
 
-// Returns all YYYY-MM-DD dates a treatment covers (one per day from startDate to dataFim).
 export function getTreatmentDates(treatment: Treatment): string[] {
   const [day, month, year] = treatment.dataFim.split('/').map(Number);
   const end = new Date(year, month - 1, day);

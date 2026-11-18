@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
-import { DailyLogsRepository } from './daily-logs.repository';
+import { DailyLogFilters, DailyLogsRepository } from './daily-logs.repository';
 import { DailyLogResponseDto } from './dto/daily-log-response.dto';
 import { DailyLogMapper } from './daily-logs.mapper';
 
@@ -30,7 +30,7 @@ export class DailyLogsService {
     return this.repository.createWithAudit(data);
   }
 
-  async findOne(id: string, userId: string): Promise<any> {
+  async findOne(id: string, userId: string) {
     const log = await this.repository.findOne(id);
 
     if (!log) {
@@ -53,7 +53,10 @@ export class DailyLogsService {
     return DailyLogMapper.toResponseList(logs);
   }
 
-  async search(userId: string, filters: any): Promise<DailyLogResponseDto[]> {
+  async search(
+    userId: string,
+    filters: DailyLogFilters,
+  ): Promise<DailyLogResponseDto[]> {
     const logs = await this.repository.searchLogs(userId, filters);
 
     return DailyLogMapper.toResponseList(logs);
