@@ -70,6 +70,31 @@ export class UsersService {
     await this.remove(id, 'Solicitada pelo titular');
   }
 
+  // Exclusão pelo painel (W04-7): o ADMIN nunca exclui a própria conta (403) e o sistema
+  // não fica sem nenhuma conta ADMIN ativa (409).
+  async removeByAdmin(id: string, actorId: string) {
+    if (id === actorId) {
+      throw new ForbiddenException({
+        message: 'Você não pode excluir a sua própria conta pelo painel.',
+        code: 'SELF_DELETE_FORBIDDEN',
+      });
+    }
+    const user = await this.findOne(id);
+    if (user.role === 'ADMIN' && user.status === 'ACTIVE') {
+      const activeAdmins = await this.prisma.user.count({
+        where: { role: 'ADMIN', status: 'ACTIVE' },
+      });
+      if (activeAdmins <= 1) {
+        throw new ConflictException({
+          message:
+            'Não é possível excluir a última conta de administrador ativa.',
+          code: 'LAST_ADMIN',
+        });
+      }
+    }
+    await this.remove(id, 'Removida por administrador');
+  }
+
   async remove(id: string, reason?: string) {
     const user = await this.findOne(id);
     const userRef = pseudonymize(user.id);
