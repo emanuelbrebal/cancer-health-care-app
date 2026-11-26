@@ -3,6 +3,7 @@ import { JwtModule, JwtSignOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AuthWebController } from './auth-web.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { MailerModule } from '../mailer/mailer.module';
@@ -29,7 +30,7 @@ import { SessionService } from './session.service';
     }),
   ],
   providers: [AuthService, SessionService, JwtStrategy],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthWebController],
   exports: [AuthService, SessionService],
 })
 export class AuthModule {}
