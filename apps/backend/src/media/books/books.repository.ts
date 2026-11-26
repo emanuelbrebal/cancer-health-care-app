@@ -22,6 +22,7 @@ export class BooksRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
+        synopsis: data.synopsis,
         bookDetails: {
           create: {
             author: data.author,

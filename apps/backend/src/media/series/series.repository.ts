@@ -23,6 +23,7 @@ export class SeriesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
+        synopsis: data.synopsis,
         seriesDetails: {
           create: {
             showrunner: data.showrunner,

@@ -22,6 +22,7 @@ export class MoviesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
+        synopsis: data.synopsis,
         movieDetails: {
           create: {
             director: data.director,

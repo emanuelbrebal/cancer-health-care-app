@@ -32,4 +32,9 @@ export class CreateMediaDto {
   @IsString({ each: true })
   @IsOptional()
   whereToFind: string[];
+
+  @IsString()
+  @MaxLength(2000)
+  @IsOptional()
+  synopsis?: string;
 }
