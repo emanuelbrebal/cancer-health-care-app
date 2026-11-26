@@ -7,6 +7,8 @@ import { BooksModule } from './media/books/books.module';
 import { LeisuresModule } from './leisures/leisures.module';
 import { MoviesModule } from './media/movies/movies.module';
 import { SeriesModule } from './media/series/series.module';
+import { GenresModule } from './media/genres/genres.module';
+import { AdminMediaModule } from './media/admin/admin-media.module';
 import { AppService } from './app.service';
 import { DailyLogsModule } from './personal/daily-logs/daily-logs.module';
 import { TreatmentsModule } from './personal/treatments/treatments.module';
@@ -24,6 +26,8 @@ import { APP_GUARD } from '@nestjs/core';
     BooksModule,
     MoviesModule,
     SeriesModule,
+    GenresModule,
+    AdminMediaModule,
     LeisuresModule,
     // Área pessoal, mascote e consentimento
     DailyLogsModule,

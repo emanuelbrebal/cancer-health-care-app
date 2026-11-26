@@ -1,12 +1,23 @@
 // Figma: adc conteudo (40:1063) — cadastro; editar (385:1726) — edição. PRD 03 (W03-3/4/5/6).
 // D9: sem upload (image_path em texto, R3).
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
-import { Alert, Button, FocusFirstError, LiveRegion, PageLoader, Panel, SelectField, TextField } from '@/components/ui'
-import { diffChanged, hasChanges } from '@/features/content/diff'
+import {
+  Alert,
+  Button,
+  FocusFirstError,
+  LiveRegion,
+  PageLoader,
+  Panel,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from '@/components/ui'
+import { diffChanged, hasChanges, toTextOrNull, withoutEmpty } from '@/features/content/diff'
 import { frequencyLabels, leisureTypeLabels, toOptions } from '@/features/content/labels'
-import { leisureSchema } from '@/features/content/schemas'
+import { returnTo } from '@/features/content/listQuery'
+import { SYNOPSIS_MAX, leisureSchema } from '@/features/content/schemas'
 import type { Frequency, LeisureItem, LeisurePayload, LeisureType } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
 import { PageHeader } from '@/layouts/PageHeader'
@@ -19,10 +30,11 @@ interface Values {
   type: LeisureType | ''
   frequency: Frequency | ''
   image_path: string
+  synopsis: string
 }
 
 const DUPLICATE = 'Já existe uma atividade com este nome.'
-const empty: Values = { name: '', type: '', frequency: '', image_path: '' }
+const empty: Values = { name: '', type: '', frequency: '', image_path: '', synopsis: '' }
 
 // `image_path` vai sempre como string: a coluna é obrigatória e o repositório de lazer não
 // aplica valor padrão (sem ele o backend responde 500).
@@ -32,6 +44,7 @@ function toPayload(v: Values): LeisurePayload {
     type: v.type as LeisureType,
     frequency: v.frequency as Frequency,
     image_path: v.image_path.trim(),
+    synopsis: toTextOrNull(v.synopsis),
   }
 }
 
@@ -40,6 +53,7 @@ const toValues = (item: LeisureItem): Values => ({
   type: item.type,
   frequency: item.frequency,
   image_path: item.imagePath ?? '',
+  synopsis: item.synopsis ?? '',
 })
 
 const sameName = (a: string, b: string) =>
@@ -48,17 +62,18 @@ const sameName = (a: string, b: string) =>
 export default function LeisureFormPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const editing = !!id
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   const { data, loading, error: loadError } = useLoad(id ?? 'new', async () => {
-    const [item, all] = await Promise.all([id ? leisureService.get(id) : Promise.resolve(null), leisureService.list()])
+    const [item, all] = await Promise.all([id ? leisureService.adminGet(id) : Promise.resolve(null), leisureService.list()])
     return { item, all }
   })
 
   const backToList = (flash?: string) =>
-    navigate(paths.contentTab('lazer'), flash ? { state: { flash } } : undefined)
+    navigate(returnTo(location.state, paths.contentTab('lazer')), flash ? { state: { flash } } : undefined)
 
   async function submit(values: Values, helpers: FormikHelpers<Values>) {
     setError(null)
@@ -82,7 +97,7 @@ export default function LeisureFormPage() {
         await leisureService.update(id, changes)
         backToList(`Atividade “${payload.name}” atualizada.`)
       } else {
-        await leisureService.create(payload)
+        await leisureService.create(withoutEmpty(payload) as LeisurePayload)
         backToList(`Atividade “${payload.name}” cadastrada.`)
       }
     } catch (e) {
@@ -109,7 +124,7 @@ export default function LeisureFormPage() {
           <LiveRegion
             message={
               apiStatus(loadError) === 404
-                ? 'Atividade não encontrada ou inativada.'
+                ? 'Atividade não encontrada.'
                 : apiErrorMessage(loadError, 'Não foi possível carregar a atividade.')
             }
           />
@@ -170,6 +185,18 @@ export default function LeisureFormPage() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={touched.image_path ? errors.image_path : undefined}
+                />
+
+                <TextAreaField
+                  label="Sinopse"
+                  name="synopsis"
+                  hint="Opcional. Por enquanto só aparece no painel."
+                  maxLength={SYNOPSIS_MAX}
+                  counter
+                  value={values.synopsis}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.synopsis ? errors.synopsis : undefined}
                 />
 
                 <LiveRegion message={error} />

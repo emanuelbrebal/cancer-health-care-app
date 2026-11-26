@@ -1,24 +1,38 @@
-// Figma: editar (385:1726) — formulário de edição com Cancelar/Salvar. PRD 02 (W02-4, W02-7, W02-9).
-// Gênero só leitura (sem endpoint de gêneros, G4); D9: imagem em texto, sem upload.
+// Figma: adc conteudo (40:1063) — cadastro; editar (385:1726) — edição com Cancelar/Salvar.
+// PRD 02 (W02-3, W02-4, W02-7, W02-9, crit. 4 e 5). D9: imagem em texto, sem upload (sessão 3b).
 import { useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
 import { Plus, X } from 'lucide-react'
-import { Button, CheckboxField, FocusFirstError, LiveRegion, PageLoader, Panel, TextField } from '@/components/ui'
-import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull } from '@/features/content/diff'
-import { tabSingular, tabToKind } from '@/features/content/labels'
-import { mediaSchema } from '@/features/content/schemas'
-import type { MediaItem, MediaKind, MediaPayload } from '@/features/content/types'
+import {
+  Alert,
+  Button,
+  CheckboxField,
+  FocusFirstError,
+  LiveRegion,
+  PageLoader,
+  Panel,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from '@/components/ui'
+import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull, withoutEmpty } from '@/features/content/diff'
+import { genreTypeLabels, kindToGenreType, tabSingular, tabToKind } from '@/features/content/labels'
+import { returnTo } from '@/features/content/listQuery'
+import { SYNOPSIS_MAX, mediaSchema } from '@/features/content/schemas'
+import type { AdminMediaItem, MediaKind, MediaPayload } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
 import { PageHeader } from '@/layouts/PageHeader'
 import { paths, type ContentTab } from '@/routes/paths'
-import { mediaService } from '@/services/content'
-import { apiErrorMessage, apiStatus } from '@/services/errors'
+import { genreService, mediaService } from '@/services/content'
+import { apiCode, apiErrorMessage, apiStatus } from '@/services/errors'
 
 type MediaTab = Exclude<ContentTab, 'lazer'>
 
 interface Values {
   title: string
+  genreId: string
+  synopsis: string
   isFree: boolean
   releaseYear: string
   whereToFind: string[]
@@ -34,13 +48,39 @@ interface Values {
   episodes: string
 }
 
-const DUPLICATE = 'Já existe um item com este título.'
+// Mensagens do contrato (409 DUPLICATE); o texto do servidor tem prioridade.
+const DUPLICATE: Record<MediaKind, string> = {
+  books: 'Já existe um livro com este título e autor.',
+  movies: 'Já existe um filme com este título e ano.',
+  series: 'Já existe uma série com este título e ano.',
+}
+
+const empty: Values = {
+  title: '',
+  genreId: '',
+  synopsis: '',
+  isFree: false,
+  releaseYear: '',
+  whereToFind: [],
+  image_path: '',
+  author: '',
+  eduCapesLink: '',
+  page_count: '',
+  director: '',
+  duration: '',
+  externalLink: '',
+  showrunner: '',
+  seasons: '',
+  episodes: '',
+}
 
 const num = (n: number | null | undefined) => (n == null || n === 0 ? '' : String(n))
 
-function toValues(item: MediaItem): Values {
+function toValues(item: AdminMediaItem): Values {
   return {
     title: item.title,
+    genreId: item.genreId ?? '',
+    synopsis: item.synopsis ?? '',
     isFree: item.isFree,
     releaseYear: num(item.releaseYear),
     whereToFind: item.whereToFind ?? [],
@@ -62,6 +102,8 @@ function toValues(item: MediaItem): Values {
 function toPayload(kind: MediaKind, v: Values): MediaPayload {
   const common: MediaPayload = {
     title: v.title.trim(),
+    genreId: v.genreId,
+    synopsis: toTextOrNull(v.synopsis),
     isFree: v.isFree,
     releaseYear: toIntOrNull(v.releaseYear),
     whereToFind: cleanList(v.whereToFind),
@@ -96,54 +138,69 @@ const isMediaTab = (t: string | undefined): t is MediaTab => t === 'livros' || t
 
 export default function MediaEditPage() {
   const { tab, id } = useParams()
-  if (!isMediaTab(tab) || !id) return <Navigate to={paths.contentTab('livros')} replace />
-  return <MediaEdit key={`${tab}/${id}`} tab={tab} id={id} />
+  if (!isMediaTab(tab)) return <Navigate to={paths.contentTab('livros')} replace />
+  return <MediaForm key={`${tab}/${id ?? 'novo'}`} tab={tab} id={id} />
 }
 
-function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
+function MediaForm({ tab, id }: { tab: MediaTab; id?: string }) {
   const kind = tabToKind[tab]
+  const genreType = kindToGenreType[kind]
+  const editing = !!id
   const navigate = useNavigate()
+  const location = useLocation()
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
-  const { data, loading, error: loadError } = useLoad(`${kind}/${id}`, async () => {
-    const [item, all] = await Promise.all([mediaService.get(kind, id), mediaService.list(kind)])
-    return { item, all }
+  // Edição carrega por `/admin/…/:id` (funciona para inativo); gêneros: só ativos do tipo.
+  const { data, loading, error: loadError } = useLoad(`${kind}/${id ?? 'novo'}`, async () => {
+    const [item, genres] = await Promise.all([
+      id ? mediaService.adminGet(kind, id) : Promise.resolve(null),
+      genreService.list(genreType),
+    ])
+    return { item, genres }
   })
 
-  const backToList = (flash?: string) => navigate(paths.contentTab(tab), flash ? { state: { flash } } : undefined)
+  // Volta à lista de origem (mesma página e filtros).
+  const backToList = (flash?: string) =>
+    navigate(returnTo(location.state, paths.contentTab(tab)), flash ? { state: { flash } } : undefined)
+
+  const genreOptions = (data?.genres ?? []).map((g) => ({ value: g.id, label: g.name }))
+  // Item com gênero hoje inativo: mantém a opção atual para a seleção não ficar vazia.
+  if (data?.item && data.item.genreId && !genreOptions.some((o) => o.value === data.item?.genreId)) {
+    genreOptions.push({ value: data.item.genreId, label: `${data.item.genre} (inativo)` })
+  }
+  const noGenre = !editing && !!data && data.genres.length === 0
 
   async function submit(values: Values, helpers: FormikHelpers<Values>) {
     if (!data) return
     setError(null)
     setNotice(null)
     const payload = toPayload(kind, values)
-    const changes = diffChanged(toPayload(kind, toValues(data.item)), payload)
-    if (!hasChanges(changes)) {
-      setNotice('Nenhuma alteração para salvar.')
-      return
-    }
-
-    // Conferência antecipada contra os ativos; o backend responde 409 nos demais casos (ex.: inativos).
     const title = payload.title ?? ''
-    const clash = data.all.some(
-      (m) => m.id !== id && m.title.localeCompare(title, 'pt-BR', { sensitivity: 'base' }) === 0,
-    )
-    if (changes.title !== undefined && clash) {
-      helpers.setFieldError('title', DUPLICATE)
-      setError(DUPLICATE)
-      return
-    }
 
     try {
-      await mediaService.update(kind, id, changes)
-      backToList(`“${title}” atualizado.`)
+      if (data.item && id) {
+        const changes = diffChanged(toPayload(kind, toValues(data.item)), payload)
+        if (!hasChanges(changes)) {
+          setNotice('Nenhuma alteração para salvar.')
+          return
+        }
+        await mediaService.update(kind, id, changes)
+        backToList(`“${title}” atualizado.`)
+      } else {
+        await mediaService.create(kind, withoutEmpty(payload))
+        backToList(`“${title}” cadastrado.`)
+      }
     } catch (e) {
-      // 409: título repetido, inclusive de item inativado; a mensagem vem do servidor.
+      // 409: duplicado (inclui inativos); 400 INVALID_GENRE: gênero inativado nesse meio-tempo.
       if (apiStatus(e) === 409) {
-        const message = apiErrorMessage(e, DUPLICATE)
+        const message = apiErrorMessage(e, DUPLICATE[kind])
         helpers.setFieldError('title', message)
-        setError(`${message} Confira também os itens inativados.`)
+        setError(`${message} Confira também os itens inativos.`)
+      } else if (apiCode(e) === 'INVALID_GENRE') {
+        const message = apiErrorMessage(e, 'Escolha um gênero ativo deste tipo.')
+        helpers.setFieldError('genreId', message)
+        setError(message)
       } else {
         setError(apiErrorMessage(e, 'Não foi possível salvar.'))
       }
@@ -153,49 +210,65 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
   return (
     <>
       <PageHeader title="Gerenciador de conteúdo" description="Livros, filmes e séries recomendados na área de Lazer do app." />
-      <Panel title={`Editar ${tabSingular[tab]}`}>
+      <Panel title={editing ? `Editar ${tabSingular[tab]}` : `Cadastro de ${tabSingular[tab]}`}>
         {loading ? (
           <PageLoader />
         ) : loadError || !data ? (
           <LiveRegion
             message={
               apiStatus(loadError) === 404
-                ? 'Item não encontrado ou inativado.'
+                ? 'Item não encontrado.'
                 : apiErrorMessage(loadError, 'Não foi possível carregar o item.')
             }
           />
         ) : (
-          <Formik initialValues={toValues(data.item)} validationSchema={mediaSchema(kind)} onSubmit={submit}>
+          <Formik
+            initialValues={data.item ? toValues(data.item) : empty}
+            validationSchema={mediaSchema(kind)}
+            onSubmit={submit}
+          >
             {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => {
               const field = (name: keyof Values) => ({
                 name,
                 value: values[name] as string,
                 onChange: handleChange,
                 onBlur: handleBlur,
-                error:
-                  touched[name] || (name === 'title' && errors.title === DUPLICATE)
-                    ? (errors[name] as string | undefined)
-                    : undefined,
+                error: touched[name] ? (errors[name] as string | undefined) : undefined,
               })
               const places = values.whereToFind
 
               return (
                 <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <FocusFirstError />
+
+                  {noGenre && (
+                    <Alert tone="info">
+                      Nenhum gênero ativo de {genreTypeLabels[genreType].toLocaleLowerCase('pt-BR')} cadastrado. Crie o
+                      gênero antes de cadastrar.{' '}
+                      <Link to={paths.genres(genreType)} className="font-semibold text-primary underline">
+                        Ir para Gêneros
+                      </Link>
+                    </Alert>
+                  )}
+
                   <TextField label="Título" maxLength={150} required {...field('title')} />
 
-                  <dl className="grid gap-5 rounded-field bg-surface px-4 py-3 text-support md:grid-cols-2">
-                    <div>
-                      <dt className="text-ink-muted">Gênero</dt>
-                      <dd className="font-medium text-ink">{data.item.genre}</dd>
-                    </div>
-                    {kind === 'books' && (
-                      <div>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <SelectField
+                      label="Gênero"
+                      placeholder="Selecione"
+                      options={genreOptions}
+                      required
+                      disabled={noGenre}
+                      {...field('genreId')}
+                    />
+                    {kind === 'books' && editing && (
+                      <dl className="rounded-field bg-surface px-4 py-3 text-support">
                         <dt className="text-ink-muted">Visitas no app</dt>
-                        <dd className="font-medium text-ink">{data.item.visitCount ?? 0}</dd>
-                      </div>
+                        <dd className="font-medium text-ink">{data.item?.visitCount ?? 0}</dd>
+                      </dl>
                     )}
-                  </dl>
+                  </div>
 
                   <div className="grid gap-5 md:grid-cols-3">
                     <TextField label="Ano de lançamento" inputMode="numeric" {...field('releaseYear')} />
@@ -229,6 +302,14 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
                       <TextField label="Link externo" type="url" {...field('externalLink')} />
                     </div>
                   )}
+
+                  <TextAreaField
+                    label="Sinopse"
+                    hint="Opcional. Por enquanto só aparece no painel."
+                    maxLength={SYNOPSIS_MAX}
+                    counter
+                    {...field('synopsis')}
+                  />
 
                   <CheckboxField
                     label="Conteúdo gratuito"
@@ -294,7 +375,7 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
                     <Button variant="danger-outline" onClick={() => backToList()} className="min-w-[170px]">
                       Cancelar
                     </Button>
-                    <Button type="submit" loading={isSubmitting} className="min-w-[170px]">
+                    <Button type="submit" loading={isSubmitting} disabled={noGenre} className="min-w-[170px]">
                       Salvar
                     </Button>
                   </div>

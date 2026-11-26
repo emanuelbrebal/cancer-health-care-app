@@ -15,6 +15,15 @@ export class LeisureMapper {
     };
   }
 
+  // Painel: campos públicos + datas (W03-1 pede a data de atualização).
+  static toAdminDto(leisure: LeisureActivity) {
+    return {
+      ...this.toDto(leisure)!,
+      createdAt: leisure.createdAt.toISOString(),
+      updatedAt: leisure.updatedAt.toISOString(),
+    };
+  }
+
   static toDtoList(leisures: LeisureActivity[]) {
     if (!leisures) return [];
     return leisures.map((leisure) => this.toDto(leisure));

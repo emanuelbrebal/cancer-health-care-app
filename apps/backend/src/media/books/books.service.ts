@@ -1,19 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { MediaType } from '@prisma/client';
+import { MediaRulesService } from '../common/media-rules.service';
 import { BooksRepository } from './books.repository';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { rethrowUnique } from 'common/prisma/rethrow-unique';
 
-const DUPLICATE_TITLE = 'Já existe um livro com este título.';
+const NOT_FOUND = 'Livro não encontrado.';
 
 @Injectable()
 export class BooksService {
-  constructor(private readonly booksRepository: BooksRepository) {}
+  constructor(
+    private readonly booksRepository: BooksRepository,
+    private readonly rules: MediaRulesService,
+  ) {}
 
-  async create(createBookDto: CreateBookDto) {
-    return this.booksRepository
-      .create(createBookDto)
-      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
+  async create(dto: CreateBookDto) {
+    await this.rules.assertGenre(dto.genreId, MediaType.BOOK);
+    await this.rules.assertUnique({
+      type: MediaType.BOOK,
+      title: dto.title,
+      author: dto.author,
+    });
+    return this.booksRepository.create(dto);
   }
 
   async findAll() {
@@ -22,17 +30,26 @@ export class BooksService {
 
   async findOne(id: string) {
     const book = await this.booksRepository.findOne(id);
-    if (!book) {
-      throw new NotFoundException('Livro não encontrado.');
-    }
+    if (!book) throw new NotFoundException(NOT_FOUND);
     return book;
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto) {
-    await this.findOne(id);
-    return this.booksRepository
-      .update(id, updateBookDto)
-      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
+  // Vale também para item inativo: o painel edita antes de reativar.
+  async update(id: string, dto: UpdateBookDto) {
+    const current = await this.booksRepository.findAnyStatus(id);
+    if (!current) throw new NotFoundException(NOT_FOUND);
+    if (dto.genreId) await this.rules.assertGenre(dto.genreId, MediaType.BOOK);
+    if (dto.title !== undefined || dto.author !== undefined) {
+      await this.rules.assertUnique(
+        {
+          type: MediaType.BOOK,
+          title: dto.title ?? current.title,
+          author: dto.author ?? current.bookDetails?.author,
+        },
+        id,
+      );
+    }
+    return this.booksRepository.update(id, dto);
   }
 
   async remove(id: string) {

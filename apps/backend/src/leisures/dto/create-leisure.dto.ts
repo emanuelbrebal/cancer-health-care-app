@@ -22,4 +22,9 @@ export class CreateLeisureDto {
   @IsString()
   @IsOptional()
   image_path: string;
+
+  @IsString()
+  @MaxLength(2000)
+  @IsOptional()
+  synopsis?: string;
 }

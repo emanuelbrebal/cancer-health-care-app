@@ -1,6 +1,12 @@
 import * as Yup from 'yup'
 import type { MediaKind } from './types'
-import { frequencyLabels, leisureTypeLabels } from './labels'
+import { frequencyLabels, genreTypeLabels, leisureTypeLabels } from './labels'
+
+// Contrato: `POST /genres { name (1–60), type }`.
+export const genreSchema = Yup.object({
+  name: Yup.string().trim().required('Informe o nome do gênero.').max(60, 'Use até 60 caracteres.'),
+  type: Yup.string().required('Escolha o tipo.').oneOf(Object.keys(genreTypeLabels), 'Escolha o tipo.'),
+})
 
 // Espelha os DTOs do backend (class-validator). Título limitado a 150 (coluna VarChar(150)),
 // embora o DTO aceite 200 (PRD 02).
@@ -13,6 +19,11 @@ const optionalInt = (label: string) =>
     .trim()
     .test('int', `${label} precisa ser um número inteiro.`, (v) => !v || /^\d+$/.test(v))
 
+export const SYNOPSIS_MAX = 2000
+
+// Sinopse opcional (≤ 2000) em mídia e lazer; por ora só o painel exibe.
+const synopsisField = Yup.string().trim().max(SYNOPSIS_MAX, `Use até ${SYNOPSIS_MAX} caracteres.`)
+
 export const leisureSchema = Yup.object({
   name: Yup.string().trim().required('Informe o nome.').max(150, 'Use até 150 caracteres.'),
   type: Yup.string()
@@ -22,18 +33,21 @@ export const leisureSchema = Yup.object({
     .required('Escolha a frequência.')
     .oneOf(Object.keys(frequencyLabels), 'Escolha a frequência.'),
   image_path: Yup.string().trim(),
+  synopsis: synopsisField,
 })
 
 export function mediaSchema(kind: MediaKind) {
   const base = {
     title: Yup.string().trim().required('Informe o título.').max(150, 'Use até 150 caracteres.'),
-    isFree: Yup.boolean(),
+    genreId: Yup.string().required('Escolha o gênero.'),
+    isFree: Yup.boolean().required(),
     releaseYear: optionalInt('O ano').test(
       'year',
       'Informe um ano entre 1000 e 2100.',
       (v) => !v || (Number(v) >= 1000 && Number(v) <= 2100),
     ),
     image_path: Yup.string().trim(),
+    synopsis: synopsisField,
     whereToFind: Yup.array(Yup.string()),
   }
   if (kind === 'books') {

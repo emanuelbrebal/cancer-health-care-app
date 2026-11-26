@@ -1,5 +1,22 @@
 import type { ContentTab } from '@/routes/paths'
-import type { Frequency, LeisureType, MediaKind } from './types'
+import type { ContentStatus, Frequency, GenreType, LeisureType, MediaKind } from './types'
+
+export const statusLabels: Record<ContentStatus, string> = {
+  ACTIVE: 'Ativo',
+  INACTIVE: 'Inativo',
+}
+
+export const genreTypeLabels: Record<GenreType, string> = {
+  BOOK: 'Livro',
+  MOVIE: 'Filme',
+  SERIES: 'Série',
+}
+
+export const kindToGenreType: Record<MediaKind, GenreType> = {
+  books: 'BOOK',
+  movies: 'MOVIE',
+  series: 'SERIES',
+}
 
 // PRD 03 W03-5: o painel mostra o rótulo e envia o valor exato do enum
 // (FORTWEEKLY e SPORADICAL estão assim no banco).

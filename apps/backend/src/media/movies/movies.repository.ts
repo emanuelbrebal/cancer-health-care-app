@@ -22,6 +22,7 @@ export class MoviesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
+        synopsis: data.synopsis,
         movieDetails: {
           create: {
             director: data.director,
@@ -52,6 +53,14 @@ export class MoviesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         type: this.type,
       },
+      include: { movieDetails: true, genre: true },
+    });
+  }
+
+  // Edição pelo painel também vale para item inativo (tasks/admin-catalogo.md).
+  async findAnyStatus(id: string) {
+    return this.prisma.media.findFirst({
+      where: { id, type: this.type },
       include: { movieDetails: true, genre: true },
     });
   }

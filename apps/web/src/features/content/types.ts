@@ -1,8 +1,33 @@
 // Formatos devolvidos pelos mappers do backend (BookMapper, MovieMapper, SeriesMapper,
 // LeisureMapper). Atenção: a resposta usa `imagePath`/`pageCount`, mas o corpo de escrita usa
-// `image_path`/`page_count` (DTOs). A resposta não traz `updatedAt` nem `genreId`.
+// `image_path`/`page_count` (DTOs). As rotas públicas não trazem `updatedAt` nem `genreId`; as
+// rotas `/admin/*` trazem (AdminMediaItem / AdminLeisureItem).
 
 export type MediaKind = 'books' | 'movies' | 'series'
+
+export type ContentStatus = 'ACTIVE' | 'INACTIVE'
+export type GenreType = 'BOOK' | 'MOVIE' | 'SERIES'
+
+/** `GET /genres?type=` (público, só ativos). */
+export interface Genre {
+  id: string
+  name: string
+  type: GenreType
+}
+
+/** `GET /admin/genres` — inclui inativos e o total de itens ativos que usam o gênero. */
+export interface AdminGenre extends Genre {
+  status: ContentStatus
+  activeItems: number
+}
+
+/** Resposta paginada das listas `/admin/*`. */
+export interface Paginated<T> {
+  items: T[]
+  total: number
+  page: number
+  limit: number
+}
 
 export type LeisureType = 'PHYSICAL' | 'CULTURAL' | 'SOCIAL' | 'THERAPY' | 'RECREATIONAL' | 'REST'
 export type Frequency = 'DAILY' | 'WEEKLY' | 'FORTWEEKLY' | 'MONTHLY' | 'SPORADICAL'
@@ -44,9 +69,22 @@ export interface LeisureItem {
   status: string
 }
 
+interface AdminStamps {
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AdminMediaItem extends MediaItem, AdminStamps {
+  genreId: string
+}
+
+export type AdminLeisureItem = LeisureItem & AdminStamps
+
 /** Corpo de escrita (DTO) da mídia; só campos editáveis pelo painel nesta versão. */
 export interface MediaPayload {
   title?: string
+  genreId?: string
+  synopsis?: string | null
   isFree?: boolean
   releaseYear?: number | null
   whereToFind?: string[]
@@ -67,4 +105,5 @@ export interface LeisurePayload {
   type: LeisureType
   frequency: Frequency
   image_path: string
+  synopsis?: string | null
 }

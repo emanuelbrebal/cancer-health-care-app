@@ -11,6 +11,8 @@ export const paths = {
   contentTab: (tab: ContentTab) => `/admin/conteudo/${tab}`,
   contentNew: (tab: ContentTab) => `/admin/conteudo/${tab}/novo`,
   contentEdit: (tab: ContentTab, id: string) => `/admin/conteudo/${tab}/${id}/editar`,
+  /** `type` = BOOK/MOVIE/SERIES (abre a aba do tipo). */
+  genres: (type?: string) => `/admin/conteudo/generos${type ? `?type=${type}` : ''}`,
 } as const
 
 export const contentTabs = ['livros', 'filmes', 'series', 'lazer'] as const

@@ -1,9 +1,16 @@
 import type {
+  AdminGenre,
+  AdminLeisureItem,
+  AdminMediaItem,
+  ContentStatus,
+  Genre,
+  GenreType,
   LeisureItem,
   LeisurePayload,
   MediaItem,
   MediaKind,
   MediaPayload,
+  Paginated,
 } from '@/features/content/types'
 import { http } from './http'
 
@@ -16,6 +23,8 @@ function unwrap<T>(body: unknown): T {
   return body as T
 }
 
+type ListQuery = Record<string, string | number>
+
 export const mediaService = {
   async list(kind: MediaKind) {
     const { data } = await http.get<MediaItem[]>(`/${kind}`)
@@ -24,6 +33,24 @@ export const mediaService = {
   async get(kind: MediaKind, id: string) {
     const { data } = await http.get<MediaItem>(`/${kind}/${id}`)
     return data
+  },
+  /** Ativos e inativos, paginado no servidor (status, search, genreId, isFree, page, limit). */
+  async adminList(kind: MediaKind, query: ListQuery) {
+    const { data } = await http.get<Paginated<AdminMediaItem>>(`/admin/${kind}`, { params: query })
+    return data
+  },
+  /** Encontra também item inativo. */
+  async adminGet(kind: MediaKind, id: string) {
+    const { data } = await http.get<AdminMediaItem>(`/admin/${kind}/${id}`)
+    return data
+  },
+  async reactivate(kind: MediaKind, id: string) {
+    const { data } = await http.patch<AdminMediaItem>(`/admin/${kind}/${id}/reactivate`)
+    return data
+  },
+  async create(kind: MediaKind, payload: MediaPayload) {
+    const { data } = await http.post(`/${kind}`, payload)
+    return unwrap<MediaItem>(data)
   },
   async update(kind: MediaKind, id: string, changes: MediaPayload) {
     const { data } = await http.patch(`/${kind}/${id}`, changes)
@@ -35,6 +62,35 @@ export const mediaService = {
   },
 }
 
+export const genreService = {
+  /** Só ativos, por nome (público). Alimenta a seleção de gênero do formulário. */
+  async list(type: GenreType) {
+    const { data } = await http.get<Genre[]>('/genres', { params: { type } })
+    return data
+  },
+  /** Ativos e inativos, com `activeItems`; `status` ausente = todos. */
+  async adminList(type: GenreType, status?: ContentStatus) {
+    const { data } = await http.get<AdminGenre[]>('/admin/genres', { params: { type, status: status || undefined } })
+    return data
+  },
+  async create(name: string, type: GenreType) {
+    const { data } = await http.post('/genres', { name, type })
+    return unwrap<Genre>(data)
+  },
+  async rename(id: string, name: string) {
+    const { data } = await http.patch(`/genres/${id}`, { name })
+    return unwrap<Genre>(data)
+  },
+  /** Inativa; 409 `GENRE_IN_USE` quando há itens ativos no gênero. */
+  async inactivate(id: string) {
+    await http.delete(`/genres/${id}`)
+  },
+  async reactivate(id: string) {
+    const { data } = await http.patch(`/admin/genres/${id}/reactivate`)
+    return unwrap<Genre>(data)
+  },
+}
+
 export const leisureService = {
   async list() {
     const { data } = await http.get<LeisureItem[]>('/leisures')
@@ -42,6 +98,19 @@ export const leisureService = {
   },
   async get(id: string) {
     const { data } = await http.get<LeisureItem>(`/leisures/${id}`)
+    return data
+  },
+  /** Ativas e inativas, paginado no servidor (status, search, type, frequency, page, limit). */
+  async adminList(query: ListQuery) {
+    const { data } = await http.get<Paginated<AdminLeisureItem>>('/admin/leisures', { params: query })
+    return data
+  },
+  async adminGet(id: string) {
+    const { data } = await http.get<AdminLeisureItem>(`/admin/leisures/${id}`)
+    return data
+  },
+  async reactivate(id: string) {
+    const { data } = await http.patch<AdminLeisureItem>(`/admin/leisures/${id}/reactivate`)
     return data
   },
   async create(payload: LeisurePayload) {

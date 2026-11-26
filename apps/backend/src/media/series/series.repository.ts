@@ -23,6 +23,7 @@ export class SeriesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         image_path: data.image_path || '',
         whereToFind: data.whereToFind,
+        synopsis: data.synopsis,
         seriesDetails: {
           create: {
             showrunner: data.showrunner,
@@ -54,6 +55,14 @@ export class SeriesRepository extends BaseMediaRepository {
         status: StatusEnum.ACTIVE,
         type: this.type,
       },
+      include: { seriesDetails: true, genre: true },
+    });
+  }
+
+  // Edição pelo painel também vale para item inativo (tasks/admin-catalogo.md).
+  async findAnyStatus(id: string) {
+    return this.prisma.media.findFirst({
+      where: { id, type: this.type },
       include: { seriesDetails: true, genre: true },
     });
   }
