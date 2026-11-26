@@ -1,5 +1,6 @@
 export { Alert, LiveRegion } from './Alert'
 export { Button } from './Button'
+export { CheckboxField } from './CheckboxField'
 export { ComingSoonButton } from './ComingSoon'
 export { DataTable, IconAction, type Column } from './DataTable'
 export { Modal } from './Modal'
