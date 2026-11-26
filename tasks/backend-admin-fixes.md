@@ -30,6 +30,11 @@
 1. Autoexclusão do ADMIN pelo painel: recusar sempre, ou permitir quando houver outro ADMIN ativo? (PRD 04 W04-7 diz "não pode excluir a própria conta" → proposta: recusar sempre.)
 2. Código para duplicado: `409` (proposta) ou `400`?
 
+**Respostas (usuário, 2026-11-26)**
+1. Recusar sempre: `403` com `code: SELF_DELETE_FORBIDDEN` para a própria conta (é proibição de regra, não conflito de estado). Recusar também a última conta `ADMIN` ativa: `409` com `code: LAST_ADMIN` (depende do estado atual do banco). Mesmo estilo do `ADMIN_ONLY` em `auth.service.ts`.
+2. `409 Conflict` com a mensagem do PRD, especializada por tipo ("Já existe uma atividade com este nome." / "Já existe um livro/filme com este título." / "Já existe uma série com este título."), `code: DUPLICATE`. Abordagem C, em criar e editar.
+3. Unicidade de mídia será afrouxada (livro: título + autor; filme/série: título + ano) na **sessão 3** (`tasks/admin-catalogo.md`, decisão 4). Aqui não há migration; o helper não depende das colunas da constraint.
+
 **Premissas:** a tabela de duplicidade é `title + type` em mídia e `name` único em lazer (PRD 02/03); confirmar no schema.
 
 ---
@@ -76,8 +81,8 @@ Proposta: **C**.
 
 ## FASE 5 — Verificação
 
-- [ ] Perguntas bloqueadoras respondidas
+- [x] Perguntas bloqueadoras respondidas
 - [x] Backend e web em commits separados
 - [x] Contrato do mobile preservado (crit. 4–5)
 
-**Gate = Rascunho**
+**Gate = Livre**
