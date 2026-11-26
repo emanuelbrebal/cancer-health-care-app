@@ -11,6 +11,8 @@ export class LeisureRepository {
     return this.prisma.leisureActivity.create({
       data: {
         ...data,
+        // A coluna é obrigatória e o DTO não: sem isso, criar sem imagem dava 500.
+        image_path: data.image_path ?? '',
         status: 'ACTIVE',
       },
     });
