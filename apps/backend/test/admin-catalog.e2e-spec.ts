@@ -63,6 +63,25 @@ describe('Catálogo do painel admin (e2e)', () => {
       });
     });
 
+    it('nome repetido com outra caixa também → 409 (criar e renomear)', async () => {
+      await api(app)
+        .post('/genres')
+        .set(as(admin))
+        .send({ name: 'drama', type: 'MOVIE' })
+        .expect(409);
+      const other = await createGenre('Suspense', 'MOVIE');
+      await api(app)
+        .patch(`/genres/${other.id}`)
+        .set(as(admin))
+        .send({ name: 'DRAMA' })
+        .expect(409);
+      await api(app)
+        .patch(`/genres/${other.id}`)
+        .set(as(admin))
+        .send({ name: 'suspense' })
+        .expect(200);
+    });
+
     it('renomear', async () => {
       const g = await createGenre('Comedia', 'MOVIE');
       const res = await api(app)

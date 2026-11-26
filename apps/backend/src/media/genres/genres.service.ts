@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Genre, StatusEnum } from '@prisma/client';
-import { rethrowUnique } from 'common/prisma/rethrow-unique';
+import { Genre, MediaType, StatusEnum } from '@prisma/client';
+import { DUPLICATE_CODE, rethrowUnique } from 'common/prisma/rethrow-unique';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AdminGenreQueryDto,
@@ -57,6 +57,7 @@ export class GenresService {
   }
 
   async create(dto: CreateGenreDto) {
+    await this.assertUniqueName(dto.name, dto.type);
     const genre = await this.prisma.genre
       .create({ data: { name: dto.name, type: dto.type } })
       .catch((e) => rethrowUnique(e, DUPLICATE_NAME));
@@ -64,7 +65,8 @@ export class GenresService {
   }
 
   async rename(id: string, dto: UpdateGenreDto) {
-    await this.findById(id);
+    const current = await this.findById(id);
+    await this.assertUniqueName(dto.name, current.type, id);
     const genre = await this.prisma.genre
       .update({ where: { id }, data: { name: dto.name } })
       .catch((e) => rethrowUnique(e, DUPLICATE_NAME));
@@ -99,6 +101,29 @@ export class GenresService {
         data: { status: StatusEnum.ACTIVE },
       }),
     );
+  }
+
+  // O índice do banco (name + type) diferencia maiúsculas; a regra do catálogo não
+  // ("Drama" e "drama" são o mesmo gênero), como em assertUnique de mídia.
+  private async assertUniqueName(
+    name: string,
+    type: MediaType,
+    excludeId?: string,
+  ) {
+    const clash = await this.prisma.genre.findFirst({
+      where: {
+        type,
+        name: { equals: name, mode: 'insensitive' },
+        ...(excludeId && { id: { not: excludeId } }),
+      },
+      select: { id: true },
+    });
+    if (clash) {
+      throw new ConflictException({
+        message: DUPLICATE_NAME,
+        code: DUPLICATE_CODE,
+      });
+    }
   }
 
   private async findById(id: string) {
