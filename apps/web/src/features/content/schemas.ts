@@ -19,6 +19,11 @@ const optionalInt = (label: string) =>
     .trim()
     .test('int', `${label} precisa ser um número inteiro.`, (v) => !v || /^\d+$/.test(v))
 
+export const SYNOPSIS_MAX = 2000
+
+// Sinopse opcional (≤ 2000) em mídia e lazer; por ora só o painel exibe.
+const synopsisField = Yup.string().trim().max(SYNOPSIS_MAX, `Use até ${SYNOPSIS_MAX} caracteres.`)
+
 export const leisureSchema = Yup.object({
   name: Yup.string().trim().required('Informe o nome.').max(150, 'Use até 150 caracteres.'),
   type: Yup.string()
@@ -28,6 +33,7 @@ export const leisureSchema = Yup.object({
     .required('Escolha a frequência.')
     .oneOf(Object.keys(frequencyLabels), 'Escolha a frequência.'),
   image_path: Yup.string().trim(),
+  synopsis: synopsisField,
 })
 
 export function mediaSchema(kind: MediaKind) {
@@ -41,6 +47,7 @@ export function mediaSchema(kind: MediaKind) {
       (v) => !v || (Number(v) >= 1000 && Number(v) <= 2100),
     ),
     image_path: Yup.string().trim(),
+    synopsis: synopsisField,
     whereToFind: Yup.array(Yup.string()),
   }
   if (kind === 'books') {

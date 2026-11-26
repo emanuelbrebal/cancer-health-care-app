@@ -13,12 +13,13 @@ import {
   PageLoader,
   Panel,
   SelectField,
+  TextAreaField,
   TextField,
 } from '@/components/ui'
 import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull, withoutEmpty } from '@/features/content/diff'
 import { genreTypeLabels, kindToGenreType, tabSingular, tabToKind } from '@/features/content/labels'
 import { returnTo } from '@/features/content/listQuery'
-import { mediaSchema } from '@/features/content/schemas'
+import { SYNOPSIS_MAX, mediaSchema } from '@/features/content/schemas'
 import type { AdminMediaItem, MediaKind, MediaPayload } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
 import { PageHeader } from '@/layouts/PageHeader'
@@ -31,6 +32,7 @@ type MediaTab = Exclude<ContentTab, 'lazer'>
 interface Values {
   title: string
   genreId: string
+  synopsis: string
   isFree: boolean
   releaseYear: string
   whereToFind: string[]
@@ -56,6 +58,7 @@ const DUPLICATE: Record<MediaKind, string> = {
 const empty: Values = {
   title: '',
   genreId: '',
+  synopsis: '',
   isFree: false,
   releaseYear: '',
   whereToFind: [],
@@ -77,6 +80,7 @@ function toValues(item: AdminMediaItem): Values {
   return {
     title: item.title,
     genreId: item.genreId ?? '',
+    synopsis: item.synopsis ?? '',
     isFree: item.isFree,
     releaseYear: num(item.releaseYear),
     whereToFind: item.whereToFind ?? [],
@@ -99,6 +103,7 @@ function toPayload(kind: MediaKind, v: Values): MediaPayload {
   const common: MediaPayload = {
     title: v.title.trim(),
     genreId: v.genreId,
+    synopsis: toTextOrNull(v.synopsis),
     isFree: v.isFree,
     releaseYear: toIntOrNull(v.releaseYear),
     whereToFind: cleanList(v.whereToFind),
@@ -297,6 +302,14 @@ function MediaForm({ tab, id }: { tab: MediaTab; id?: string }) {
                       <TextField label="Link externo" type="url" {...field('externalLink')} />
                     </div>
                   )}
+
+                  <TextAreaField
+                    label="Sinopse"
+                    hint="Opcional. Por enquanto só aparece no painel."
+                    maxLength={SYNOPSIS_MAX}
+                    counter
+                    {...field('synopsis')}
+                  />
 
                   <CheckboxField
                     label="Conteúdo gratuito"

@@ -84,6 +84,7 @@ export type AdminLeisureItem = LeisureItem & AdminStamps
 export interface MediaPayload {
   title?: string
   genreId?: string
+  synopsis?: string | null
   isFree?: boolean
   releaseYear?: number | null
   whereToFind?: string[]
@@ -104,4 +105,5 @@ export interface LeisurePayload {
   type: LeisureType
   frequency: Frequency
   image_path: string
+  synopsis?: string | null
 }

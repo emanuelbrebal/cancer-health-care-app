@@ -3,11 +3,21 @@
 import { useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
-import { Alert, Button, FocusFirstError, LiveRegion, PageLoader, Panel, SelectField, TextField } from '@/components/ui'
-import { diffChanged, hasChanges } from '@/features/content/diff'
+import {
+  Alert,
+  Button,
+  FocusFirstError,
+  LiveRegion,
+  PageLoader,
+  Panel,
+  SelectField,
+  TextAreaField,
+  TextField,
+} from '@/components/ui'
+import { diffChanged, hasChanges, toTextOrNull, withoutEmpty } from '@/features/content/diff'
 import { frequencyLabels, leisureTypeLabels, toOptions } from '@/features/content/labels'
 import { returnTo } from '@/features/content/listQuery'
-import { leisureSchema } from '@/features/content/schemas'
+import { SYNOPSIS_MAX, leisureSchema } from '@/features/content/schemas'
 import type { Frequency, LeisureItem, LeisurePayload, LeisureType } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
 import { PageHeader } from '@/layouts/PageHeader'
@@ -20,10 +30,11 @@ interface Values {
   type: LeisureType | ''
   frequency: Frequency | ''
   image_path: string
+  synopsis: string
 }
 
 const DUPLICATE = 'Já existe uma atividade com este nome.'
-const empty: Values = { name: '', type: '', frequency: '', image_path: '' }
+const empty: Values = { name: '', type: '', frequency: '', image_path: '', synopsis: '' }
 
 // `image_path` vai sempre como string: a coluna é obrigatória e o repositório de lazer não
 // aplica valor padrão (sem ele o backend responde 500).
@@ -33,6 +44,7 @@ function toPayload(v: Values): LeisurePayload {
     type: v.type as LeisureType,
     frequency: v.frequency as Frequency,
     image_path: v.image_path.trim(),
+    synopsis: toTextOrNull(v.synopsis),
   }
 }
 
@@ -41,6 +53,7 @@ const toValues = (item: LeisureItem): Values => ({
   type: item.type,
   frequency: item.frequency,
   image_path: item.imagePath ?? '',
+  synopsis: item.synopsis ?? '',
 })
 
 const sameName = (a: string, b: string) =>
@@ -84,7 +97,7 @@ export default function LeisureFormPage() {
         await leisureService.update(id, changes)
         backToList(`Atividade “${payload.name}” atualizada.`)
       } else {
-        await leisureService.create(payload)
+        await leisureService.create(withoutEmpty(payload) as LeisurePayload)
         backToList(`Atividade “${payload.name}” cadastrada.`)
       }
     } catch (e) {
@@ -172,6 +185,18 @@ export default function LeisureFormPage() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={touched.image_path ? errors.image_path : undefined}
+                />
+
+                <TextAreaField
+                  label="Sinopse"
+                  name="synopsis"
+                  hint="Opcional. Por enquanto só aparece no painel."
+                  maxLength={SYNOPSIS_MAX}
+                  counter
+                  value={values.synopsis}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.synopsis ? errors.synopsis : undefined}
                 />
 
                 <LiveRegion message={error} />
