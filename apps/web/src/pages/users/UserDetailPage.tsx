@@ -63,8 +63,8 @@ export default function UserDetailPage() {
 
   const { user } = state
   const isSelf = user.id === selfId
-  // O backend não protege autoexclusão nem a última conta ADMIN (DELETE /users/:id):
-  // o painel não oferece excluir contas ADMIN. Ver relatório do item 8 no plano.
+  // O backend recusa a autoexclusão (403) e a última conta ADMIN ativa (409); o painel
+  // continua sem oferecer excluir contas ADMIN. Ver tasks/backend-admin-fixes.md.
   const canDelete = !isSelf && user.role !== 'ADMIN'
 
   return (

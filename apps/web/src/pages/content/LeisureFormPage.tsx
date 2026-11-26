@@ -65,7 +65,7 @@ export default function LeisureFormPage() {
     setNotice(null)
     const payload = toPayload(values)
 
-    // O backend não trata o nome único (cai em 500 genérico): conferimos antes contra as ativas.
+    // Conferência antecipada contra as ativas; o backend responde 409 nos demais casos (ex.: inativas).
     if (data?.all.some((l) => l.id !== id && sameName(l.name, payload.name))) {
       helpers.setFieldError('name', DUPLICATE)
       setError(DUPLICATE)
@@ -86,11 +86,11 @@ export default function LeisureFormPage() {
         backToList(`Atividade “${payload.name}” cadastrada.`)
       }
     } catch (e) {
-      const status = apiStatus(e)
-      // 409 (futuro) ou 500 por violação de unicidade (nome igual a uma atividade inativa).
-      if (status === 409 || status === 500) {
-        helpers.setFieldError('name', DUPLICATE)
-        setError(`${DUPLICATE} Confira também as atividades inativadas.`)
+      // 409: nome repetido, inclusive de atividade inativada; a mensagem vem do servidor.
+      if (apiStatus(e) === 409) {
+        const message = apiErrorMessage(e, DUPLICATE)
+        helpers.setFieldError('name', message)
+        setError(`${message} Confira também as atividades inativadas.`)
       } else {
         setError(apiErrorMessage(e, 'Não foi possível salvar a atividade.'))
       }

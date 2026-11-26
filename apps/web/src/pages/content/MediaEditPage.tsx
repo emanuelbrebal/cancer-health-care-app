@@ -124,7 +124,7 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
       return
     }
 
-    // `title + type` é único no banco e o backend não trata o conflito (cai em 500).
+    // Conferência antecipada contra os ativos; o backend responde 409 nos demais casos (ex.: inativos).
     const title = payload.title ?? ''
     const clash = data.all.some(
       (m) => m.id !== id && m.title.localeCompare(title, 'pt-BR', { sensitivity: 'base' }) === 0,
@@ -139,10 +139,11 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
       await mediaService.update(kind, id, changes)
       backToList(`“${title}” atualizado.`)
     } catch (e) {
-      const status = apiStatus(e)
-      if (changes.title !== undefined && (status === 409 || status === 500)) {
-        helpers.setFieldError('title', DUPLICATE)
-        setError(`${DUPLICATE} Confira também os itens inativados.`)
+      // 409: título repetido, inclusive de item inativado; a mensagem vem do servidor.
+      if (apiStatus(e) === 409) {
+        const message = apiErrorMessage(e, DUPLICATE)
+        helpers.setFieldError('title', message)
+        setError(`${message} Confira também os itens inativados.`)
       } else {
         setError(apiErrorMessage(e, 'Não foi possível salvar.'))
       }
