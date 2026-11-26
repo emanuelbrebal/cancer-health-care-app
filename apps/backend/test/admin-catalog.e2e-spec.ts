@@ -288,7 +288,7 @@ describe('Catálogo do painel admin (e2e)', () => {
             isFree: i % 2 === 0,
           })
           .expect(201);
-        ids.push(res.body.data.id);
+        ids.push((res.body as { data: { id: string } }).data.id);
       }
       await api(app).delete(`/series/${ids[0]}`).set(as(admin)).expect(200);
     });
@@ -412,5 +412,29 @@ describe('Catálogo do painel admin (e2e)', () => {
         .set(as(patient))
         .expect(403);
     });
+  });
+
+  // PRD 02 crit. 6: 500 itens paginados no servidor, sem trazer a lista inteira.
+  it('500 livros: cada página traz só o limite e responde rápido', async () => {
+    const { id: genreId } = await createGenre('Volume', 'BOOK');
+    await prisma.media.createMany({
+      data: Array.from({ length: 500 }, (_, i) => ({
+        title: `Volume ${i}`,
+        type: 'BOOK' as const,
+        genreId,
+        image_path: '',
+      })),
+    });
+
+    const started = Date.now();
+    const res = await api(app)
+      .get(`/admin/books?genreId=${genreId}&page=25&limit=20`)
+      .set(as(admin))
+      .expect(200);
+    const elapsed = Date.now() - started;
+
+    expect(res.body.total).toBe(500);
+    expect(res.body.items).toHaveLength(20);
+    expect(elapsed).toBeLessThan(1000);
   });
 });
