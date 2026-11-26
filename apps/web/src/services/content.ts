@@ -7,8 +7,8 @@ import type {
 } from '@/features/content/types'
 import { http } from './http'
 
-// O backend responde em dois formatos: POST (e PATCH de séries) devolve `{ message, data }`;
-// os demais PATCH devolvem o item direto. Este helper aceita os dois.
+// O backend responde em dois formatos: POST devolve `{ message, data }`; PATCH devolve o
+// item direto (séries incluídas). Este helper aceita os dois.
 function unwrap<T>(body: unknown): T {
   if (body && typeof body === 'object' && 'data' in body && 'message' in body) {
     return (body as { data: T }).data

@@ -17,6 +17,7 @@
 - G6: `PATCH /admin/{books,movies,series,leisures}/:id/reactivate` (ADMIN).
 - G7: `synopsis` aceito nos DTOs de criação/edição de mídia e lazer.
 - P8/P10: respostas admin com `updatedAt`, `genreId`, `status`; `GET /admin/…/:id` encontra inativos.
+- Unicidade de mídia afrouxada (decisão 4): migration troca `@@unique([title, type])` em `Media` por unicidade por tipo — livro: título + autor; filme/série: título + ano. Ajustar o seed se ele depender da regra antiga. O `409` da sessão 2 (`rethrowUnique` em `apps/backend/common/prisma/rethrow-unique.ts`) continua valendo; só a mensagem dos livros passa a citar título e autor.
 
 **Escopo — web**
 - Tela de gêneros (lista por tipo, criar, renomear, inativar) dentro de "Conteúdo".
@@ -38,6 +39,9 @@
 1. **G8 — imagem de capa:** A (URL externa, recomendada no PRD 02) ou B (upload)? A exige mudança no app: carregar `image_path` remoto com fallback, em vez do mapa local `apps/mobile/src/constants/mediaImageMap.ts`. Essa mudança de mobile entra nesta sessão?
 2. A sinopse aparece no app hoje? Se não, entra só no painel (dado guardado) ou também na tela de detalhe do app?
 3. Pré-visualização do cartão (W02-10): dentro ou fora?
+
+**Decisões**
+4. **Unicidade de mídia — Decidido em 2026-11-26:** afrouxar `@@unique([title, type])`. Livro: único por título + autor; filme e série: únicos por título + ano. Duplicado continua `409` com `code: DUPLICATE` (helper da sessão 2). Fica nesta sessão (a sessão 2 não cria migration).
 
 **Premissas:** coluna `synopsis` já existe em `Media` e `LeisureActivity` (PRD README, G7); `Genre { name @unique, type, status }` em `schema.prisma:134-140`.
 
@@ -67,7 +71,7 @@
 ## FASE 4 — Checklist de execução
 
 1. [ ] Responder bloqueadoras; ler repositórios e schema; decidir unicidade de `Genre`.
-2. [ ] Backend gêneros (+ migration se necessário). → `✨ feat(media): add genres crud` + e2e
+2. [ ] Backend gêneros (+ migration se necessário) e unicidade de mídia por tipo (decisão 4: migration, seed, e2e de 409). → `✨ feat(media): add genres crud`, `🐛 fix(media): relax media title uniqueness` + e2e
 3. [ ] Backend listagem admin + reativar + `GET` de inativos. → `✨ feat(media): add admin listing and reactivate`, idem `leisures` + e2e
 4. [ ] Backend `synopsis` nos DTOs. → `✨ feat(media): accept synopsis`
 5. [ ] Web: gêneros. → `✨ feat(web): add genres management`

@@ -34,7 +34,7 @@ export class MoviesController {
       );
     }
     return {
-      message: 'Livro criado com sucesso!',
+      message: 'Filme criado com sucesso!',
       data: MovieMapper.toDto(movie),
     };
   }

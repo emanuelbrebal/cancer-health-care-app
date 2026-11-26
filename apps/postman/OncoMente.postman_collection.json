@@ -782,7 +782,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "description": "Somente ADMIN.",
+            "description": "Somente ADMIN. A própria conta → 403 SELF_DELETE_FORBIDDEN; a última conta ADMIN ativa → 409 LAST_ADMIN.",
             "url": {
               "raw": "{{baseUrl}}/users/:id",
               "host": [
@@ -1192,7 +1192,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Resposta: { message: \"Livro criado com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um livro com este título.\""
           }
         },
         {
@@ -1223,7 +1224,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um livro com este título.\""
           }
         },
         {
@@ -1314,7 +1316,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Resposta: { message: \"Filme criado com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um filme com este título.\""
           }
         },
         {
@@ -1345,7 +1348,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um filme com este título.\""
           }
         },
         {
@@ -1436,7 +1440,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Resposta: { message: \"Série criada com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe uma série com este título.\""
           }
         },
         {
@@ -1467,7 +1472,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe uma série com este título.\""
           }
         },
         {
@@ -1558,7 +1564,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Nome repetido (inclusive de atividade inativada) → 409 DUPLICATE \"Já existe uma atividade com este nome.\""
           }
         },
         {
@@ -1589,7 +1596,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Somente ADMIN. Devolve o item mapeado. Nome repetido → 409 DUPLICATE \"Já existe uma atividade com este nome.\""
           }
         },
         {

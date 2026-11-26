@@ -80,8 +80,8 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    await this.usersService.remove(id, 'Removida por administrador');
+  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    await this.usersService.removeByAdmin(id, req.user.userId);
     return { message: 'Usuário removido com sucesso' };
   }
 }

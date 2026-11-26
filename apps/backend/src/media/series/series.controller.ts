@@ -57,11 +57,8 @@ export class SeriesController {
         'Nenhum dado válido fornecido para atualização',
       );
     }
-    const updatedSerie = await this.seriesService.update(id, updateSeriesDto);
-    return {
-      message: 'Série atualizada com sucesso!',
-      data: updatedSerie,
-    };
+    // Mesmo formato do PATCH de livros e filmes: o item mapeado, sem envelope.
+    return this.seriesService.update(id, updateSeriesDto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
