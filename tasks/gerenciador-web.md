@@ -35,11 +35,11 @@
 2. PRD 01, critérios 1–6 atendidos; em especial **nenhum token em `localStorage`, na URL ou no console**, e o access token só em memória. ✅
 3. Refresh pelo cookie `HttpOnly; Secure; SameSite=Strict`, restrito ao path das rotas web; reuso do refresh após "Sair" → `401`. ✅
 4. Mobile intocado: `POST /auth/login|refresh|logout` com corpo JSON seguem idênticos (testes e2e de auth existentes passam). ✅
-5. Lazer: criar/editar/inativar refletem no app; nome duplicado mostra "Já existe uma atividade com este nome" sem perder o que foi digitado. ⚠️ parcial: duplicado verificado no navegador; criar/editar/inativar gravando no banco **não** foi exercitado (evitei sujar o banco de dev), fica para o smoke manual
+5. Lazer: criar/editar/inativar refletem no app; nome duplicado mostra "Já existe uma atividade com este nome" sem perder o que foi digitado. ✅ fechado em 2026-11-26 (`tasks/web-admin-validacao.md`): criar/editar/inativar conferidos no `GET /leisures` público
 6. Mídia: editar envia só os campos alterados (formulário sem mudança não chama a API) e trata `{ message, data }` (POST) e o item direto (PATCH). ✅
 7. Usuários: lista sem telefone/nascimento/foto, e-mail mascarado `m***@dominio.com`; exclusão pede o e-mail digitado; o próprio admin não vê a ação de excluir a si mesmo. ✅
 8. Telas com ação bloqueada (criar mídia, suspender, reativar) mostram "Em breve" desabilitado com motivo, sem botão quebrado. ✅
-9. WCAG 2.2 AA nos formulários e tabelas: rótulos, foco visível, operação por teclado, erro anunciado (`aria-live`). ⚠️ parcial: rótulos, `aria-live`, foco visível e `<dialog>` implementados; sem auditoria axe/leitor de tela nesta rodada
+9. WCAG 2.2 AA nos formulários e tabelas: rótulos, foco visível, operação por teclado, erro anunciado (`aria-live`). ✅ fechado em 2026-11-26 (`tasks/web-admin-validacao.md`): axe 0 violações em 18 telas + teclado nos 3 fluxos; NVDA indisponível
 10. Nenhum `next/*` ou `js-cookie` no `apps/web`; visual conferido contra o Figma. ✅
 
 **Bloqueadoras:** nenhuma. Figma liberado em 2026-11-25 pela cópia do usuário.
@@ -311,11 +311,11 @@ Ordem executada: tokens do Figma → 1 → 2 → 3 → 4 (com tokens do Figma) �
 | 2. PRD 01 (1–6) | ✅ | navegador: PATIENT → "Acesso restrito a administradores"; `/admin/usuarios` sem sessão → login `?next=` → volta após entrar; `localStorage` vazio, `document.cookie` sem o refresh, console sem token; Vitest: 3 × 401 → 1 refresh |
 | 3. Cookie e reuso após sair | ✅ | e2e: `HttpOnly; Secure; SameSite=Strict; Path=/auth/web; Max-Age=604800`; rotação; reuso pós-logout 401; navegador: logout 200 → refresh 401 |
 | 4. Mobile intocado | ✅ | `git diff 3ee596d..HEAD -- apps/mobile packages/shared auth.controller.ts` vazio; e2e `/auth/login|refresh|logout` com corpo JSON idênticos; suíte e2e 5/5 (26 testes) |
-| 5. Lazer | ⚠️ | duplicado "Já existe uma atividade com este nome" sem perder o digitado e sem chamar a API (navegador); gravação real não exercitada |
+| 5. Lazer | ✅ | duplicado sem perder o digitado; gravação real (criar/editar/inativar) validada em 2026-11-26 — ver `tasks/web-admin-validacao.md` |
 | 6. Mídia (diff) | ✅ | navegador: salvar sem mudança → "Nenhuma alteração para salvar" e nenhuma requisição; Vitest `diffChanged`; `unwrap` trata `{message,data}` e item direto |
 | 7. Usuários | ✅ | navegador: e-mail `a***@oncomente.com`, sem telefone/nascimento/foto; própria conta sem "Excluir"; modal pede o e-mail e mantém "Excluir" desabilitado até bater |
 | 8. "Em breve" | ✅ | "Cadastrar" (mídia, G4) e "Suspender conta" (W04-4) desabilitados com motivo visível |
-| 9. WCAG 2.2 AA | ⚠️ | rótulos, `aria-invalid/describedby`, `aria-live`, foco visível global, skip link, `<dialog>` com Esc; sem auditoria axe nesta rodada |
+| 9. WCAG 2.2 AA | ✅ | axe 0 violações (18 telas) e teclado nos 3 fluxos em 2026-11-26, após 4 correções — ver `tasks/web-admin-validacao.md` |
 | 10. Sem `next/*`/`js-cookie`; Figma | ✅ | grep vazio; telas comparadas aos screenshots dos node-ids |
 | Prompt: tokens em `@theme`, sem hex solto | ✅ | `grep -rE "#[0-9a-f]{3,8}" apps/web/src --include=*.ts*` vazio |
 | Prompt: commits por `.claude/rules/commits.md` | ✅ | 10 commits atômicos; backend (`feat`/`test(auth)`) separado do web |
