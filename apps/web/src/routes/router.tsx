@@ -34,6 +34,7 @@ export const router = createBrowserRouter([
       { path: 'conteudo/lazer/novo', element: <LeisureFormPage /> },
       { path: 'conteudo/lazer/:id/editar', element: <LeisureFormPage /> },
       { path: 'conteudo/:tab', element: <ContentListPage /> },
+      { path: 'conteudo/:tab/novo', element: <MediaEditPage /> },
       { path: 'conteudo/:tab/:id/editar', element: <MediaEditPage /> },
       { path: 'usuarios', element: <UsersListPage /> },
       { path: 'usuarios/:id', element: <UserDetailPage /> },

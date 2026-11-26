@@ -7,7 +7,6 @@ import { Link, Navigate, NavLink, useLocation, useNavigate, useParams, useSearch
 import { ChevronLeft, ChevronRight, FilePlus2, Pencil, RotateCcw, Search, ShieldAlert, Tags, Trash2 } from 'lucide-react'
 import {
   Button,
-  ComingSoonButton,
   DataTable,
   IconAction,
   LiveRegion,
@@ -282,11 +281,9 @@ function ContentList({ tab }: { tab: ContentTab }) {
                 <Tags size={22} aria-hidden />
                 Gêneros
               </Link>
-              <ComingSoonButton
-                label="Cadastrar"
-                icon={FilePlus2}
-                reason="Depende do cadastro de gêneros no backend (G4)."
-              />
+              <Button variant="outline" icon={FilePlus2} onClick={() => openForm(paths.contentNew(tab))}>
+                Cadastrar conteúdo
+              </Button>
             </>
           )
         }

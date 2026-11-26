@@ -39,3 +39,12 @@ export function toTextOrNull(value: string | null | undefined): string | null {
 export function cleanList(values: ReadonlyArray<string>): string[] {
   return values.map((v) => v.trim()).filter(Boolean)
 }
+
+/** Criação: tira os campos opcionais vazios (null/undefined) em vez de enviá-los. */
+export function withoutEmpty<T extends object>(payload: T): Partial<T> {
+  const out: Partial<T> = {}
+  for (const key of Object.keys(payload) as Array<keyof T>) {
+    if (payload[key] != null) out[key] = payload[key]
+  }
+  return out
+}
