@@ -255,16 +255,16 @@ Ordem executada: tokens do Figma → 1 → 2 → 3 → 4 (com tokens do Figma) �
 | R2 | Ajuste de backend dentro de um escopo "só web" | limitado a `auth`, commits próprios, e2e garantindo o mobile |
 | R3 | Imagens só por texto (`image_path`); app usa mapa local (G8) | conteúdo novo pode aparecer sem capa; documentar no manual |
 | R4 | `GET /users` sem paginação (máx. 500); filtro e paginação no cliente | suficiente para o TCC |
-| P1 | G4 gêneros → libera "criar mídia" | próximo plano de backend |
-| P2 | G5/G6 inativos e reativar; G7 `synopsis` | idem |
+| P1 | G4 gêneros → libera "criar mídia" | próximo plano de backend — ✅ fechado em `feat/AdminCatalogo` (2026-11-26) |
+| P2 | G5/G6 inativos e reativar; G7 `synopsis` | idem — ✅ fechado em `feat/AdminCatalogo` (2026-11-26) |
 | P3 | Suspender/reativar pelo admin (W04-4/5) e trilha de auditoria (W04 crit. 6) | idem |
 | P4 | PRD 05 inteiro (`/admin/consents/*`, `/admin/deletions`) | idem |
 | ~~P5~~ | ✅ Fechada em `fix/AdminBackendFixes` (`tasks/backend-admin-fixes.md`): POST de filmes responde "Filme criado com sucesso!" | `apps/backend/src/media/movies/movies.controller.ts:37` |
 | ~~P6~~ | ✅ Fechada em `fix/AdminBackendFixes`: `DELETE /users/:id` recusa a própria conta (403 `SELF_DELETE_FORBIDDEN`) e a última ADMIN ativa (409 `LAST_ADMIN`) | o painel continua sem oferecer excluir a si e contas ADMIN |
 | ~~P7~~ | ✅ Fechada em `fix/AdminBackendFixes`: duplicado em lazer e mídia (criar e editar) → 409 `DUPLICATE` com a mensagem do PRD | painel mostra a mensagem do servidor; a checagem local antes do envio fica como complemento |
-| P8 | `UserMapper.toDto` não devolve `status`/`suspendedAt`; mídia/lazer não devolvem `updatedAt` nem `genreId` | lista sem colunas de status (W04-1) e de atualização (W02-1/W03-1); DTO admin no próximo plano |
+| P8 | `UserMapper.toDto` não devolve `status`/`suspendedAt`; mídia/lazer não devolvem `updatedAt` nem `genreId` | lista sem colunas de status (W04-1) e de atualização (W02-1/W03-1); DTO admin no próximo plano — ✅ parte de mídia/lazer (`updatedAt`, `genreId`) fechada em `feat/AdminCatalogo`; status de usuário segue na sessão 4 |
 | ~~P9~~ | ✅ Fechada em `fix/AdminBackendFixes`: PATCH de séries devolve o item mapeado, como livros/filmes. `imagePath`/`pageCount` × `image_path`/`page_count` ficam (o app lê esses nomes) | `unwrap` no `services/content.ts` segue para o POST |
-| P10 | `GET /:id` de mídia/lazer só acha ativos | editar item inativado dá 404 ("não encontrado ou inativado"); depende de G5/G6 |
+| P10 | `GET /:id` de mídia/lazer só acha ativos | editar item inativado dá 404 ("não encontrado ou inativado"); depende de G5/G6 — ✅ fechado em `feat/AdminCatalogo` (2026-11-26) |
 | P11 | Exclusão de usuário sem motivo (W04-6): endpoint não recebe `reason` | modal em 2 etapas sem campo de motivo; incluir no próximo plano |
 
 ---
@@ -325,4 +325,4 @@ Ordem executada: tokens do Figma → 1 → 2 → 3 → 4 (com tokens do Figma) �
 - Smoke de gravação: criar/editar/inativar lazer e editar mídia no banco de dev e conferir no app (critério 5).
 - Auditoria axe / leitor de tela nas telas novas (critério 9).
 - Trocar a ilustração do login pelo asset do Figma quando houver cota no MCP (D13).
-- Backend: ~~P6 (última conta ADMIN), P7 (409 em duplicado)~~ fechadas em `fix/AdminBackendFixes`; P8 (status/updatedAt no DTO admin), P11 (motivo da exclusão).
+- Backend: ~~P6 (última conta ADMIN), P7 (409 em duplicado)~~ fechadas em `fix/AdminBackendFixes`; P8 (status de usuário; mídia/lazer fechado em `feat/AdminCatalogo`), P11 (motivo da exclusão).

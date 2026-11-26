@@ -51,6 +51,15 @@ src/
 
 ## Limites desta versão
 
-Ações sem backend aparecem como "Em breve" desabilitadas: criar mídia (gêneros, G4), suspender conta
-(W04-4). Fora do escopo: inativos e reativar, `synopsis`, consentimentos (PRD 05), upload de imagem.
-Lista completa em `tasks/gerenciador-web.md` → "Riscos e pendências".
+Catálogo (`tasks/admin-catalogo.md`): gêneros por tipo, criar/editar/inativar/reativar mídia e lazer,
+listas pelas rotas `/admin/*` com filtros e paginação no servidor (estado na URL) e sinopse (só no painel).
+
+Ações sem backend aparecem como "Em breve" desabilitadas: suspender conta (W04-4). Ainda fora: capa por
+upload (`tasks/admin-capas.md`), consentimentos (PRD 05). Lista completa em `tasks/gerenciador-web.md` →
+"Riscos e pendências".
+
+## Auditoria de acessibilidade
+
+`ADMIN_EMAIL=… ADMIN_PASSWORD=… node scripts/axe-audit.mjs [--json saida.json]` com backend e `npm run dev`
+no ar: roda o axe-core (WCAG 2.0–2.2 A/AA) nas telas do painel e sai com código 1 se houver violação
+`serious`/`critical`.

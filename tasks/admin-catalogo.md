@@ -96,14 +96,14 @@
 
 ## FASE 4 — Checklist de execução
 
-1. [ ] Ler repositórios e schema; decidir unicidade de `Genre`.
-2. [ ] Backend gêneros (+ migration se necessário) e unicidade de mídia por tipo (decisão 4: migration, seed, e2e de 409). → `✨ feat(media): add genres crud`, `🐛 fix(media): relax media title uniqueness` + e2e
-3. [ ] Backend listagem admin + reativar + `GET` de inativos. → `✨ feat(media): add admin listing and reactivate`, idem `leisures` + e2e
-4. [ ] Backend `synopsis` nos DTOs. → `✨ feat(media): accept synopsis`
-5. [ ] Web: gêneros. → `✨ feat(web): add genres management`
-6. [ ] Web: listas admin (filtros, paginação, status, reativar). → `✨ feat(web): use admin content listing`
-7. [ ] Web: criar mídia + sinopse. → `✨ feat(web): add media creation`
-8. [ ] Testes web + Postman + histórico. → `🧪 test(web): …`, `📚 docs(tasks): …`
+1. [x] Ler repositórios e schema; decidir unicidade de `Genre`.
+2. [x] Backend gêneros (+ migration se necessário) e unicidade de mídia por tipo (decisão 4: migration, seed, e2e de 409). → `✨ feat(media): add genres crud`, `🐛 fix(media): relax media title uniqueness` + e2e
+3. [x] Backend listagem admin + reativar + `GET` de inativos. → `✨ feat(media): add admin listing and reactivate`, idem `leisures` + e2e
+4. [x] Backend `synopsis` nos DTOs. → `✨ feat(media): accept synopsis`
+5. [x] Web: gêneros. → `✨ feat(web): add genres management`
+6. [x] Web: listas admin (filtros, paginação, status, reativar). → `✨ feat(web): use admin content listing`
+7. [x] Web: criar mídia + sinopse. → `✨ feat(web): add media creation`
+8. [x] Testes web + Postman + histórico. → `🧪 test(web): …`, `📚 docs(tasks): …`
 
 ---
 
@@ -114,3 +114,61 @@
 - [x] Checklist ≤ 10 itens
 
 **Gate = Livre** (2026-11-26)
+
+---
+
+## Stage de Execução — Entregáveis
+
+Execução em 2026-11-26. Backend feito na sessão principal; web (itens 5–7) delegado a um subagente numa worktree contra o contrato acima e trazido por cherry-pick (histórico linear).
+
+| # | Entregável | Caminho | Commit | Status |
+|---|---|---|---|---|
+| 1 | Contrato da API + decisões do item 1 | este plano (FASE 3) | `8481200` | ✅ |
+| 2 | Lazer sem imagem não dá mais 500 (`image_path` padrão `''`) | `src/leisures/leisures.repository.ts` | `365b236` | ✅ (achado no e2e) |
+| 3 | Unicidade: `Genre @@unique([name, type])`; `Media @@unique([title, type])` → `MediaRulesService` (livro título+autor, filme/série título+ano; gênero ativo do mesmo tipo → 400 `INVALID_GENRE`); migration `20261126000000_catalog_uniqueness`; edição vale para inativo | `prisma/`, `src/media/common/media-rules.service.ts`, serviços e repositórios de mídia | `f8bdd36` | ✅ |
+| 4 | CRUD de gêneros + `/admin/genres` (com `activeItems`) + reativar | `src/media/genres/` | `657fc49` | ✅ |
+| 5 | Listagem admin de mídia (filtros, paginação, inclui inativos), detalhe e reativar | `common/pagination/`, `src/media/admin/` | `89de4c5` | ✅ |
+| 6 | Idem para lazer | `src/leisures/admin-leisures.controller.ts`, repo/serviço/mapper | `55d24c2` | ✅ |
+| 7 | Título limitado a 150 (tamanho da coluna) | `CreateMediaDto.ts` | `c3431e5` | ✅ |
+| 8 | `synopsis` aceito em mídia e lazer | DTOs e repositórios | `bff9ab7` | ✅ |
+| 9 | e2e do catálogo (16 casos) + ajuste do `admin-content` | `test/admin-catalog.e2e-spec.ts` | `56d2067`, `b96db65` | ✅ |
+| 10 | Nomes de gênero comparados sem caixa | `genres.service.ts` | `d7a5a5b` | ✅ (achado no smoke) |
+| 11 | Postman: pastas "Gêneros" e "Painel: catálogo" + descrições de 409/400 | `apps/postman/…` | `196df64` | ✅ |
+| 12 | Web: tela de gêneros | `pages/content/GenresPage.tsx` | `4b4f4c2` | ✅ |
+| 13 | Web: listas `/admin/*` com filtros, paginação e estado na URL; reativar | `ContentListPage.tsx`, `features/content/listQuery.ts` | `b09513c` | ✅ |
+| 14 | Web: criar mídia (gênero obrigatório; sem gênero → orienta criar) | `MediaEditPage.tsx`, `services/content.ts` | `d0fb8d1` | ✅ |
+| 15 | Web: sinopse (`TextAreaField`) | `components/ui/TextAreaField.tsx`, formulários | `751204d` | ✅ |
+| 16 | Web: testes de URL/paginação e schemas | `listQuery.test.ts`, `schemas.test.ts` | `b92ce0d` | ✅ |
+| 17 | Web: busca limitada a 150 (evita 400) | `ContentListPage.tsx` | `6278e52` | ✅ |
+| 18 | axe nas telas novas | `scripts/axe-audit.mjs` | `fb72495` | ✅ |
+| 19 | Docs: README do web, pendências fechadas, este histórico | `apps/web/README.md`, `tasks/gerenciador-web.md` | (este commit) | ✅ |
+
+**Desvios**
+- Unicidade de mídia saiu do banco para o serviço (autor está em outra tabela); concorrência simultânea não coberta, como em W04-7.
+- Reativar gênero (`PATCH /admin/genres/:id/reactivate`) não estava em W02-8; sem ele, a unicidade por nome impediria recriar um gênero inativado.
+- O formulário de mídia deixou de checar duplicado só pelo título antes do envio (daria falso positivo com título+autor/ano); vale o 409 do servidor, mostrado no campo Título.
+- Banco de dev: `migrate deploy` aplicou também `add_user_deletion_logs` e `drop_social_area`, que estavam pendentes; ambas são no-op lá (conferido: tabelas sociais não existiam, `user_deletion_logs` já existia).
+
+## Stage de Execução — Validação
+
+| # | Critério de aceite | Resultado | Observação |
+|---|---|---|---|
+| 1 | PRD 02 crit. 1–6 e PRD 03 crit. 1–4 | ✅ | 401/403 (e2e); criado aparece no app; inativo some do app e aparece com filtro "Inativo"; formulário bloqueia obrigatórios (FocusFirstError); sem gênero → orienta criar; 500 itens paginados; rótulos pt-BR |
+| 2 | Rotas públicas mantêm o contrato | ✅ | e2e: `GET /series` só ativos, sem `genreId`/`updatedAt`; `GET /series/:id` inativo → 404; app sem diff |
+| 3 | Criado aparece no app; reativado volta | ✅ | smoke: "[teste] Livro smoke" no `GET /books` após criar e após reativar |
+| 4 | 500 itens paginados sem travar | ✅ | e2e: página 25 de 500 com 20 itens em < 1 s |
+| 5 | e2e: gêneros, listagem com inativos, reativar, 401/403 | ✅ | suíte completa 8/8, **55/55** |
+
+**Smoke no navegador (banco de dev)**
+
+| Fluxo | Resultado |
+|---|---|
+| Criar gênero (tipo vem da aba), anúncio e foco de volta ao botão | ✅ |
+| Gênero repetido com outra caixa | ❌ → corrigido em `d7a5a5b` (aceitava "[teste] gênero smoke") |
+| Criar livro com gênero e sinopse | ✅ público com gênero e sinopse |
+| Livro título+autor repetido (outra caixa) | ✅ 409 no campo Título, foco no campo, digitado mantido, anúncio |
+| Inativar gênero com item ativo | ✅ "Este gênero tem 1 item ativo…" |
+| Inativar livro → filtro Inativo → Reativar (modal) | ✅ some/volta no público; foco no `<main>` |
+| Limpeza | livro e os 2 gêneros `[teste]` inativados |
+
+**Ferramentas:** backend `tsc` ok, lint 0 erros (9 warnings anteriores), unit 50/50, e2e 55/55; web `tsc -b`, lint, Vitest 55/55, build ok (aviso de chunk 502 kB); axe **0 violações em 23 telas/estados** (5 novas: livro novo, livro novo com erros, filmes inativos, gêneros, modal de gênero).
