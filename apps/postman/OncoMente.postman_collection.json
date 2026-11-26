@@ -1193,7 +1193,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Resposta: { message: \"Livro criado com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um livro com este título.\""
+            "description": "Somente ADMIN. Resposta: { message: \"Livro criado com sucesso!\", data }. Duplicado (título e autor, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo livro → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000)."
           }
         },
         {
@@ -1225,7 +1225,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um livro com este título.\""
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Duplicado (título e autor, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo livro → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000). Funciona também para item inativo."
           }
         },
         {
@@ -1317,7 +1317,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Resposta: { message: \"Filme criado com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um filme com este título.\""
+            "description": "Somente ADMIN. Resposta: { message: \"Filme criado com sucesso!\", data }. Duplicado (título e ano, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo filme → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000)."
           }
         },
         {
@@ -1349,7 +1349,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe um filme com este título.\""
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Duplicado (título e ano, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo filme → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000). Funciona também para item inativo."
           }
         },
         {
@@ -1441,7 +1441,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Resposta: { message: \"Série criada com sucesso!\", data }. Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe uma série com este título.\""
+            "description": "Somente ADMIN. Resposta: { message: \"Série criada com sucesso!\", data }. Duplicado (título e ano, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo série → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000)."
           }
         },
         {
@@ -1473,7 +1473,7 @@
                 }
               }
             },
-            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Título repetido no mesmo tipo → 409 DUPLICATE \"Já existe uma série com este título.\""
+            "description": "Somente ADMIN. Devolve o item mapeado (sem envelope). Duplicado (título e ano, sem diferenciar maiúsculas, inclui inativos) → 409 DUPLICATE. genreId precisa ser gênero ativo do tipo série → senão 400 INVALID_GENRE. Aceita synopsis (≤ 2000). Funciona também para item inativo."
           }
         },
         {
@@ -1615,6 +1615,403 @@
                 ":id"
               ]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gêneros",
+      "item": [
+        {
+          "name": "Listar ativos (público)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/genres?type=MOVIE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "genres"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "MOVIE"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Só ativos, por nome: [{ id, name, type }]."
+          }
+        },
+        {
+          "name": "Listar no painel (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/genres?type=MOVIE&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "genres"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "MOVIE"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Inclui inativos e activeItems (itens ativos no gênero)."
+          }
+        },
+        {
+          "name": "Criar (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/genres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "genres"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Drama\",\n  \"type\": \"MOVIE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Nome único por tipo (o mesmo nome em outro tipo é aceito). Repetido → 409 DUPLICATE."
+          }
+        },
+        {
+          "name": "Renomear (ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/genres/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "genres",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Drama\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Só o nome; o tipo não muda."
+          }
+        },
+        {
+          "name": "Inativar (ADMIN)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/genres/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "genres",
+                ":id"
+              ]
+            },
+            "description": "Com itens ativos → 409 GENRE_IN_USE (\"Este gênero tem N itens ativos…\")."
+          }
+        },
+        {
+          "name": "Reativar (ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/genres/:id/reactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "genres",
+                ":id",
+                "reactivate"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Painel: catálogo (ADMIN)",
+      "description": "Leitura e reativação do painel; incluem itens inativos. Escrita continua nas rotas de cada tipo.",
+      "item": [
+        {
+          "name": "Listar books (inclui inativos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/books?status=INACTIVE&search=&genreId=&isFree=true&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "books"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "genreId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "isFree",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "{ items, total, page, limit }, por updatedAt desc. limit ≤ 100. Item = campos públicos + genreId (mídia), createdAt, updatedAt."
+          }
+        },
+        {
+          "name": "Listar movies (inclui inativos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/movies?status=INACTIVE&search=&genreId=&isFree=true&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "genreId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "isFree",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "{ items, total, page, limit }, por updatedAt desc. limit ≤ 100. Item = campos públicos + genreId (mídia), createdAt, updatedAt."
+          }
+        },
+        {
+          "name": "Listar series (inclui inativos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/series?status=INACTIVE&search=&genreId=&isFree=true&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "series"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "genreId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "isFree",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "{ items, total, page, limit }, por updatedAt desc. limit ≤ 100. Item = campos públicos + genreId (mídia), createdAt, updatedAt."
+          }
+        },
+        {
+          "name": "Listar leisures (inclui inativos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/leisures?status=INACTIVE&search=&type=PHYSICAL&frequency=WEEKLY&page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "leisures"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "PHYSICAL",
+                  "disabled": true
+                },
+                {
+                  "key": "frequency",
+                  "value": "WEEKLY",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "{ items, total, page, limit }, por updatedAt desc. limit ≤ 100. Item = campos públicos + genreId (mídia), createdAt, updatedAt."
+          }
+        },
+        {
+          "name": "Detalhe (inclui inativo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/books/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "books",
+                ":id"
+              ]
+            },
+            "description": "Troque books por movies, series ou leisures."
+          }
+        },
+        {
+          "name": "Reativar",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/books/:id/reactivate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "books",
+                ":id",
+                "reactivate"
+              ]
+            },
+            "description": "Troque books por movies, series ou leisures. Idempotente."
           }
         }
       ]
