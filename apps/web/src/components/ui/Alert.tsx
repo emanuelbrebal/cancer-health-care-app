@@ -1,0 +1,40 @@
+import type { ReactNode } from 'react'
+import { CircleAlert, CircleCheck, Info } from 'lucide-react'
+import { cn } from './cn'
+
+const tones = {
+  error: { box: 'bg-danger-bg text-danger border-danger', Icon: CircleAlert },
+  success: { box: 'bg-success-bg text-success border-success', Icon: CircleCheck },
+  info: { box: 'bg-surface text-ink border-line', Icon: Info },
+} as const
+
+// Mensagem de status anunciada por leitor de tela (WCAG 4.1.3): erro = assertive, resto = polite.
+export function Alert({
+  tone = 'info',
+  children,
+  className,
+}: {
+  tone?: keyof typeof tones
+  children: ReactNode
+  className?: string
+}) {
+  const { box, Icon } = tones[tone]
+  return (
+    <div
+      role={tone === 'error' ? 'alert' : 'status'}
+      className={cn('flex items-start gap-2 rounded-field border px-4 py-3 text-support', box, className)}
+    >
+      <Icon size={20} aria-hidden className="mt-px shrink-0" />
+      <div>{children}</div>
+    </div>
+  )
+}
+
+// Região viva sempre montada: o conteúdo muda e o leitor de tela anuncia.
+export function LiveRegion({ message, tone = 'error' }: { message?: string | null; tone?: 'error' | 'success' }) {
+  return (
+    <div aria-live={tone === 'error' ? 'assertive' : 'polite'} aria-atomic="true">
+      {message && <Alert tone={tone}>{message}</Alert>}
+    </div>
+  )
+}
