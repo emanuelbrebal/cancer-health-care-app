@@ -93,6 +93,17 @@ await page.getByRole('button', { name: /salvar|criar/i }).click()
 await audit(page, 'lazer: novo (erros)')
 if (ids.leisureId) await visit(`/admin/conteudo/lazer/${ids.leisureId}/editar`, 'lazer: editar')
 if (ids.bookId) await visit(`/admin/conteudo/livros/${ids.bookId}/editar`, 'livro: editar')
+await visit('/admin/conteudo/livros/novo', 'livro: novo')
+await page.getByRole('button', { name: /salvar|criar/i }).click()
+await audit(page, 'livro: novo (erros)')
+await visit('/admin/conteudo/filmes?status=INACTIVE', 'conteúdo: filmes inativos')
+await visit('/admin/conteudo/generos?type=BOOK', 'gêneros')
+const newGenre = page.getByRole('button', { name: /novo gênero|criar gênero|cadastrar gênero/i })
+if (await newGenre.count()) {
+  await newGenre.first().click()
+  await audit(page, 'gêneros: modal de criação')
+  await page.keyboard.press('Escape')
+}
 await visit('/admin/usuarios', 'usuários: lista')
 if (ids.otherUserId) {
   await visit(`/admin/usuarios/${ids.otherUserId}`, 'usuário: detalhe')
