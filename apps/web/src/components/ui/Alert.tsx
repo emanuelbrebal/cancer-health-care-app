@@ -9,19 +9,22 @@ const tones = {
 } as const
 
 // Mensagem de status anunciada por leitor de tela (WCAG 4.1.3): erro = assertive, resto = polite.
+// `announce={false}` quando já está dentro de uma região viva (evita anúncio duplicado).
 export function Alert({
   tone = 'info',
+  announce = true,
   children,
   className,
 }: {
   tone?: keyof typeof tones
+  announce?: boolean
   children: ReactNode
   className?: string
 }) {
   const { box, Icon } = tones[tone]
   return (
     <div
-      role={tone === 'error' ? 'alert' : 'status'}
+      role={announce ? (tone === 'error' ? 'alert' : 'status') : undefined}
       className={cn('flex items-start gap-2 rounded-field border px-4 py-3 text-support', box, className)}
     >
       <Icon size={20} aria-hidden className="mt-px shrink-0" />
@@ -34,7 +37,11 @@ export function Alert({
 export function LiveRegion({ message, tone = 'error' }: { message?: string | null; tone?: 'error' | 'success' }) {
   return (
     <div aria-live={tone === 'error' ? 'assertive' : 'polite'} aria-atomic="true">
-      {message && <Alert tone={tone}>{message}</Alert>}
+      {message && (
+        <Alert tone={tone} announce={false}>
+          {message}
+        </Alert>
+      )}
     </div>
   )
 }
