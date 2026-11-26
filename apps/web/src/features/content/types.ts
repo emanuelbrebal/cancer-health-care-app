@@ -83,6 +83,7 @@ export type AdminLeisureItem = LeisureItem & AdminStamps
 /** Corpo de escrita (DTO) da mídia; só campos editáveis pelo painel nesta versão. */
 export interface MediaPayload {
   title?: string
+  genreId?: string
   isFree?: boolean
   releaseYear?: number | null
   whereToFind?: string[]

@@ -48,6 +48,10 @@ export const mediaService = {
     const { data } = await http.patch<AdminMediaItem>(`/admin/${kind}/${id}/reactivate`)
     return data
   },
+  async create(kind: MediaKind, payload: MediaPayload) {
+    const { data } = await http.post(`/${kind}`, payload)
+    return unwrap<MediaItem>(data)
+  },
   async update(kind: MediaKind, id: string, changes: MediaPayload) {
     const { data } = await http.patch(`/${kind}/${id}`, changes)
     return unwrap<MediaItem>(data)

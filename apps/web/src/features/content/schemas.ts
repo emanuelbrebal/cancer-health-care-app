@@ -33,7 +33,8 @@ export const leisureSchema = Yup.object({
 export function mediaSchema(kind: MediaKind) {
   const base = {
     title: Yup.string().trim().required('Informe o título.').max(150, 'Use até 150 caracteres.'),
-    isFree: Yup.boolean(),
+    genreId: Yup.string().required('Escolha o gênero.'),
+    isFree: Yup.boolean().required(),
     releaseYear: optionalInt('O ano').test(
       'year',
       'Informe um ano entre 1000 e 2100.',
