@@ -53,6 +53,7 @@ Gerar segredos: `node -e "console.log(require('crypto').randomBytes(48).toString
 - [ ] HTTPS terminado no proxy/provedor (Caddy, Nginx, load balancer); o backend escuta HTTP na porta 3000.
 - [ ] Banco **sem** porta exposta (o compose prod não publica a 5432).
 - [ ] `CORS_ORIGINS` só com origens web reais; o app nativo não depende de CORS.
+- [ ] **Painel admin no mesmo site da API** (ex.: `admin.dominio.br` e `api.dominio.br`): o refresh do painel é cookie `HttpOnly; Secure; SameSite=Strict` em `Path=/auth/web` e não é enviado entre sites diferentes. `CORS_ORIGINS` precisa conter a URL do painel e o build do painel usa `VITE_API_URL` com a URL pública da API (HTTPS).
 - [ ] Swagger desligado em produção (`setupSwagger` só fora de `production`).
 - [ ] Rate limit ativo (`ThrottlerGuard` global; login 5/min, cadastro 3/min).
 

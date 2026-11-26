@@ -82,6 +82,42 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
+    const session = await this.rotateSession(refreshToken);
+    return {
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    };
+  }
+
+  // Login do painel web: só ADMIN. Outra role tem a sessão recém-emitida revogada (PRD 01 W01-2).
+  // Sem `reactivate`: conta suspensa não é reativada pelo painel (W01-10).
+  async loginAdmin(dto: LoginDto) {
+    const result = await this.login({
+      email: dto.email,
+      password: dto.password,
+    });
+    if (result.user.role !== 'ADMIN') {
+      await this.sessionService.revoke(result.refresh_token);
+      throw new ForbiddenException({
+        message: 'Acesso restrito a administradores.',
+        code: 'ADMIN_ONLY',
+      });
+    }
+    return result;
+  }
+
+  // Refresh do painel web: devolve também o usuário (restauração da sessão no boot)
+  // e encerra a sessão se a conta deixou de ser ADMIN.
+  async refreshAdmin(refreshToken: string) {
+    const session = await this.rotateSession(refreshToken);
+    if (session.user.role !== 'ADMIN') {
+      await this.sessionService.revoke(session.refresh_token);
+      throw new UnauthorizedException('Sessão expirada. Entre novamente.');
+    }
+    return session;
+  }
+
+  private async rotateSession(refreshToken: string) {
     const rotated = await this.sessionService.rotate(refreshToken);
     const user = await this.prisma.user.findUnique({
       where: { id: rotated.userId },
@@ -94,6 +130,7 @@ export class AuthService {
     return {
       access_token: this.signAccessToken(user),
       refresh_token: rotated.refreshToken,
+      user,
     };
   }
 

@@ -1,0 +1,42 @@
+import { createBrowserRouter, Navigate } from 'react-router'
+import { AdminLayout } from '@/layouts/AdminLayout'
+import ChangePasswordPage from '@/pages/account/ChangePasswordPage'
+import ContentListPage from '@/pages/content/ContentListPage'
+import LeisureFormPage from '@/pages/content/LeisureFormPage'
+import MediaEditPage from '@/pages/content/MediaEditPage'
+import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
+import LoginPage from '@/pages/auth/LoginPage'
+import ResetPasswordPage from '@/pages/auth/ResetPasswordPage'
+import HomePage from '@/pages/home/HomePage'
+import NotFoundPage from '@/pages/NotFoundPage'
+import UserDetailPage from '@/pages/users/UserDetailPage'
+import UsersListPage from '@/pages/users/UsersListPage'
+import { paths } from './paths'
+import { RequireAdmin } from './RequireAdmin'
+
+export const router = createBrowserRouter([
+  { path: paths.login, element: <LoginPage /> },
+  { path: paths.forgotPassword, element: <ForgotPasswordPage /> },
+  { path: paths.resetPassword, element: <ResetPasswordPage /> },
+  {
+    path: '/admin',
+    element: (
+      <RequireAdmin>
+        <AdminLayout />
+      </RequireAdmin>
+    ),
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'conta', element: <ChangePasswordPage /> },
+      { path: 'conteudo', element: <Navigate to={paths.contentTab('livros')} replace /> },
+      { path: 'conteudo/lazer/novo', element: <LeisureFormPage /> },
+      { path: 'conteudo/lazer/:id/editar', element: <LeisureFormPage /> },
+      { path: 'conteudo/:tab', element: <ContentListPage /> },
+      { path: 'conteudo/:tab/:id/editar', element: <MediaEditPage /> },
+      { path: 'usuarios', element: <UsersListPage /> },
+      { path: 'usuarios/:id', element: <UserDetailPage /> },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+  { path: '*', element: <Navigate to={paths.login} replace /> },
+])

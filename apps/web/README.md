@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# OncoMente — Gerenciador web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Painel administrativo (role `ADMIN`) para manter o conteúdo exibido no app e dar suporte a contas.
+Comportamento: `docs/prd-web-admin/` (PRDs 01–04). Visual: Figma "Modelo base p/ gerenciador web"
+(tokens e node-ids em `tasks/gerenciador-web.md`, seção "Tokens do Figma").
 
-Currently, two official plugins are available:
+Base: portado do [CarlosWGama/admin-template](https://github.com/CarlosWGama/admin-template) (Next.js 15)
+para React 19 + Vite 7. O template não declara licença; o uso como base foi autorizado para o projeto.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Rodar
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp apps/web/.env.example apps/web/.env   # VITE_API_URL=http://localhost:3000
+npm run start:backend                    # API em :3000
+npm run start:web                        # painel em http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Entre com o admin do seed (`apps/backend/prisma/seed.ts`). Use **localhost** e não o IP da rede: o
+cookie de sessão é `Secure`, e o navegador só o aceita em `http` quando o host é `localhost`
+(para acessar por IP em dev, rode o backend com `COOKIE_SECURE=false`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Comando (raiz) | O quê |
+|---|---|
+| `npm run build -w web` | `tsc -b` + build do Vite |
+| `npm run lint -w web` | ESLint |
+| `npm run test -w web` | Vitest (unidade e componentes) |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Sessão (PRD 01)
+
+- `POST /auth/web/login|refresh|logout` (só ADMIN). O refresh token fica em cookie
+  `oncomente_admin_rt` (`HttpOnly; Secure; SameSite=Strict; Path=/auth/web`) e nunca chega ao JS.
+- Access token e usuário só em memória (`src/store/session.ts`, Zustand sem `persist`). F5 restaura
+  a sessão pelo cookie.
+- `src/services/http.ts`: Bearer nas rotas da API; em `401`, uma única renovação compartilhada
+  (single-flight) e um retry; se falhar, volta ao login com `?next=`.
+- Header `X-Requested-With: oncomente-admin` obrigatório nas rotas `/auth/web/*` (CSRF).
+- 30 min sem interação encerram a sessão.
+
+## Estrutura
+
 ```
+src/
+  components/ui/   kit portado do template (botão, campo, select, modal, tabela) com tokens do Figma
+  layouts/         AuthLayout, AdminLayout (menu lateral), PageHeader, nav.ts
+  routes/          router, paths, RequireAdmin (guard de UX; a autorização é do backend)
+  services/        http (axios + interceptor), auth, content, users, errors
+  features/        regras puras: diff de PATCH (content), máscara de e-mail (users)
+  pages/           auth, home, account, content, users
+  index.css        @theme com os tokens do Figma (nenhuma cor hex fora dele)
+```
+
+## Limites desta versão
+
+Ações sem backend aparecem como "Em breve" desabilitadas: criar mídia (gêneros, G4), suspender conta
+(W04-4). Fora do escopo: inativos e reativar, `synopsis`, consentimentos (PRD 05), upload de imagem.
+Lista completa em `tasks/gerenciador-web.md` → "Riscos e pendências".
