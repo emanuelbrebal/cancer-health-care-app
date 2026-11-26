@@ -194,6 +194,7 @@ function DeleteUserModal({ open, user, onClose }: { open: boolean; user: ApiUser
             name="confirmEmail"
             type="email"
             autoComplete="off"
+            autoFocus
             value={typed}
             onChange={(e) => setTyped(e.target.value)}
             hint="O botão “Excluir” só é liberado quando o e-mail digitado for exatamente o da conta."
