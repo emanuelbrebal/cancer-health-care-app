@@ -256,6 +256,7 @@ function ContentList({ tab }: { tab: ContentTab }) {
               label={isLeisure ? 'Pesquisar por nome' : 'Pesquisar por título'}
               hideLabel
               type="search"
+              maxLength={150}
               placeholder={isLeisure ? 'Pesquisar atividade' : 'Pesquisar título'}
               icon={Search}
               value={searchInput}
