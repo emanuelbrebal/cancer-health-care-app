@@ -56,6 +56,14 @@ export class MoviesRepository extends BaseMediaRepository {
     });
   }
 
+  // Edição pelo painel também vale para item inativo (tasks/admin-catalogo.md).
+  async findAnyStatus(id: string) {
+    return this.prisma.media.findFirst({
+      where: { id, type: this.type },
+      include: { movieDetails: true, genre: true },
+    });
+  }
+
   async update(id: string, data: UpdateMovieDto) {
     const { director, externalLink, duration, genreId, ...mediaData } = data;
 

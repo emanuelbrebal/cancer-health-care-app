@@ -133,10 +133,13 @@ enum GenreType {
 
 model Genre {
   id     String     @id @default(uuid())
-  name   String     @unique
+  name   String
   type   MediaType
   status StatusEnum @default(ACTIVE)
   medias Media[]
+
+  // O mesmo nome pode existir em tipos diferentes (ex.: "Drama" para filme e série).
+  @@unique([name, type])
 }
 
 enum MediaType {
@@ -165,7 +168,9 @@ model Media {
   movieDetails  MovieDetail?
   seriesDetails SeriesDetail?
 
-  @@unique([title, type])
+  // Unicidade por tipo fica no serviço (assertUniqueMedia): livro = título + autor (autor está em
+  // BookDetail), filme/série = título + ano. Índice entre tabelas não existe no Postgres.
+  @@index([type, status])
 }
 
 enum LeisureType {

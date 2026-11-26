@@ -17,7 +17,8 @@ describe('Conteúdo do painel admin (e2e)', () => {
   let app: INestApplication<App>;
   let prisma: PrismaService;
   let token: string;
-  let genreId: string;
+  // Gênero precisa ser do mesmo tipo da mídia (tasks/admin-catalogo.md).
+  const genre = { BOOK: '', MOVIE: '', SERIES: '' };
 
   const auth = () => ({ Authorization: `Bearer ${token}` });
 
@@ -27,14 +28,21 @@ describe('Conteúdo do painel admin (e2e)', () => {
     frequency: 'WEEKLY',
     image_path: '',
   });
-  const media = (title: string) => ({ title, genreId, isFree: true });
-  const book = (title: string) => ({ ...media(title), author: 'Autora E2E' });
+  const media = (title: string, type: keyof typeof genre) => ({
+    title,
+    genreId: genre[type],
+    isFree: true,
+  });
+  const book = (title: string) => ({
+    ...media(title, 'BOOK'),
+    author: 'Autora E2E',
+  });
   const movie = (title: string) => ({
-    ...media(title),
+    ...media(title, 'MOVIE'),
     director: 'Direção E2E',
     duration: '1h30',
   });
-  const series = (title: string) => ({ ...media(title), seasons: 2 });
+  const series = (title: string) => ({ ...media(title, 'SERIES'), seasons: 2 });
 
   beforeAll(async () => {
     ({ app, prisma } = await createApp());
@@ -45,9 +53,11 @@ describe('Conteúdo do painel admin (e2e)', () => {
       data: { role: 'ADMIN' },
     });
     ({ access_token: token } = await login(app, 'admin@e2e.test'));
-    ({ id: genreId } = await prisma.genre.create({
-      data: { name: 'Gênero E2E', type: 'BOOK' },
-    }));
+    for (const type of ['BOOK', 'MOVIE', 'SERIES'] as const) {
+      ({ id: genre[type] } = await prisma.genre.create({
+        data: { name: 'Gênero E2E', type },
+      }));
+    }
   });
 
   afterAll(async () => {
@@ -117,7 +127,9 @@ describe('Conteúdo do painel admin (e2e)', () => {
         .send(book('Livro A'))
         .expect(409);
 
-      expect(res.body.message).toBe('Já existe um livro com este título.');
+      expect(res.body.message).toBe(
+        'Já existe um livro com este título e autor.',
+      );
       expect(res.body.code).toBe('DUPLICATE');
     });
 
@@ -128,7 +140,9 @@ describe('Conteúdo do painel admin (e2e)', () => {
         .send({ title: 'Livro A' })
         .expect(409);
 
-      expect(res.body.message).toBe('Já existe um livro com este título.');
+      expect(res.body.message).toBe(
+        'Já existe um livro com este título e autor.',
+      );
     });
 
     it('o mesmo título em outro tipo de mídia é aceito', async () => {
@@ -159,7 +173,9 @@ describe('Conteúdo do painel admin (e2e)', () => {
         .send(movie('Filme A'))
         .expect(409);
 
-      expect(res.body.message).toBe('Já existe um filme com este título.');
+      expect(res.body.message).toBe(
+        'Já existe um filme com este título e ano.',
+      );
     });
   });
 
@@ -209,7 +225,9 @@ describe('Conteúdo do painel admin (e2e)', () => {
         .send({ title: 'Série B' })
         .expect(409);
 
-      expect(res.body.message).toBe('Já existe uma série com este título.');
+      expect(res.body.message).toBe(
+        'Já existe uma série com este título e ano.',
+      );
     });
   });
 });
