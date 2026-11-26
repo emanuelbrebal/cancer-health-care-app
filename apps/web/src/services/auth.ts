@@ -1,4 +1,4 @@
-import { useSession } from '@/store/session'
+import { useSession, type EndReason } from '@/store/session'
 import type { AdminUser } from '@/types/user'
 import { http, refreshSession, sessionHttp } from './http'
 
@@ -24,11 +24,13 @@ export const authService = {
   },
 
   /** Encerra no servidor (revoga o refresh e apaga o cookie) e limpa a memória. */
-  async logout() {
+  async logout(reason: EndReason = 'logout') {
     try {
       await sessionHttp.post('/logout')
+    } catch {
+      // Sem rede, a memória é limpa mesmo assim; o cookie expira sozinho.
     } finally {
-      useSession.getState().clear()
+      useSession.getState().clear(reason)
     }
   },
 
@@ -48,7 +50,7 @@ export const authService = {
       currentPassword,
       newPassword,
     })
-    useSession.getState().clear()
+    useSession.getState().clear('password-changed')
     return data.message
   },
 }
