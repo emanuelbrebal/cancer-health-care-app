@@ -9,8 +9,9 @@ import {
 } from 'class-validator';
 
 export class CreateMediaDto {
+  // A coluna é VarChar(150): acima disso o banco recusaria com 500.
   @IsString()
-  @MaxLength(200)
+  @MaxLength(150)
   title: string;
 
   @IsInt()
