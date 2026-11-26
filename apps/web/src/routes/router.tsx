@@ -9,6 +9,8 @@ import LoginPage from '@/pages/auth/LoginPage'
 import ResetPasswordPage from '@/pages/auth/ResetPasswordPage'
 import HomePage from '@/pages/home/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import UserDetailPage from '@/pages/users/UserDetailPage'
+import UsersListPage from '@/pages/users/UsersListPage'
 import { paths } from './paths'
 import { RequireAdmin } from './RequireAdmin'
 
@@ -31,6 +33,8 @@ export const router = createBrowserRouter([
       { path: 'conteudo/lazer/:id/editar', element: <LeisureFormPage /> },
       { path: 'conteudo/:tab', element: <ContentListPage /> },
       { path: 'conteudo/:tab/:id/editar', element: <MediaEditPage /> },
+      { path: 'usuarios', element: <UsersListPage /> },
+      { path: 'usuarios/:id', element: <UserDetailPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

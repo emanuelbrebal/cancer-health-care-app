@@ -1,9 +1,10 @@
-import { BookOpen, LayoutDashboard } from 'lucide-react'
+import { BookOpen, LayoutDashboard, Users } from 'lucide-react'
 import { paths } from '@/routes/paths'
 import type { NavItem } from './Sidebar'
 
 // Itens do menu (D7: só telas que existem).
 export const navItems: NavItem[] = [
   { to: paths.home, label: 'Início', icon: LayoutDashboard, end: true },
+  { to: paths.users, label: 'Usuários', icon: Users },
   { to: paths.content, label: 'Conteúdo', icon: BookOpen },
 ]
