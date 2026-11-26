@@ -32,8 +32,10 @@ export function AdminLayout() {
         Pular para o conteúdo
       </a>
       <Sidebar items={navItems} onLogout={logout} />
-      <div id="conteudo" className="flex min-w-0 flex-1 flex-col gap-6 px-[31px]">
-        <Outlet />
+      <div className="flex min-w-0 flex-1 flex-col gap-6 px-[31px]">
+        <main id="conteudo" tabIndex={-1} className="flex flex-col gap-6 outline-none">
+          <Outlet />
+        </main>
         <Footer />
       </div>
     </div>
