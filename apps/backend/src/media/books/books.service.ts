@@ -2,13 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { BooksRepository } from './books.repository';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { rethrowUnique } from 'common/prisma/rethrow-unique';
+
+const DUPLICATE_TITLE = 'Já existe um livro com este título.';
 
 @Injectable()
 export class BooksService {
   constructor(private readonly booksRepository: BooksRepository) {}
 
   async create(createBookDto: CreateBookDto) {
-    return this.booksRepository.create(createBookDto);
+    return this.booksRepository
+      .create(createBookDto)
+      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
   }
 
   async findAll() {
@@ -25,7 +30,9 @@ export class BooksService {
 
   async update(id: string, updateBookDto: UpdateBookDto) {
     await this.findOne(id);
-    return this.booksRepository.update(id, updateBookDto);
+    return this.booksRepository
+      .update(id, updateBookDto)
+      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
   }
 
   async remove(id: string) {

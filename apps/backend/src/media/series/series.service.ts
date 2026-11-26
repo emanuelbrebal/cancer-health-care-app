@@ -3,13 +3,18 @@ import { SeriesRepository } from './series.repository';
 import { CreateSeriesDto } from './dto/create-series.dto';
 import { UpdateSeriesDto } from './dto/update-series.dto';
 import { SeriesMapper } from '../mappers/series-mapper';
+import { rethrowUnique } from 'common/prisma/rethrow-unique';
+
+const DUPLICATE_TITLE = 'Já existe uma série com este título.';
 
 @Injectable()
 export class SeriesService {
   constructor(private readonly seriesRepository: SeriesRepository) {}
 
   async create(createSeriesDto: CreateSeriesDto) {
-    return this.seriesRepository.create(createSeriesDto);
+    return this.seriesRepository
+      .create(createSeriesDto)
+      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
   }
 
   async findAll() {
@@ -26,10 +31,9 @@ export class SeriesService {
 
   async update(id: string, updateSeriesDto: UpdateSeriesDto) {
     await this.findOne(id);
-    const updatedSerie = await this.seriesRepository.update(
-      id,
-      updateSeriesDto,
-    );
+    const updatedSerie = await this.seriesRepository
+      .update(id, updateSeriesDto)
+      .catch((e) => rethrowUnique(e, DUPLICATE_TITLE));
 
     return SeriesMapper.toDto(updatedSerie);
   }
