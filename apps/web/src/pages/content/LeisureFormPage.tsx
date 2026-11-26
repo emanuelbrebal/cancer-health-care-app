@@ -1,11 +1,12 @@
 // Figma: adc conteudo (40:1063) — cadastro; editar (385:1726) — edição. PRD 03 (W03-3/4/5/6).
 // D9: sem upload (image_path em texto, R3).
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
 import { Alert, Button, FocusFirstError, LiveRegion, PageLoader, Panel, SelectField, TextField } from '@/components/ui'
 import { diffChanged, hasChanges } from '@/features/content/diff'
 import { frequencyLabels, leisureTypeLabels, toOptions } from '@/features/content/labels'
+import { returnTo } from '@/features/content/listQuery'
 import { leisureSchema } from '@/features/content/schemas'
 import type { Frequency, LeisureItem, LeisurePayload, LeisureType } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
@@ -48,17 +49,18 @@ const sameName = (a: string, b: string) =>
 export default function LeisureFormPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const editing = !!id
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   const { data, loading, error: loadError } = useLoad(id ?? 'new', async () => {
-    const [item, all] = await Promise.all([id ? leisureService.get(id) : Promise.resolve(null), leisureService.list()])
+    const [item, all] = await Promise.all([id ? leisureService.adminGet(id) : Promise.resolve(null), leisureService.list()])
     return { item, all }
   })
 
   const backToList = (flash?: string) =>
-    navigate(paths.contentTab('lazer'), flash ? { state: { flash } } : undefined)
+    navigate(returnTo(location.state, paths.contentTab('lazer')), flash ? { state: { flash } } : undefined)
 
   async function submit(values: Values, helpers: FormikHelpers<Values>) {
     setError(null)
@@ -109,7 +111,7 @@ export default function LeisureFormPage() {
           <LiveRegion
             message={
               apiStatus(loadError) === 404
-                ? 'Atividade não encontrada ou inativada.'
+                ? 'Atividade não encontrada.'
                 : apiErrorMessage(loadError, 'Não foi possível carregar a atividade.')
             }
           />
