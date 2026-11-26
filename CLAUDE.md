@@ -46,7 +46,7 @@ Lerna monorepo com npm workspaces:
 
 - **`apps/mobile`** — React Native + Expo (cliente principal)
 - **`apps/backend`** — NestJS REST API com Prisma + PostgreSQL
-- **`apps/web`** — React + Vite (painel administrativo)
+- **`apps/web`** — React 19 + Vite 7 + Tailwind 4 (painel administrativo, só ADMIN; ver `apps/web/README.md`)
 - **`apps/postman`** — Collection de testes da API
 - **`packages/shared`** — Store Zustand de autenticação e tipos compartilhados
 
@@ -69,8 +69,9 @@ npm run test                # Jest
 npm run lint                # ESLint --fix
 
 # From apps/web/
-npm run dev
+npm run dev                 # VITE_API_URL em apps/web/.env (ver .env.example)
 npm run lint
+npm run test                # Vitest
 ```
 
 ---
@@ -111,7 +112,7 @@ npm run lint
 ## Backend Architecture
 
 Módulos NestJS em `apps/backend/src/`:
-- `auth/` — Strategies JWT, guards, login/register
+- `auth/` — Strategies JWT, guards, login/register. Mobile: `POST /auth/{login,refresh,logout}` com refresh no corpo. Painel web: `POST /auth/web/{login,refresh,logout}` (só ADMIN, refresh em cookie HttpOnly `Path=/auth/web`, header `X-Requested-With: oncomente-admin`)
 - `user/` — CRUD de usuários e gestão de roles
 - `media/` — Livros, Filmes, Séries (gerenciados via admin web)
 - `leisures/` — Atividades de lazer

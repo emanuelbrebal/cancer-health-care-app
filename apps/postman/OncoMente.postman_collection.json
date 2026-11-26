@@ -39,6 +39,14 @@
     {
       "key": "userId",
       "value": ""
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@oncomente.com"
+    },
+    {
+      "key": "adminPassword",
+      "value": ""
     }
   ],
   "item": [
@@ -355,6 +363,134 @@
                   "language": "json"
                 }
               }
+            }
+          }
+        },
+        {
+          "name": "Painel web: login (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "oncomente-admin"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/web/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "web",
+                "login"
+              ]
+            },
+            "description": "Sessão do painel: devolve access_token e user; o refresh vai no cookie HttpOnly oncomente_admin_rt (Path=/auth/web). Exige X-Requested-With: oncomente-admin. Role diferente de ADMIN: 403 ADMIN_ONLY.",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "if (d.access_token) pm.collectionVariables.set('accessToken', d.access_token);",
+                  "if (d.user && d.user.id) pm.collectionVariables.set('userId', d.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Painel web: renovar sessão",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "oncomente-admin"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/web/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "web",
+                "refresh"
+              ]
+            },
+            "description": "Lê o refresh do cookie (o Postman guarda o cookie do login), rotaciona e devolve access_token e user. Sem cookie: 401.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "if (d.access_token) pm.collectionVariables.set('accessToken', d.access_token);",
+                  "if (d.user && d.user.id) pm.collectionVariables.set('userId', d.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Painel web: sair",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Requested-With",
+                "value": "oncomente-admin"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/web/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "web",
+                "logout"
+              ]
+            },
+            "description": "Revoga o refresh do cookie e apaga o cookie. Reusar o refresh depois responde 401.",
+            "auth": {
+              "type": "noauth"
             }
           }
         }
