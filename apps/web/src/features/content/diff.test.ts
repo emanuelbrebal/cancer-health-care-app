@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull } from './diff'
+import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull, withoutEmpty } from './diff'
+
+describe('withoutEmpty (criação)', () => {
+  it('tira null/undefined e mantém false, 0, "" e listas', () => {
+    expect(withoutEmpty({ a: null, b: undefined, c: false, d: 0, e: '', f: [] })).toEqual({ c: false, d: 0, e: '', f: [] })
+  })
+})
 
 describe('diffChanged (PRD 02 W02-4)', () => {
   const initial = {
