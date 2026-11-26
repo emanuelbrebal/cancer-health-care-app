@@ -1,12 +1,13 @@
 // Figma: editar (385:1726) — formulário de edição com Cancelar/Salvar. PRD 02 (W02-4, W02-7, W02-9).
 // Gênero só leitura (sem endpoint de gêneros, G4); D9: imagem em texto, sem upload.
 import { useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
 import { Plus, X } from 'lucide-react'
 import { Button, CheckboxField, FocusFirstError, LiveRegion, PageLoader, Panel, TextField } from '@/components/ui'
 import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull } from '@/features/content/diff'
 import { tabSingular, tabToKind } from '@/features/content/labels'
+import { returnTo } from '@/features/content/listQuery'
 import { mediaSchema } from '@/features/content/schemas'
 import type { MediaItem, MediaKind, MediaPayload } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
@@ -103,15 +104,18 @@ export default function MediaEditPage() {
 function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
   const kind = tabToKind[tab]
   const navigate = useNavigate()
+  const location = useLocation()
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   const { data, loading, error: loadError } = useLoad(`${kind}/${id}`, async () => {
-    const [item, all] = await Promise.all([mediaService.get(kind, id), mediaService.list(kind)])
+    const [item, all] = await Promise.all([mediaService.adminGet(kind, id), mediaService.list(kind)])
     return { item, all }
   })
 
-  const backToList = (flash?: string) => navigate(paths.contentTab(tab), flash ? { state: { flash } } : undefined)
+  // Volta à lista de origem (mesma página e filtros).
+  const backToList = (flash?: string) =>
+    navigate(returnTo(location.state, paths.contentTab(tab)), flash ? { state: { flash } } : undefined)
 
   async function submit(values: Values, helpers: FormikHelpers<Values>) {
     if (!data) return
@@ -160,7 +164,7 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
           <LiveRegion
             message={
               apiStatus(loadError) === 404
-                ? 'Item não encontrado ou inativado.'
+                ? 'Item não encontrado.'
                 : apiErrorMessage(loadError, 'Não foi possível carregar o item.')
             }
           />
