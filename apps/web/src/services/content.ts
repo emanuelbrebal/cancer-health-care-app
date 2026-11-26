@@ -1,4 +1,8 @@
 import type {
+  AdminGenre,
+  ContentStatus,
+  Genre,
+  GenreType,
   LeisureItem,
   LeisurePayload,
   MediaItem,
@@ -32,6 +36,35 @@ export const mediaService = {
   /** Marca INACTIVE (some do app). */
   async inactivate(kind: MediaKind, id: string) {
     await http.delete(`/${kind}/${id}`)
+  },
+}
+
+export const genreService = {
+  /** Só ativos, por nome (público). Alimenta a seleção de gênero do formulário. */
+  async list(type: GenreType) {
+    const { data } = await http.get<Genre[]>('/genres', { params: { type } })
+    return data
+  },
+  /** Ativos e inativos, com `activeItems`; `status` ausente = todos. */
+  async adminList(type: GenreType, status?: ContentStatus) {
+    const { data } = await http.get<AdminGenre[]>('/admin/genres', { params: { type, status: status || undefined } })
+    return data
+  },
+  async create(name: string, type: GenreType) {
+    const { data } = await http.post('/genres', { name, type })
+    return unwrap<Genre>(data)
+  },
+  async rename(id: string, name: string) {
+    const { data } = await http.patch(`/genres/${id}`, { name })
+    return unwrap<Genre>(data)
+  },
+  /** Inativa; 409 `GENRE_IN_USE` quando há itens ativos no gênero. */
+  async inactivate(id: string) {
+    await http.delete(`/genres/${id}`)
+  },
+  async reactivate(id: string) {
+    const { data } = await http.patch(`/admin/genres/${id}/reactivate`)
+    return unwrap<Genre>(data)
   },
 }
 

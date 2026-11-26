@@ -1,8 +1,8 @@
 // Figma: Conteúdo (37:720) — lista com cabeçalho escuro e ações; Excluir conteúdo (385:1404) —
 // modal de confirmação (D4: inativar não pede senha). PRD 02 (mídia) e PRD 03 (lazer).
 import { useEffect, useMemo, useState } from 'react'
-import { Navigate, NavLink, useLocation, useNavigate, useParams } from 'react-router'
-import { FilePlus2, Pencil, Search, ShieldAlert, Trash2 } from 'lucide-react'
+import { Link, Navigate, NavLink, useLocation, useNavigate, useParams } from 'react-router'
+import { FilePlus2, Pencil, Search, ShieldAlert, Tags, Trash2 } from 'lucide-react'
 import {
   Button,
   ComingSoonButton,
@@ -16,7 +16,14 @@ import {
   cn,
   type Column,
 } from '@/components/ui'
-import { frequencyLabels, leisureTypeLabels, tabLabels, tabSingular, tabToKind } from '@/features/content/labels'
+import {
+  frequencyLabels,
+  kindToGenreType,
+  leisureTypeLabels,
+  tabLabels,
+  tabSingular,
+  tabToKind,
+} from '@/features/content/labels'
 import type { LeisureItem, MediaItem } from '@/features/content/types'
 import { useLoad } from '@/features/content/useLoad'
 import { PageHeader } from '@/layouts/PageHeader'
@@ -148,11 +155,20 @@ function ContentList({ tab }: { tab: ContentTab }) {
               Cadastrar conteúdo
             </Button>
           ) : (
-            <ComingSoonButton
-              label="Cadastrar"
-              icon={FilePlus2}
-              reason="Depende do cadastro de gêneros no backend (G4)."
-            />
+            <>
+              <Link
+                to={paths.genres(kindToGenreType[tabToKind[tab as Exclude<ContentTab, 'lazer'>]])}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary bg-surface-card px-4 py-2.5 text-body-sm font-semibold text-primary hover:bg-surface"
+              >
+                <Tags size={22} aria-hidden />
+                Gêneros
+              </Link>
+              <ComingSoonButton
+                label="Cadastrar"
+                icon={FilePlus2}
+                reason="Depende do cadastro de gêneros no backend (G4)."
+              />
+            </>
           )
         }
       >
