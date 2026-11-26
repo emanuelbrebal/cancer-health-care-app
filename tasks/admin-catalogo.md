@@ -64,6 +64,34 @@
 - Paginação offset (`page`, `limit ≤ 100`) com `{ items, total, page, limit }`.
 - Web: hook de listagem com estado na URL (`?status=&page=`), para voltar à mesma página após editar.
 
+**Decisões do item 1 (2026-11-26)**
+- `Genre.name @unique` global → `@@unique([name, type])` (o mesmo "Drama" para filme e série).
+- `Media @@unique([title, type])` sai do banco: o autor do livro está em `BookDetail` (outra tabela), e índice único entre tabelas não existe no Postgres. A regra vai para o serviço (`assertUniqueMedia`): livro = título + autor; filme/série = título + ano (ano nulo conta como igual); comparação sem diferenciar maiúsculas, com espaços aparados, incluindo inativos. Concorrência simultânea fica fora (aceitável para o TCC, como em W04-7).
+- Lazer mantém `@@unique([name])` no banco + `rethrowUnique`.
+- Gênero inativado pode ser **reativado** (`PATCH /admin/genres/:id/reactivate`): sem isso, a unicidade por nome + tipo impediria recriar o mesmo gênero. Desvio pequeno e justificado em relação a W02-8.
+
+**Contrato da API** (fonte para backend e web)
+
+| Rota | Acesso | Corpo / query | Resposta |
+|---|---|---|---|
+| `GET /genres?type=` | público | `type` = `BOOK`/`MOVIE`/`SERIES` | `[{ id, name, type }]` só ativos, por nome |
+| `GET /admin/genres?type=&status=` | ADMIN | `status` = `ACTIVE`/`INACTIVE` (ausente = todos) | `[{ id, name, type, status, activeItems }]` |
+| `POST /genres` | ADMIN | `{ name (1–60), type }` | 201 `{ id, name, type, status }`; 409 `DUPLICATE` |
+| `PATCH /genres/:id` | ADMIN | `{ name }` | 200 gênero; 404; 409 `DUPLICATE` |
+| `DELETE /genres/:id` | ADMIN | — | 200 `{ message }` (inativa); 409 `GENRE_IN_USE` com N itens ativos |
+| `PATCH /admin/genres/:id/reactivate` | ADMIN | — | 200 gênero |
+| `GET /admin/{books,movies,series}` | ADMIN | `status, search, genreId, isFree=true/false, page=1, limit=20 (≤100)` | `{ items, total, page, limit }`, por `updatedAt` desc |
+| `GET /admin/{books,movies,series}/:id` | ADMIN | — | item admin (inclui inativo); 404 |
+| `PATCH /admin/{books,movies,series}/:id/reactivate` | ADMIN | — | item admin (idempotente) |
+| `GET /admin/leisures` | ADMIN | `status, search, type, frequency, page, limit` | `{ items, total, page, limit }` |
+| `GET /admin/leisures/:id`, `PATCH /admin/leisures/:id/reactivate` | ADMIN | — | item admin |
+
+- **Item admin de mídia** = mesmos campos do `GET /books` (etc.) + `genreId`, `createdAt`, `updatedAt` (ISO). **Item admin de lazer** = campos do `GET /leisures` + `createdAt`, `updatedAt`.
+- Escrita continua nas rotas atuais (`POST/PATCH/DELETE /books` etc.). `PATCH` passa a funcionar em item inativo. `synopsis` (≤ 2000, opcional) aceito em mídia e lazer.
+- `genreId` precisa ser gênero **ativo do mesmo tipo** → senão 400 `INVALID_GENRE`.
+- Duplicados → 409 `DUPLICATE`: "Já existe um livro com este título e autor." / "Já existe um filme com este título e ano." / "Já existe uma série com este título e ano." / "Já existe um gênero com este nome para este tipo." / lazer como hoje.
+- Rotas públicas (`GET /books`, `/movies`, `/series`, `/leisures`, `/:id`) **sem mudança** de contrato.
+
 ---
 
 ## FASE 4 — Checklist de execução
