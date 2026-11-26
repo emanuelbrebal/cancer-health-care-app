@@ -1,6 +1,12 @@
 import * as Yup from 'yup'
 import type { MediaKind } from './types'
-import { frequencyLabels, leisureTypeLabels } from './labels'
+import { frequencyLabels, genreTypeLabels, leisureTypeLabels } from './labels'
+
+// Contrato: `POST /genres { name (1–60), type }`.
+export const genreSchema = Yup.object({
+  name: Yup.string().trim().required('Informe o nome do gênero.').max(60, 'Use até 60 caracteres.'),
+  type: Yup.string().required('Escolha o tipo.').oneOf(Object.keys(genreTypeLabels), 'Escolha o tipo.'),
+})
 
 // Espelha os DTOs do backend (class-validator). Título limitado a 150 (coluna VarChar(150)),
 // embora o DTO aceite 200 (PRD 02).

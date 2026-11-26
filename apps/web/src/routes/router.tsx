@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router'
 import { AdminLayout } from '@/layouts/AdminLayout'
 import ChangePasswordPage from '@/pages/account/ChangePasswordPage'
 import ContentListPage from '@/pages/content/ContentListPage'
+import GenresPage from '@/pages/content/GenresPage'
 import LeisureFormPage from '@/pages/content/LeisureFormPage'
 import MediaEditPage from '@/pages/content/MediaEditPage'
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage'
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'conta', element: <ChangePasswordPage /> },
       { path: 'conteudo', element: <Navigate to={paths.contentTab('livros')} replace /> },
+      { path: 'conteudo/generos', element: <GenresPage /> },
       { path: 'conteudo/lazer/novo', element: <LeisureFormPage /> },
       { path: 'conteudo/lazer/:id/editar', element: <LeisureFormPage /> },
       { path: 'conteudo/:tab', element: <ContentListPage /> },
