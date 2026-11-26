@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { CircleAlert, LockKeyhole, Mail } from 'lucide-react'
-import { Button, LiveRegion, TextField } from '@/components/ui'
+import { Button, FocusFirstError, LiveRegion, TextField } from '@/components/ui'
 import { paths } from '@/routes/paths'
 import { authService } from '@/services/auth'
 import { apiErrorMessage, apiStatus } from '@/services/errors'
@@ -33,6 +33,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     >
       {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
         <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <FocusFirstError />
           <div className="mb-2 text-center">
             <h1 className="text-title-1 font-semibold text-ink">Entrar</h1>
             <p className="mt-1 text-note text-ink-muted">Painel administrativo do OncoMente</p>

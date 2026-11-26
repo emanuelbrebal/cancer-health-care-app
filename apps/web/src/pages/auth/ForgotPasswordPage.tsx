@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { Mail, ShieldQuestion } from 'lucide-react'
-import { Button, LiveRegion, Modal, TextField } from '@/components/ui'
+import { Button, FocusFirstError, LiveRegion, Modal, TextField } from '@/components/ui'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { paths } from '@/routes/paths'
 import { authService } from '@/services/auth'
@@ -57,6 +57,7 @@ export default function ForgotPasswordPage() {
           >
             {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
               <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-6">
+                <FocusFirstError />
                 <p className="text-support text-ink">
                   Digite seu e-mail e clique em “Enviar” para receber as instruções para redefinir sua senha.
                 </p>

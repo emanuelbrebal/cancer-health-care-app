@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { Button, LiveRegion, Panel, TextField } from '@/components/ui'
+import { Button, FocusFirstError, LiveRegion, Panel, TextField } from '@/components/ui'
 import { PageHeader } from '@/layouts/PageHeader'
 import { paths } from '@/routes/paths'
 import { authService } from '@/services/auth'
@@ -44,6 +44,7 @@ export default function ChangePasswordPage() {
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
             <form noValidate onSubmit={handleSubmit} className="flex max-w-[520px] flex-col gap-4">
+              <FocusFirstError />
               <TextField
                 label="Senha atual"
                 name="currentPassword"

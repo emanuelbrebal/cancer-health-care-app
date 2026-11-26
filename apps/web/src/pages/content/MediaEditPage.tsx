@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
 import { Plus, X } from 'lucide-react'
-import { Button, CheckboxField, LiveRegion, PageLoader, Panel, TextField } from '@/components/ui'
+import { Button, CheckboxField, FocusFirstError, LiveRegion, PageLoader, Panel, TextField } from '@/components/ui'
 import { cleanList, diffChanged, hasChanges, toIntOrNull, toTextOrNull } from '@/features/content/diff'
 import { tabSingular, tabToKind } from '@/features/content/labels'
 import { mediaSchema } from '@/features/content/schemas'
@@ -180,6 +180,7 @@ function MediaEdit({ tab, id }: { tab: MediaTab; id: string }) {
 
               return (
                 <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <FocusFirstError />
                   <TextField label="Título" maxLength={150} required {...field('title')} />
 
                   <dl className="grid gap-5 rounded-field bg-surface px-4 py-3 text-support md:grid-cols-2">
