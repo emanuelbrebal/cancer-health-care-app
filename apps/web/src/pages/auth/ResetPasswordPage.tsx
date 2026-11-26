@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { KeyRound, LockKeyhole } from 'lucide-react'
-import { Button, LiveRegion, TextField } from '@/components/ui'
+import { Button, FocusFirstError, LiveRegion, TextField } from '@/components/ui'
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { paths } from '@/routes/paths'
 import { authService } from '@/services/auth'
@@ -50,6 +50,7 @@ export default function ResetPasswordPage() {
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
             <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <FocusFirstError />
               <TextField
                 label="Código recebido por e-mail"
                 name="token"

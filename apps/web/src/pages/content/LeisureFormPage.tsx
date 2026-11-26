@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { Formik, type FormikHelpers } from 'formik'
-import { Alert, Button, LiveRegion, PageLoader, Panel, SelectField, TextField } from '@/components/ui'
+import { Alert, Button, FocusFirstError, LiveRegion, PageLoader, Panel, SelectField, TextField } from '@/components/ui'
 import { diffChanged, hasChanges } from '@/features/content/diff'
 import { frequencyLabels, leisureTypeLabels, toOptions } from '@/features/content/labels'
 import { leisureSchema } from '@/features/content/schemas'
@@ -121,6 +121,7 @@ export default function LeisureFormPage() {
           >
             {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
               <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <FocusFirstError />
                 <Alert tone="info">
                   Esta atividade é uma sugestão geral e não substitui a orientação da equipe de saúde.
                 </Alert>

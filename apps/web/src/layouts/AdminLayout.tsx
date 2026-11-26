@@ -1,5 +1,5 @@
-import { useCallback } from 'react'
-import { Outlet, useNavigate } from 'react-router'
+import { useCallback, useEffect, useRef } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router'
 import { useInactivityLogout } from '@/hooks/useInactivityLogout'
 import { paths } from '@/routes/paths'
 import { authService } from '@/services/auth'
@@ -23,6 +23,15 @@ export function AdminLayout() {
 
   useInactivityLogout(authenticated, expire)
 
+  // SPA: ao trocar de rota o elemento focado some (ex.: "Salvar" do formulário) e o foco cai no <body>.
+  // Leva o foco ao <main>, salvo se a página já focou algo dentro dele (autoFocus).
+  const { pathname } = useLocation()
+  const mainRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const main = mainRef.current
+    if (main && !main.contains(document.activeElement)) main.focus({ preventScroll: true })
+  }, [pathname])
+
   return (
     <div className="flex min-h-screen bg-surface-page">
       <a
@@ -32,8 +41,10 @@ export function AdminLayout() {
         Pular para o conteúdo
       </a>
       <Sidebar items={navItems} onLogout={logout} />
-      <div id="conteudo" className="flex min-w-0 flex-1 flex-col gap-6 px-[31px]">
-        <Outlet />
+      <div className="flex min-w-0 flex-1 flex-col gap-6 px-[31px]">
+        <main ref={mainRef} id="conteudo" tabIndex={-1} className="flex flex-col gap-6 outline-none">
+          <Outlet />
+        </main>
         <Footer />
       </div>
     </div>

@@ -99,6 +99,12 @@ function ContentList({ tab }: { tab: ContentTab }) {
         actions,
       ]
 
+  // Ao inativar, a lista recarrega e a linha que abriu o modal some: o foco cairia no <body>.
+  // Devolve ao <main>; a região viva anuncia o resultado.
+  useEffect(() => {
+    if (!loading && document.activeElement === document.body) document.getElementById('conteudo')?.focus()
+  }, [loading])
+
   async function confirmInactivate() {
     if (!target) return
     setBusy(true)
